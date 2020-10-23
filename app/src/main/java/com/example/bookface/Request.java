@@ -5,7 +5,7 @@ public class Request {
     private User borrower;
     private String requestStatus;
 
-    // TODO: Location JSON Object
+    //TODO: Location Object
 
     public boolean notifyOwner(){
         return false;

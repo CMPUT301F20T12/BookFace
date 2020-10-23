@@ -1,4 +1,4 @@
-package main.java.com.example.bookface;
+package com.example.bookface;
 
 public class Book {
     private String title;
