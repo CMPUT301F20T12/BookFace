@@ -9,6 +9,7 @@ android {
     defaultConfig {
         applicationId "com.example.bookface"
         minSdkVersion 14
+        multiDexEnabled true
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -31,6 +32,8 @@ dependencies {
     // Declare the dependency for the Cloud Firestore library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-firestore'
+
+    implementation 'com.android.support:multidex:1.0.3'
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
