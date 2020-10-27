@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(i);
                 }
                 else{
-                    Toast.makeText(MainActivity.this, "Login Unsuccessful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Not Logged In", Toast.LENGTH_SHORT).show();
                 }
             }
         };

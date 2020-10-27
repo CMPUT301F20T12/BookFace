@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class Signup extends AppCompatActivity {
 
-    EditText emailID, password;
+    EditText emailID, password, contactField;
     Button buttonSignup;
     TextView loginPrompt;
 
@@ -33,6 +33,7 @@ public class Signup extends AppCompatActivity {
 
         emailID = findViewById(R.id.editTextTextEmailAddress);
         password = findViewById(R.id.editTextNumberPassword);
+        contactField = findViewById(R.id.editTextPhone);
         buttonSignup = findViewById(R.id.button);
         loginPrompt = findViewById(R.id.textView);
 
