@@ -11,8 +11,8 @@ public class Book {
     // private (Image?) photo;
     private boolean isMine;
 
-    public Book(String title, String author, String ISBN, String description, 
-    String status, String ownerUsername, String borrowerUsername, boolean isMine) { //mising photo
+    public Book(String title, String author, String ISBN, String description,
+                String status, String ownerUsername, String borrowerUsername, boolean isMine) { //mising photo
         this.title = title;
         this.author = author;
         this.ISBN = ISBN;
@@ -52,6 +52,14 @@ public class Book {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }
