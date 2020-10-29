@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class Signup extends AppCompatActivity {
 
-    EditText emailID, password, contactField;
+    EditText emailID, password, contactField, usernameField;
     Button buttonSignup;
     TextView loginPrompt;
 
@@ -34,6 +34,7 @@ public class Signup extends AppCompatActivity {
         emailID = findViewById(R.id.editTextTextEmailAddress);
         password = findViewById(R.id.editTextNumberPassword);
         contactField = findViewById(R.id.editTextPhone);
+        usernameField = findViewById(R.id.username);
         buttonSignup = findViewById(R.id.button);
         loginPrompt = findViewById(R.id.textView);
 
@@ -42,22 +43,15 @@ public class Signup extends AppCompatActivity {
             public void onClick(View v) {
                 String email = emailID.getText().toString();
                 String pwd = password.getText().toString();
+                String contact = contactField.getText().toString();
+                String user = usernameField.getText().toString();
 
-                if(email.isEmpty()){
-                    emailID.setError("Enter email");
-                    emailID.requestFocus();
-                }
-                else if (pwd.isEmpty()){
-                    password.setError("Enter password");
-                    password.requestFocus();
-                }
-
-                else if (email.isEmpty() && pwd.isEmpty()){
-                    Toast.makeText(Signup.this, "Both fields empty", Toast.LENGTH_SHORT).show();
+                if (email.isEmpty() || pwd.isEmpty() || contact.isEmpty() || user.isEmpty()){
+                    Toast.makeText(Signup.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 }
 
                 // When email and password are both valid
-                else if (!(email.isEmpty() && pwd.isEmpty())){
+                else if (!(email.isEmpty() && pwd.isEmpty() && contact.isEmpty() && user.isEmpty())){
                     mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(Signup.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {

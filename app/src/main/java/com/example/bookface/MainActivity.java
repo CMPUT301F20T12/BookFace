@@ -63,17 +63,22 @@ public class MainActivity extends AppCompatActivity {
                 String email = emailID.getText().toString();
                 String pwd = password.getText().toString();
 
-                if(email.isEmpty()){
-                    emailID.setError("Enter email");
-                    emailID.requestFocus();
-                }
-                else if (pwd.isEmpty()){
-                    password.setError("Enter password");
-                    password.requestFocus();
-                }
 
-                else if (email.isEmpty() && pwd.isEmpty()){
-                    Toast.makeText(MainActivity.this, "Both fields empty", Toast.LENGTH_SHORT).show();
+                if (email.isEmpty() || pwd.isEmpty()){
+
+                    if(email.isEmpty()){
+                        emailID.setError("Enter email");
+                        emailID.requestFocus();
+                    }
+                    if (pwd.isEmpty()){
+                        password.setError("Enter password");
+                        password.requestFocus();
+                    }
+
+                    if (email.isEmpty() && pwd.isEmpty()){
+                        Toast.makeText(MainActivity.this, "Both fields empty", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
 
                 // When email and password are both valid
