@@ -8,4 +8,5 @@
     <string name="login_prompt">Log in here</string>
     <string name="signup">Sign Up</string>
     <string name="contactNo">Contact No.</string>
+    <string name="username">Username</string>
 </resources>
