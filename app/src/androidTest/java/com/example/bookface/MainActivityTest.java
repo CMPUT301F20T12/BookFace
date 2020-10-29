@@ -2,6 +2,7 @@ package com.example.bookface;
 
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.robotium.solo.Solo;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -12,6 +13,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
 
@@ -66,6 +68,18 @@ public class MainActivityTest {
         solo.clickOnView(CTButton);
 
         assertTrue(solo.waitForText("Login Unsuccessful", 1, 2000));
+    }
+
+    @Test
+    public void signupRedirect(){
+        solo.assertCurrentActivity("Wrong activity", MainActivity.class);
+
+        TextView CTButton = (TextView) solo.getView("textView");
+        solo.clickOnView(CTButton);
+
+        assertTrue(solo.waitForActivity(Signup.class, 2000));
+
+
     }
 
     @Test
