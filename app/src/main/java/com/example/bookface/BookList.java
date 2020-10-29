@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * This is a class that keeps track of a list of book objects
+ */
 public class BookList {
     private List<Book> books = new ArrayList<>();
 
@@ -40,7 +43,7 @@ public class BookList {
 
 
     /**
-     * THis method searches for the book
+     * This method searches for the book
      * @param keyword
      * This is the candidate keyword on which the search will occur
      * @return
@@ -48,10 +51,8 @@ public class BookList {
      */
     public List<Book> searchBook(String keyword) {
         List<Book> list = books;
-
         // TODO
-        // Logic for the search
-
+        // Logic for this method
         return list;
     }
 

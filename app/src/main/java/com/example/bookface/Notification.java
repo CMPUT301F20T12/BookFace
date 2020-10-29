@@ -2,6 +2,9 @@ package com.example.bookface;
 
 import android.location.Location;
 
+/**
+ * This is a class that contains the attributes and methods for sending a notification
+ */
 public class Notification {
     private Book requestedBook;
     private User borrower;
@@ -40,11 +43,14 @@ public class Notification {
         this.location = location;
     }
 
+    /**
+     * This method displays the notification on the user screen
+     * @return
+     * True if it was success and false if it is wrong
+     */
     public boolean displayNotification() {
-
         // TODO
         // Logic for this method
-        
         return true;
     }
 }
