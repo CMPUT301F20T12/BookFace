@@ -5,6 +5,12 @@ public class Request {
     private User borrower;
     private String requestStatus;
 
+    public Request(Book bookRequested, User borrower, String requestStatus) {
+        this.bookRequested = bookRequested;
+        this.borrower = borrower;
+        this.requestStatus = requestStatus;
+    };
+
     //TODO: Location Object
 
     public boolean notifyOwner(){
