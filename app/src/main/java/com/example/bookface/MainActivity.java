@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
                 if (mFirebaseUser != null){
                     Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(MainActivity.this, LoginConfirmation.class);
+                    Intent i = new Intent(MainActivity.this, LoginConfirmationActivity.class);
                     startActivity(i);
                 }
                 else{
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(MainActivity.this, "Login Unsuccessful", Toast.LENGTH_SHORT).show();
                             }
                             else{
-                                Intent toLoginConfirmation = new Intent(MainActivity.this, LoginConfirmation.class);
+                                Intent toLoginConfirmation = new Intent(MainActivity.this, LoginConfirmationActivity.class);
                                 startActivity(toLoginConfirmation);
                             }
                         }
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         SignupPrompt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toSignup = new Intent(MainActivity.this, Signup.class);
+                Intent toSignup = new Intent(MainActivity.this, SignupActivity.class);
                 startActivity(toSignup);
             }
         });

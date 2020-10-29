@@ -9,7 +9,7 @@ import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-public class LoginConfirmation extends AppCompatActivity {
+public class LoginConfirmationActivity extends AppCompatActivity {
 
     Button buttonSignout;
     FirebaseAuth mFirebaseAuth;
@@ -28,7 +28,7 @@ public class LoginConfirmation extends AppCompatActivity {
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
 
-                Intent i = new Intent(LoginConfirmation.this, MainActivity.class);
+                Intent i = new Intent(LoginConfirmationActivity.this, MainActivity.class);
                 startActivity(i);
             }
         });

@@ -2,9 +2,7 @@ package com.example.bookface;
 
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
-import com.google.firebase.auth.ActionCodeResult;
 import com.robotium.solo.Solo;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -16,13 +14,13 @@ import org.junit.Test;
 
 import static junit.framework.TestCase.assertTrue;
 
-public class SignupTest {
+public class SignupActivityTest {
 
     private Solo solo;
 
     @Rule
-    public ActivityTestRule<Signup> rule =
-            new ActivityTestRule<>(Signup.class, true, true);
+    public ActivityTestRule<SignupActivity> rule =
+            new ActivityTestRule<>(SignupActivity.class, true, true);
 
     @Before
     public void setUp(){
@@ -31,12 +29,12 @@ public class SignupTest {
 
     @Test
     public void correctActivity(){
-        solo.assertCurrentActivity("Wrong activity", Signup.class);
+        solo.assertCurrentActivity("Wrong activity", SignupActivity.class);
     }
 
     @Test
     public void emptyFieldsCheck(){
-        solo.assertCurrentActivity("Wrong activity", Signup.class);
+        solo.assertCurrentActivity("Wrong activity", SignupActivity.class);
 
         Button CTButton = (Button) solo.getView("button");
 
@@ -61,7 +59,7 @@ public class SignupTest {
     public void successfulSignup(){
         // Note: Only passes if the email does not exist in users database!
 
-        solo.assertCurrentActivity("Wrong activity", Signup.class);
+        solo.assertCurrentActivity("Wrong activity", SignupActivity.class);
 
         Button CTButton = (Button) solo.getView("button");
 
@@ -81,7 +79,7 @@ public class SignupTest {
 
     @Test
     public void existingEmail(){
-        solo.assertCurrentActivity("Wrong activity", Signup.class);
+        solo.assertCurrentActivity("Wrong activity", SignupActivity.class);
 
         Button CTButton = (Button) solo.getView("button");
 
@@ -92,9 +90,9 @@ public class SignupTest {
 
         solo.clickOnView(CTButton);
 
-        assertTrue(solo.waitForText("Signup failed", 1, 2000));
+        assertTrue(solo.waitForText("SignupActivity failed", 1, 2000));
     }
-    
+
 
     @After
     public void tearDown() {

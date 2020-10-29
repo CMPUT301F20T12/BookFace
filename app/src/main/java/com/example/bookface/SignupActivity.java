@@ -16,7 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class Signup extends AppCompatActivity {
+public class SignupActivity extends AppCompatActivity {
 
     EditText emailID, password, contactField, usernameField;
     Button buttonSignup;
@@ -47,26 +47,26 @@ public class Signup extends AppCompatActivity {
                 String user = usernameField.getText().toString();
 
                 if (email.isEmpty() || pwd.isEmpty() || contact.isEmpty() || user.isEmpty()){
-                    Toast.makeText(Signup.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignupActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 }
 
                 // When email and password are both valid
                 else if (!(email.isEmpty() && pwd.isEmpty() && contact.isEmpty() && user.isEmpty())){
-                    mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(Signup.this, new OnCompleteListener<AuthResult>() {
+                    mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(!task.isSuccessful()){
-                                Toast.makeText(Signup.this, "Signup failed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignupActivity.this, "SignupActivity failed", Toast.LENGTH_SHORT).show();
                             }
                             else{
-                                startActivity(new Intent(Signup.this, MainActivity.class));
+                                startActivity(new Intent(SignupActivity.this, MainActivity.class));
                             }
                         }
                     });
                 }
 
                 else {
-                    Toast.makeText(Signup.this, "Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignupActivity.this, "Error", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -74,7 +74,7 @@ public class Signup extends AppCompatActivity {
         loginPrompt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Signup.this, MainActivity.class);
+                Intent i = new Intent(SignupActivity.this, MainActivity.class);
                 startActivity(i);
             }
         });

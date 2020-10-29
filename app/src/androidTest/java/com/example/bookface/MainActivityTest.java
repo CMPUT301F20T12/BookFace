@@ -77,7 +77,7 @@ public class MainActivityTest {
         TextView CTButton = (TextView) solo.getView("textView");
         solo.clickOnView(CTButton);
 
-        assertTrue(solo.waitForActivity(Signup.class, 2000));
+        assertTrue(solo.waitForActivity(SignupActivity.class, 2000));
 
 
     }
