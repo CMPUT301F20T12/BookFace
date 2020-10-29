@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">BookFace</string>
+    <string name="Email">Email</string>
+    <string name="Password">Password</string>
+    <string name="Login">Login</string>
+    <string name="sign_up_prompt">Sign Up Here</string>
+
+    <string name="login_prompt">Log in here</string>
+    <string name="signup">Sign Up</string>
+    <string name="contactNo">Contact No.</string>
+    <string name="username">Username</string>
 </resources>
