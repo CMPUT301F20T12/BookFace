@@ -4,77 +4,97 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFF"
     tools:context=".BookDescription">
 
-
-
-    <TextView
-        android:id="@+id/authorNameText"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:text="Author Name"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.047"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="414dp"
+        android:layout_height="218dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.143" />
+        app:layout_constraintTop_toTopOf="parent">
 
+        <Button
+            android:id="@+id/myBooksOrSearchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="149dp"
+            android:layout_marginLeft="149dp"
+            android:layout_marginTop="21dp"
+            android:text="My Books" />
 
-    <TextView
-        android:id="@+id/titleText"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:text="Book Title"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.047"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/authorNameText"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.191" />
+        <TextView
+            android:id="@+id/authorNameText"
+            android:layout_width="126dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="95dp"
+            android:text="Author Name" />
 
-    <TextView
-        android:id="@+id/isbnText"
-        android:layout_width="100dp"
-        android:layout_height="20dp"
-        android:text="ISBN"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.047"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/authorNameText"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.27" />
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="203dp"
+            android:layout_height="44dp"
+            android:layout_alignStart="@+id/authorNameText"
+            android:layout_alignLeft="@+id/authorNameText"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="125dp"
+            android:text="TITLE" />
 
-    <TextView
-        android:id="@+id/statusText"
-        android:layout_width="100dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="292dp"
-        android:layout_marginLeft="292dp"
-        android:text="Status"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.047"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.27" />
+        <TextView
+            android:id="@+id/isbnText"
+            android:layout_width="77dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/authorNameText"
+            android:layout_alignLeft="@+id/authorNameText"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="180dp"
+            android:text="ISBN" />
+
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="86dp"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/isbnText"
+            android:layout_alignBottom="@+id/isbnText"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="202dp"
+            android:layout_marginLeft="202dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="1dp"
+            android:layout_toEndOf="@+id/isbnText"
+            android:layout_toRightOf="@+id/isbnText"
+            android:text="Status" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/descriptionHeadingText"
         android:layout_width="150dp"
         android:layout_height="40dp"
+        android:text="Description:"
+        android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/editButton"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.095"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/authorNameText"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.384" />
 
@@ -82,8 +102,6 @@
         android:id="@+id/bookDescriptionText"
         android:layout_width="380dp"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="321dp"
         android:layout_marginRight="392dp"
         android:layout_marginBottom="53dp"
@@ -92,9 +110,10 @@
         app:layout_constraintHorizontal_bias="0.047"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/descriptionHeadingText"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.678" />
+        app:layout_constraintVertical_bias="0.678"></TextView>
+
 
     <TextView
         android:id="@+id/borrowerNameText"
@@ -106,31 +125,22 @@
         app:layout_constraintHorizontal_bias="0.047"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/authorNameText"
+        app:layout_constraintStart_toStartOf="@+id/descriptionHeadingText"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.834" />
 
-    <Button
-        android:id="@+id/myBooksOrSearchButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="My Books"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/collectOrSendRequestButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="51dp"
         android:text="Collect"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/myBooksOrSearchButton"
-        app:layout_constraintHorizontal_bias="0.4"
-        app:layout_constraintStart_toStartOf="@+id/myBooksOrSearchButton"
-        app:layout_constraintTop_toBottomOf="@+id/bookDescriptionText" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.93" />
 
     <Button
         android:id="@+id/editButton"

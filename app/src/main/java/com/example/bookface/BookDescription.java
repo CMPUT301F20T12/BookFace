@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class BookDescription extends AppCompatActivity {
 
@@ -82,5 +85,9 @@ public class BookDescription extends AppCompatActivity {
 //        textDescription.setText(book.getDescription().toString());
 //        textStatus.setText(book.getStatus.toString());
 //        textTitle.setText(Html.fromHtml("<b>" + book.getTitle().toString()+"</b>"));
+
+
+//        Use android:background="@drawable/<ImageFileName>" in the relative layout in xml file.
+//        Only catch is that I need to put the image file in drawable folder in app/res/drawable in order to display it
     }
 }

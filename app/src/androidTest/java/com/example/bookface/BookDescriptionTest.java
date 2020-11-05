@@ -51,7 +51,10 @@ public class BookDescriptionTest {
     public void checkBottomButton() {
         // TODO
         // get current user and check if that user is owner or not and change the button display to accordingly
-        solo.clickOnButton("Collect");
+
+        while(true){
+            solo.clickOnButton("Collect");
+        }
 
         // TODO
         // Else send request
