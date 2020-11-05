@@ -1,5 +1,9 @@
 package com.example.bookface;
 
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
@@ -26,7 +30,7 @@ public class BookDescriptionTest {
 
     @Test
     public void checkDescriptionActivity() {
-        solo.assertCurrentActivity("Wrong activity",BookDescription.class);
+        solo.assertCurrentActivity("Wrong activity", BookDescription.class);
     }
 
     @Test
@@ -52,13 +56,19 @@ public class BookDescriptionTest {
         // TODO
         // get current user and check if that user is owner or not and change the button display to accordingly
 
-        while(true){
-            solo.clickOnButton("Collect");
-        }
+        solo.clickOnButton("Collect");
 
         // TODO
         // Else send request
         // Test if the request was received
 
+    }
+
+    @Test
+    public void checkImage() {
+        View view = solo.getView("imageView");
+        solo.assertCurrentActivity("Wrong Activity", BookDescription.class);
+        solo.clickOnView(view);
+        solo.assertCurrentActivity("Wrong Activity", AddImage.class);
     }
 }

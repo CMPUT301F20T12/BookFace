@@ -8,9 +8,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">	
-        <activity android:name=".BookDescription"></activity>
-        <activity android:name=".LoginConfirmationActivity"></activity>
+        android:theme="@style/AppTheme">
+        <activity android:name=".AddImage"></activity>
+        <activity android:name=".BookDescription" />
+        <activity android:name=".LoginConfirmationActivity" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -21,4 +22,6 @@
         </activity>
     </application>
 
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
 </manifest>

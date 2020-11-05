@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(toSignup);
             }
         });
-
     }
 
     @Override

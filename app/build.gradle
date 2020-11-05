@@ -42,6 +42,7 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    implementation 'com.google.android.material:material:1.2.1'
 
     // Junit5 and Robotium for testing
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.0.1'
