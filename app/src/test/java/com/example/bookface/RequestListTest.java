@@ -21,7 +21,7 @@ public class RequestListTest {
 
     private Book mockBookRequested1() {
         return new Book("The Book Title", "Author Name", "1000010000100", "This is a mock book.",
-                "available", "mlee1","", true);
+                "available", "mlee1","");
     }
 
     private User mockBorrower() {
@@ -30,12 +30,12 @@ public class RequestListTest {
 
     private Book mockBookRequested2() {
         return new Book("The Book Title2", "Author Name2", "1000010000102", "This is a mock book 2.",
-                "available", "mlee1","", true);
+                "available", "mlee1","");
     }
 
     private Book mockBookRequested3() {
         return new Book("The Book Title3", "Author Name3", "1000010000103", "This is a mock book 3.",
-                "available", "mlee1","", true);
+                "available", "mlee1","");
     }
 
     @Test

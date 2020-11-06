@@ -12,6 +12,7 @@ public class Book {
 
     public Book(String title, String author, String ISBN, String description,
                 String status, String ownerUsername, String borrowerUsername, String imageUrl) {
+
         this.title = title;
         this.author = author;
         this.ISBN = ISBN;
@@ -75,7 +76,7 @@ public class Book {
     public void setStatus(String status) {
         this.status = status;
     }
-
+  
     public String getImageUrl() {
         return imageUrl;
     }
@@ -84,3 +85,4 @@ public class Book {
         this.imageUrl = imageUrl;
     }
 }
+
