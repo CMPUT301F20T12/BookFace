@@ -1,16 +1,20 @@
 package com.example.bookface;
 
+import java.util.ArrayList;
+
 public class User {
     private String username;
-    private String name;
     private String email;
     private String contactNo;
+    private ArrayList<String> booksOwned;
+    private ArrayList<String> booksBorrowed;
 
-    public User(String username, String name, String email, String contactNo) {
+    public User(String username, String email, String contactNo) {
         this.username = username;
-        this.name = name;
         this.email = email;
         this.contactNo = contactNo;
+        this.booksOwned = new ArrayList<String>();
+        this.booksBorrowed = new ArrayList<String>();
     }
 
     public String getUsername() {
@@ -19,14 +23,6 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getEmail() {
@@ -43,5 +39,21 @@ public class User {
 
     public void setContactNo(String contactNo) {
         this.contactNo = contactNo;
+    }
+
+    public ArrayList<String> getBooksOwned() {
+        return booksOwned;
+    }
+
+    public void setBooksOwned(ArrayList<String> booksOwned) {
+        this.booksOwned = booksOwned;
+    }
+
+    public ArrayList<String> getBooksBorrowed() {
+        return booksBorrowed;
+    }
+
+    public void setBooksBorrowed(ArrayList<String> booksBorrowed) {
+        this.booksBorrowed = booksBorrowed;
     }
 }
