@@ -1,9 +1,12 @@
 package com.example.bookface;
 
+import java.util.ArrayList;
+
 public class User {
     private String username;
     private String email;
     private String contactNo;
+    private ArrayList<String> myBookList;
 
     public User(String username, String email, String contactNo) {
         this.username = username;
@@ -33,5 +36,13 @@ public class User {
 
     public void setContactNo(String contactNo) {
         this.contactNo = contactNo;
+    }
+
+    public ArrayList<String> getMyBookList() {
+        return myBookList;
+    }
+
+    public void setMyBookList(ArrayList<String> myBookList) {
+        this.myBookList = myBookList;
     }
 }

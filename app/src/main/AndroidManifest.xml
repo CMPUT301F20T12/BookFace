@@ -11,7 +11,8 @@
         android:theme="@style/AppTheme">
         <activity android:name=".LoginConfirmationActivity"></activity>
         <activity android:name=".SignupActivity" />
-        <activity android:name=".UserProfile"></activity>
+<!--        <activity android:name=".UserProfile"></activity>-->
+        <activity android:name=".MyBooks"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

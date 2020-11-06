@@ -6,12 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -35,11 +37,16 @@ public class LoginConfirmationActivity extends AppCompatActivity {
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
 
+    private BottomNavigationView navBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_confirmation);
+
+        navBar = findViewById(R.id.nav_bar);
+
+        navBar.setOnNavigationItemSelectedListener(navBarMethod);
 //        System.out.println("Query started");
         mFirebaseAuth = FirebaseAuth.getInstance();
         userInstance = mFirebaseAuth.getCurrentUser();
@@ -48,7 +55,7 @@ public class LoginConfirmationActivity extends AppCompatActivity {
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             String docPath = "users/"+userName;
-            System.out.println(docPath);
+//            System.out.println(docPath);
             DocumentReference docRef = db.document(docPath);
 
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -99,4 +106,31 @@ public class LoginConfirmationActivity extends AppCompatActivity {
 
 
     }
+
+    private  BottomNavigationView.OnNavigationItemSelectedListener navBarMethod = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+
+            switch (menuItem.getItemId()){
+                case R.id.my_books:
+                    Intent toMyBooks = new Intent(LoginConfirmationActivity.this, MyBooks.class);
+                    startActivity(toMyBooks);
+                    break;
+                case R.id.requests:
+                    Intent toRequests = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
+                    startActivity(toRequests);
+                    break;
+                case R.id.search:
+                    Intent toSearch = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
+                    startActivity(toSearch);
+                    break;
+                case R.id.notification:
+                    Intent toNotification = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
+                    startActivity(toNotification);
+                    break;
+            }
+            return false;
+        }
+    };
 }
