@@ -9,10 +9,9 @@ public class Book {
     private String ownerUsername;
     private String borrowerUsername;
     // private (Image?) photo;
-    private boolean isMine;
 
     public Book(String title, String author, String ISBN, String description,
-                String status, String ownerUsername, String borrowerUsername, boolean isMine) { //mising photo
+                String status, String ownerUsername, String borrowerUsername) { //mising photo
         this.title = title;
         this.author = author;
         this.ISBN = ISBN;
