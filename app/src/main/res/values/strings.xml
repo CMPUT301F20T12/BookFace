@@ -9,4 +9,9 @@
     <string name="signup">Sign Up</string>
     <string name="contactNo">Contact No.</string>
     <string name="username">Username</string>
+
+    <string name="available">Available</string>
+    <string name="requested">Requested</string>
+    <string name="accepted">Accepted</string>
+    <string name="borrowed">Borrowed</string>
 </resources>
