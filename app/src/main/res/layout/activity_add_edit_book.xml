@@ -38,17 +38,36 @@
             android:layout_weight="4"
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/editImage"
-            android:layout_width="47dp"
+        <LinearLayout
+            android:id="@+id/imageButtons"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="110dp"
+            android:layout_marginLeft="10dp"
             android:layout_weight="2"
-            android:clickable="true"
-            app:backgroundTint="#5DB075"
-            app:rippleColor="#FFFFFF"
-            app:srcCompat="@android:drawable/ic_menu_edit" />
+            android:orientation="vertical">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/cameraImage"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_marginTop="55dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                app:backgroundTint="#5DB075"
+                app:rippleColor="#FFFFFF"
+                app:srcCompat="@android:drawable/ic_menu_camera" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/galleryImage"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                app:backgroundTint="#5DB075"
+                app:rippleColor="#FFFFFF"
+                app:srcCompat="@android:drawable/ic_menu_gallery" />
+        </LinearLayout>
 
     </LinearLayout>
 
