@@ -57,6 +57,7 @@ import java.util.Map;
 public class AddEditBookActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView scan;
+    private TextView back;
     private EditText isbn;
     private EditText author;
     private EditText title;
@@ -82,6 +83,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_add_edit_book);
 
         scan = findViewById(R.id.scanBookButton);
+        back = findViewById(R.id.backAddEditBookButton);
         isbn = findViewById(R.id.editISBN);
         author = findViewById(R.id.editName);
         title = findViewById(R.id.editTitle);
@@ -94,6 +96,14 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         scan.setOnClickListener(this);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent toMyBooks = new Intent(AddEditBookActivity.this, MyBooks.class);
+                startActivity(toMyBooks);
+            }
+        });
 
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,6 +206,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                                             Map userData = document.getData();
                                                             System.out.println("DOCUMENT EXISTS!");
                                                             if(userData != null){
+
                                                                 final String TAG = "Completeion Message" ;
                                                                 ArrayList<String> myBookList = (ArrayList<String>)document.get("booksOwned");
                                                                 myBookList.add(localIsbn);
@@ -268,7 +279,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
             }
         }
 
-        if(isbn.getText().toString().length() == 0)
+        else if(isbn.getText().toString().length() == 0)
             Toast.makeText(AddEditBookActivity.this, "Scan Book First!", Toast.LENGTH_SHORT).show();
 
         else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
@@ -296,11 +307,11 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                     public void onResponse(JSONObject response) {
                         try {
                             JSONArray items = response.getJSONArray("items");
+                            int flag = 0;
                             for (int i = 0; i < items.length(); i++) {
                                 JSONObject item = items.getJSONObject(i);
                                 JSONObject volumeInfo = item.getJSONObject("volumeInfo");
                                 JSONArray identifiers = volumeInfo.getJSONArray("industryIdentifiers");
-                                int flag = 0;
                                 for (int j = 0; j < identifiers.length(); j++) {
                                     try {
                                         String identifier = identifiers.getJSONObject(j).getString("identifier");
@@ -326,7 +337,11 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                     break;
                                 }
                             }
+                            if(flag ==0){
+                                Toast.makeText(AddEditBookActivity.this, "Book Not Found, Add Manually!", Toast.LENGTH_SHORT).show();
+                            }
                         } catch (JSONException e) {
+                            Toast.makeText(AddEditBookActivity.this, "Book Not Found, Add Manually!", Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                             Log.e("TAG" , e.toString());
                         }
