@@ -57,6 +57,7 @@ import java.util.Map;
 public class AddEditBookActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView scan;
+    private TextView back;
     private EditText isbn;
     private EditText author;
     private EditText title;
@@ -82,6 +83,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_add_edit_book);
 
         scan = findViewById(R.id.scanBookButton);
+        back = findViewById(R.id.backAddEditBookButton);
         isbn = findViewById(R.id.editISBN);
         author = findViewById(R.id.editName);
         title = findViewById(R.id.editTitle);
@@ -94,6 +96,14 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         scan.setOnClickListener(this);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent toMyBooks = new Intent(AddEditBookActivity.this, MyBooks.class);
+                startActivity(toMyBooks);
+            }
+        });
 
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
