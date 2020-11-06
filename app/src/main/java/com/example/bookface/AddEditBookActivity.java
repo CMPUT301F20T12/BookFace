@@ -233,23 +233,6 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                             Intent toMyBooks = new Intent(AddEditBookActivity.this, MyBooks.class);
                                             startActivity(toMyBooks);
 
-
-                                            //                        FirebaseUser userInstance = mFirebaseAuth.getInstance().getCurrentUser();
-                                            //
-                                            //                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                            //                                .setDisplayName(newUser.getUsername())
-                                            //                                .build();
-                                            //
-                                            //                        userInstance.updateProfile(profileUpdates)
-                                            //                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            //                                    @Override
-                                            //                                    public void onComplete(@NonNull Task<Void> task) {
-                                            //                                        if (task.isSuccessful()) {
-                                            //                                            Toast.makeText(AddEditBookActivity.this, "Book Added", Toast.LENGTH_SHORT).show();
-                                            //                                        }
-                                            //                                    }
-                                            //                                });
-
                                         }
                                     })
                                             .addOnFailureListener(new OnFailureListener() {

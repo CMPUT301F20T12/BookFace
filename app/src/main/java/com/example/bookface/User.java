@@ -6,12 +6,13 @@ public class User {
     private String username;
     private String email;
     private String contactNo;
-    private ArrayList<String> myBookList;
+    private ArrayList<String> booksOwned;
 
     public User(String username, String email, String contactNo) {
         this.username = username;
         this.email = email;
         this.contactNo = contactNo;
+        this.booksOwned = new ArrayList<String>();
     }
 
     public String getUsername() {
@@ -38,11 +39,11 @@ public class User {
         this.contactNo = contactNo;
     }
 
-    public ArrayList<String> getMyBookList() {
-        return myBookList;
+    public ArrayList<String> getBooksOwned() {
+        return booksOwned;
     }
 
-    public void setMyBookList(ArrayList<String> myBookList) {
-        this.myBookList = myBookList;
+    public void setBooksOwned(ArrayList<String> booksOwned) {
+        this.booksOwned = booksOwned;
     }
 }

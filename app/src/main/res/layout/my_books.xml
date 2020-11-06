@@ -68,14 +68,13 @@
     </LinearLayout>
 
 
-
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="600dp"
         android:id="@+id/recycle_view"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true">
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_width="match_parent"
+        android:layout_height="542dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="58dp"
+        android:orientation="vertical"></androidx.recyclerview.widget.RecyclerView>
 
     <FrameLayout
         android:layout_width="match_parent"
