@@ -21,12 +21,22 @@ public class SearchActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_search);
 
-    db = FirebaseFirestore.getInstance();
-
+    // Initialize the book list
     bookListAdapter = new BookList(this, books);
     bookListView = (ListView) findViewById(R.id.bookList);
     bookListView.setAdapter(bookListAdapter);
+  }
 
+  /**
+   * The method to do the searching
+   * @param searchTerm - the term entered to search bar
+   * @return true if results were found, false if not
+   */
+  public boolean searchForBook(String searchTerm) {
+    // TODO: implement search logic here
+    db = FirebaseFirestore.getInstance();
     final CollectionReference collectionReference = db.collection("books");
+
+    return true;
   }
 }
