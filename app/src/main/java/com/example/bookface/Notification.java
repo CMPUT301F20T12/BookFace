@@ -2,8 +2,6 @@ package com.example.bookface;
 
 import android.location.Location;
 
-import java.util.List;
-
 /**
  * This is a class that contains the attributes and methods for sending a notification
  */
@@ -12,6 +10,13 @@ public class Notification {
     private User borrower;
     private String requestStatus;
     private Location location;  // Not sure
+
+    public Notification(Book bookRequested, User borrower, String requestStatus, Location location) {
+        this.requestedBook = bookRequested;
+        this.borrower = borrower;
+        this.requestStatus = requestStatus;
+        this.location = location;
+    };
 
     public Book getRequestedBook() {
         return requestedBook;
