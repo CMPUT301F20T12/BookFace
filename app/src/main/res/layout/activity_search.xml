@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".SearchActivity">
 
+    <!-- TODO: Add the input text drawable here when it's merged to main -->
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
@@ -22,4 +23,6 @@
         android:id="@+id/bookList">
 
     </ListView>
+    <!-- TODO: Add bottom nav here -->
+
 </androidx.constraintlayout.widget.ConstraintLayout>
