@@ -41,19 +41,33 @@ public class User {
         this.contactNo = contactNo;
     }
 
-    public ArrayList<String> getBooksOwned() {
-        return booksOwned;
-    }
+    // to be implemented later
+//    public ArrayList<String> getBooksOwned() {
+//        return booksOwned;
+//    }
+//
+//    public void setBooksOwned(ArrayList<String> booksOwned) {
+//        this.booksOwned = booksOwned;
+//    }
+//
+//    public ArrayList<String> getBooksBorrowed() {
+//        return booksBorrowed;
+//    }
+//
+//    public void setBooksBorrowed(ArrayList<String> booksBorrowed) {
+//        this.booksBorrowed = booksBorrowed;
+//    }
 
-    public void setBooksOwned(ArrayList<String> booksOwned) {
-        this.booksOwned = booksOwned;
-    }
-
-    public ArrayList<String> getBooksBorrowed() {
-        return booksBorrowed;
-    }
-
-    public void setBooksBorrowed(ArrayList<String> booksBorrowed) {
-        this.booksBorrowed = booksBorrowed;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        User user = (User) o;
+        if (username.equals(user.username) && email.equals(user.email) && contactNo.equals(user.contactNo)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

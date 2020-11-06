@@ -23,20 +23,6 @@ public class Book {
         this.imageUrl = imageUrl;
     }
 
-    public String getOwnerUsername() {
-        return ownerUsername;
-    }
-
-    public void setOwnerUsername(String ownerUsername) {
-        this.ownerUsername = ownerUsername;
-    }
-
-    public String getBorrowerUsername() {
-        return borrowerUsername;
-    }
-
-    public void setBorrowerUsername(String borrowerUsername) { this.borrowerUsername = borrowerUsername; }
-
     public String getTitle() {
         return title;
     }
@@ -76,6 +62,22 @@ public class Book {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getOwnerUsername() {
+        return ownerUsername;
+    }
+
+    public void setOwnerUsername(String ownerUsername) {
+        this.ownerUsername = ownerUsername;
+    }
+
+    public String getBorrowerUsername() {
+        return borrowerUsername;
+    }
+
+    public void setBorrowerUsername(String borrowerUsername) {
+        this.borrowerUsername = borrowerUsername;
+    }
   
     public String getImageUrl() {
         return imageUrl;
@@ -83,6 +85,23 @@ public class Book {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    // for testing
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        Book book = (Book) o;
+        if (title.equals(book.title) && author.equals(book.author) && ISBN.equals(book.ISBN)
+                && description.equals(book.description) && status.equals(book.status)
+                && borrowerUsername.equals(book.borrowerUsername)) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 }
 
