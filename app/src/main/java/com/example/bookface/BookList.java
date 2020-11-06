@@ -25,12 +25,24 @@ public class BookList extends ArrayAdapter<Book> {
     private ArrayList<Book> books;
     private Context context;
 
+    /**
+     * Constructor for the book list class
+     * @param context
+     * @param books
+     */
     public BookList(Context context, ArrayList<Book> books) {
         super(context, 0, books);
         this.books = books;
         this.context = context;
     }
 
+    /**
+     * To create the custom list adapter
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @Nullable
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
