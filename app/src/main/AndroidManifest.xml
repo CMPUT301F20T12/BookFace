@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".BookDescription" />
         <activity android:name=".AddEditBookActivity"/>
-        <activity android:name=".LoginConfirmationActivity" />
+        <activity android:name=".UserProfileActivity" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".CaptureAct"/>
         <activity android:name=".MyBooks"/>

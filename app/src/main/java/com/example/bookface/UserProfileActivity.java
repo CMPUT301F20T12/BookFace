@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -16,21 +15,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import org.w3c.dom.Text;
-
-import java.net.SocketTimeoutException;
-import java.sql.SQLOutput;
 import java.util.Map;
 
-public class LoginConfirmationActivity extends AppCompatActivity {
+public class UserProfileActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginMessage" ;
     TextView logoutButton;
@@ -99,7 +90,7 @@ public class LoginConfirmationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
 
-                Intent i = new Intent(LoginConfirmationActivity.this, MainActivity.class);
+                Intent i = new Intent(UserProfileActivity.this, MainActivity.class);
                 startActivity(i);
             }
         });
@@ -114,21 +105,21 @@ public class LoginConfirmationActivity extends AppCompatActivity {
 
             switch (menuItem.getItemId()){
                 case R.id.my_books:
-                    Intent toMyBooks = new Intent(LoginConfirmationActivity.this, MyBooks.class);
+                    Intent toMyBooks = new Intent(UserProfileActivity.this, MyBooks.class);
                     startActivity(toMyBooks);
                     break;
-                case R.id.requests:
-                    Intent toRequests = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
-                    startActivity(toRequests);
-                    break;
-                case R.id.search:
-                    Intent toSearch = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
-                    startActivity(toSearch);
-                    break;
-                case R.id.notification:
-                    Intent toNotification = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
-                    startActivity(toNotification);
-                    break;
+//                case R.id.requests:
+//                    Intent toRequests = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
+//                    startActivity(toRequests);
+//                    break;
+//                case R.id.search:
+//                    Intent toSearch = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
+//                    startActivity(toSearch);
+//                    break;
+//                case R.id.notification:
+//                    Intent toNotification = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
+//                    startActivity(toNotification);
+//                    break;
             }
             return false;
         }

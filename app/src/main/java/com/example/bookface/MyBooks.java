@@ -9,7 +9,6 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -97,21 +96,21 @@ public class MyBooks extends AppCompatActivity {
 
             switch (menuItem.getItemId()){
                 case R.id.profile:
-                    Intent toMyProfile = new Intent(MyBooks.this, LoginConfirmationActivity.class);
+                    Intent toMyProfile = new Intent(MyBooks.this, UserProfileActivity.class);
                     startActivity(toMyProfile);
                     break;
-                case R.id.requests:
-                    Intent toRequests = new Intent(MyBooks.this, SignupActivity.class);
-                    startActivity(toRequests);
-                    break;
-                case R.id.search:
-                    Intent toSearch = new Intent(MyBooks.this, SignupActivity.class);
-                    startActivity(toSearch);
-                    break;
-                case R.id.notification:
-                    Intent toNotification = new Intent(MyBooks.this, SignupActivity.class);
-                    startActivity(toNotification);
-                    break;
+//                case R.id.requests:
+//                    Intent toRequests = new Intent(MyBooks.this, SignupActivity.class);
+//                    startActivity(toRequests);
+//                    break;
+//                case R.id.search:
+//                    Intent toSearch = new Intent(MyBooks.this, SignupActivity.class);
+//                    startActivity(toSearch);
+//                    break;
+//                case R.id.notification:
+//                    Intent toNotification = new Intent(MyBooks.this, SignupActivity.class);
+//                    startActivity(toNotification);
+//                    break;
             }
             return false;
         }

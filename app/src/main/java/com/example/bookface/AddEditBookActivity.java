@@ -207,6 +207,9 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                                                             @Override
                                                                             public void onSuccess(Void aVoid) {
                                                                                 Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                                                                Toast.makeText(AddEditBookActivity.this, "Book Added", Toast.LENGTH_SHORT).show();
+                                                                                Intent toMyBooks = new Intent(AddEditBookActivity.this, MyBooks.class);
+                                                                                startActivity(toMyBooks);
                                                                             }
                                                                         })
                                                                         .addOnFailureListener(new OnFailureListener() {
@@ -229,9 +232,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
 
 
 
-                                            Toast.makeText(AddEditBookActivity.this, "Book Added", Toast.LENGTH_SHORT).show();
-                                            Intent toMyBooks = new Intent(AddEditBookActivity.this, MyBooks.class);
-                                            startActivity(toMyBooks);
+
 
                                         }
                                     })

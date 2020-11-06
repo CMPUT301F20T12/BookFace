@@ -7,12 +7,14 @@ public class User {
     private String email;
     private String contactNo;
     private ArrayList<String> booksOwned;
+    private ArrayList<String> booksBorrowed;
 
     public User(String username, String email, String contactNo) {
         this.username = username;
         this.email = email;
         this.contactNo = contactNo;
         this.booksOwned = new ArrayList<String>();
+        this.booksBorrowed = new ArrayList<String>();
     }
 
     public String getUsername() {
@@ -45,5 +47,13 @@ public class User {
 
     public void setBooksOwned(ArrayList<String> booksOwned) {
         this.booksOwned = booksOwned;
+    }
+
+    public ArrayList<String> getBooksBorrowed() {
+        return booksBorrowed;
+    }
+
+    public void setBooksBorrowed(ArrayList<String> booksBorrowed) {
+        this.booksBorrowed = booksBorrowed;
     }
 }
