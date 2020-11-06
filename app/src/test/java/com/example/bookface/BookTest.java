@@ -3,6 +3,9 @@ package com.example.bookface;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This is a class to test the getters and setter of the object class Book
+ */
 public class BookTest {
 
     private Book mockBook() {

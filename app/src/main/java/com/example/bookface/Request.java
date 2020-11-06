@@ -1,5 +1,8 @@
 package com.example.bookface;
 
+/**
+ * This is a class that contains the attributes for a Request
+ */
 public class Request {
     private Book bookRequested;
     private User borrower;

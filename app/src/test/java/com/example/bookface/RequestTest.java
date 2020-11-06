@@ -2,11 +2,12 @@ package com.example.bookface;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * This is a class to test the methods of the object class Request
+ */
 public class RequestTest {
 
     private Request mockRequest() {

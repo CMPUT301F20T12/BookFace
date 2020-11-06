@@ -1,5 +1,8 @@
 package com.example.bookface;
 
+/**
+ * This is a class that contains the attributes for a Book
+ */
 public class Book {
     private String title;
     private String author;

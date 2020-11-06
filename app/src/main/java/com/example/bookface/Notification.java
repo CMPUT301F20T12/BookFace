@@ -2,8 +2,6 @@ package com.example.bookface;
 
 import android.location.Location;
 
-import java.util.List;
-
 /**
  * This is a class that contains the attributes and methods for sending a notification
  */

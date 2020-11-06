@@ -5,8 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import android.location.Location;
 
-import java.util.ArrayList;
 
+/**
+ * This is a class to test the getters and setters of the object class Notification
+ */
 public class NotificationTest {
 
     private Notification mockNotification() {
@@ -20,18 +22,6 @@ public class NotificationTest {
 
     private User mockBorrower() {
         return new User("username", "username@ualberta.ca", "000-000-0000");
-    }
-
-    private ArrayList<String> mockBookOwned() {
-        ArrayList<String> bookOwned = new ArrayList<String>();
-        bookOwned.add("ownedBook");
-        return bookOwned;
-    }
-
-    private ArrayList<String> mockBookBorrowed() {
-        ArrayList<String> bookBorrowed = new ArrayList<String>();
-        bookBorrowed.add("borrowedBook");
-        return bookBorrowed;
     }
 
     private Location mockLocation() {
