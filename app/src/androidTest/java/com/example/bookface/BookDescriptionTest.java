@@ -64,11 +64,11 @@ public class BookDescriptionTest {
 
     }
 
-    @Test
-    public void checkImage() {
-        View view = solo.getView("imageView");
-        solo.assertCurrentActivity("Wrong Activity", BookDescription.class);
-        solo.clickOnView(view);
-        solo.assertCurrentActivity("Wrong Activity", AddImage.class);
-    }
+//    @Test
+//    public void checkImage() {
+//        View view = solo.getView("imageView");
+//        solo.assertCurrentActivity("Wrong Activity", BookDescription.class);
+//        solo.clickOnView(view);
+//        solo.assertCurrentActivity("Wrong Activity", AddImage.class);
+//    }
 }
