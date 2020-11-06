@@ -9,10 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginConfirmationActivity"></activity>
+        <activity android:name=".BookDescription" />
+        <activity android:name=".AddEditBookActivity"/>
+        <activity android:name=".LoginConfirmationActivity" />
         <activity android:name=".SignupActivity" />
-<!--        <activity android:name=".UserProfile"></activity>-->
-        <activity android:name=".MyBooks"></activity>
+        <activity android:name=".CaptureAct"/>
+        <activity android:name=".MyBooks"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,4 +24,6 @@
         </activity>
     </application>
 
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
 </manifest>

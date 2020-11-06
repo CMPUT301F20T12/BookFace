@@ -90,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(MainActivity.this, "Login Unsuccessful", Toast.LENGTH_SHORT).show();
                             }
                             else{
-                                Intent toLoginConfirmation = new Intent(MainActivity.this, LoginConfirmationActivity.class);
-                                startActivity(toLoginConfirmation);
+                                Intent addEdit = new Intent(MainActivity.this, AddEditBookActivity.class);
+                                startActivity(addEdit);
                             }
                         }
                     });

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Book view on EDIT/ADD book -->
+<LinearLayout xmlns:aapt="http://schemas.android.com/aapt"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/add_edit_book"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:layout_weight="26"
+    android:layout_margin="10dp">
+
+    <TextView
+        android:id="@+id/backAddEditBookButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:text="Back"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:id="@+id/addEditImageBook"
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="20dp"
+        android:layout_weight="6"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/addEditImageView"
+            android:layout_width="223dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+        <LinearLayout
+            android:id="@+id/imageButtons"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="2"
+            android:orientation="vertical">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/cameraImage"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_marginTop="55dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                app:backgroundTint="#5DB075"
+                app:rippleColor="#FFFFFF"
+                app:srcCompat="@android:drawable/ic_menu_camera" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/galleryImage"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                app:backgroundTint="#5DB075"
+                app:rippleColor="#FFFFFF"
+                app:srcCompat="@android:drawable/ic_menu_gallery" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/scanBookButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="5dp"
+        android:layout_weight="0"
+        android:clickable="true"
+        android:paddingLeft="225dp"
+        android:text="Scan To Add"
+        android:textSize="18sp"/>
+
+    <EditText
+        android:id="@+id/editName"
+        android:layout_width="match_parent"
+        android:layout_height="22dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="5dp"
+        android:layout_weight="5"
+        android:padding="5dp"
+        android:ems="10"
+        android:hint="Author Name"
+        android:inputType="textPersonName"
+        android:background="@drawable/input_text" />
+
+    <EditText
+        android:id="@+id/editTitle"
+        android:layout_width="match_parent"
+        android:layout_height="22dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_weight="5"
+        android:layout_marginBottom="5dp"
+        android:padding="5dp"
+        android:ems="10"
+        android:hint="Book Title"
+        android:inputType="textPersonName"
+        android:background="@drawable/input_text"/>
+
+    <EditText
+        android:id="@+id/editISBN"
+        android:layout_width="match_parent"
+        android:layout_height="22dp"
+        android:layout_weight="5"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="5dp"
+        android:padding="5dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="ISBN"
+        android:background="@drawable/input_text"/>
+
+    <EditText
+        android:id="@+id/editDescription"
+        android:layout_width="match_parent"
+        android:layout_height="22dp"
+        android:layout_weight="5"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:padding="5dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        android:hint="Compose your description here..."
+        android:background="@drawable/input_text"/>
+
+    <Button
+        android:id="@+id/addEditBookConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="25dp"
+        android:layout_weight="1"
+        android:background="@drawable/button_prim"
+        android:clickable="true"
+        android:text="Confirm" />
+
+</LinearLayout>

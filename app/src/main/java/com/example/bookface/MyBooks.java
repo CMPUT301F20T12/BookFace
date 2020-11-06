@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,7 @@ public class MyBooks extends AppCompatActivity {
     RecyclerView recycleView;
     ArrayList<String> myBookList;
     RecyclerViewAdapter adapter;
+    Button addBookButton;
 
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
@@ -75,7 +77,18 @@ public class MyBooks extends AppCompatActivity {
                 }
             });
             }
+
+        addBookButton = findViewById(R.id.add_book);
+        addBookButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent toAddEditBooks = new Intent(MyBooks.this, AddEditBookActivity.class);
+                startActivity(toAddEditBooks);
+            }
+        });
+
         }
+
 
     private  BottomNavigationView.OnNavigationItemSelectedListener navBarMethod = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
