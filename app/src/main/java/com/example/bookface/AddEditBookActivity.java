@@ -4,6 +4,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -45,6 +47,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 
 public class AddEditBookActivity extends AppCompatActivity implements View.OnClickListener {
@@ -232,8 +235,14 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
         }
 
         else if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
-            Uri selectedImage = data.getData();
-            imageView.setImageURI(selectedImage);
+            Uri imageUri = data.getData();
+            Bitmap image = null;
+            try {
+                image = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            imageView.setImageBitmap(image);
         }
     }
 
