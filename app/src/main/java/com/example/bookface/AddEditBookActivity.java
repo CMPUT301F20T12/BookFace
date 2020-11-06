@@ -1,9 +1,12 @@
 package com.example.bookface;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -35,8 +38,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import java.io.ByteArrayOutputStream;
 
 
 public class AddEditBookActivity extends AppCompatActivity implements View.OnClickListener {
@@ -51,8 +59,11 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
     private FloatingActionButton galleryButton;
     private ImageView imageView;
 
+    static final int REQUEST_IMAGE_CAPTURE = 101;
+    static final int RESULT_LOAD_IMAGE = 1;
+
     private Book book;
-    String localIsbn, localAuthors, localDescription, localTitle;
+    String localIsbn, localAuthors, localDescription, localTitle, localImage;
 
     FirebaseAuth mFirebaseAuth;
 
@@ -80,14 +91,22 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // camera button functionality, use imageView for display.
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                try {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                } catch (ActivityNotFoundException e) {
+                    // display error state to the user
+                    Toast.makeText(getApplicationContext(), "Camera is unavailable", Toast.LENGTH_LONG);
+                }
             }
         });
 
         galleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // gallery button functionality, use imageView for display.
+                Intent i = new Intent(
+                        Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i, RESULT_LOAD_IMAGE);
             }
         });
 
@@ -99,49 +118,87 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
 
             private void writeDB() {
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-                System.out.println(isbn.getText().toString());
                 if(isbn.getText().toString().length()==0)
                     isbn.setError("FIELD CANNOT BE EMPTY");
                 else if(author.getText().toString().length()==0)
                     author.setError("FIELD CANNOT BE EMPTY");
                 else if(title.getText().toString().length()==0)
                     title.setError("FIELD CANNOT BE EMPTY");
+                else if(imageView.getDrawable() == null)
+                    Toast.makeText(AddEditBookActivity.this, "Image not attached!", Toast.LENGTH_SHORT).show();
                 else{
                     localIsbn  =isbn.getText().toString();
                     localAuthors = author.getText().toString();
                     localTitle = title.getText().toString();
                     localDescription = description.getText().toString();
-                    book = new Book(localTitle, localAuthors, localIsbn, localDescription, "Available", "Null", "Null");
-                    db.collection("books")
-                            .document(book.getISBN()).set(book).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+
+                    StorageReference storageRef = storage.getReferenceFromUrl("gs://bookface-cmput301f20t12.appspot.com");
+                    StorageReference mountainsRef = storageRef.child(localIsbn);
+                    StorageReference mountainImagesRef = storageRef.child("images/"+localIsbn);
+
+                    mountainsRef.getName().equals(mountainImagesRef.getName());    // true
+                    mountainsRef.getPath().equals(mountainImagesRef.getPath());    // false
+
+                    imageView.setDrawingCacheEnabled(true);
+                    imageView.buildDrawingCache();
+                    Bitmap bitmap = imageView.getDrawingCache();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] data1 = baos.toByteArray();
+
+                    UploadTask uploadTask = mountainsRef.putBytes(data1);
+                    uploadTask.addOnFailureListener(new OnFailureListener() {
                         @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(AddEditBookActivity.this, "Book Added", Toast.LENGTH_SHORT).show();
-
-                            //                        FirebaseUser userInstance = mFirebaseAuth.getInstance().getCurrentUser();
-                            //
-                            //                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            //                                .setDisplayName(newUser.getUsername())
-                            //                                .build();
-                            //
-                            //                        userInstance.updateProfile(profileUpdates)
-                            //                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            //                                    @Override
-                            //                                    public void onComplete(@NonNull Task<Void> task) {
-                            //                                        if (task.isSuccessful()) {
-                            //                                            Toast.makeText(AddEditBookActivity.this, "Book Added", Toast.LENGTH_SHORT).show();
-                            //                                        }
-                            //                                    }
-                            //                                });
-
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle unsuccessful uploads
                         }
-                    })
-                            .addOnFailureListener(new OnFailureListener() {
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                            taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
+                            {
                                 @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(AddEditBookActivity.this, "Error Adding Book", Toast.LENGTH_SHORT).show();
+                                public void onSuccess(Uri downloadUrl)
+                                {
+                                    localImage = downloadUrl.toString();
+                                    book = new Book(localTitle, localAuthors, localIsbn, localDescription, "Available", "Null", "Null", localImage);
+
+                                    db.collection("books")
+                                            .document(book.getISBN()).set(book).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Toast.makeText(AddEditBookActivity.this, "Book Added", Toast.LENGTH_SHORT).show();
+
+                                            //                        FirebaseUser userInstance = mFirebaseAuth.getInstance().getCurrentUser();
+                                            //
+                                            //                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                            //                                .setDisplayName(newUser.getUsername())
+                                            //                                .build();
+                                            //
+                                            //                        userInstance.updateProfile(profileUpdates)
+                                            //                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            //                                    @Override
+                                            //                                    public void onComplete(@NonNull Task<Void> task) {
+                                            //                                        if (task.isSuccessful()) {
+                                            //                                            Toast.makeText(AddEditBookActivity.this, "Book Added", Toast.LENGTH_SHORT).show();
+                                            //                                        }
+                                            //                                    }
+                                            //                                });
+
+                                        }
+                                    })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(AddEditBookActivity.this, "Error Adding Book", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
                                 }
                             });
+                        }});
                 }
             }
         });
@@ -156,12 +213,27 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             String code = result.getContents();
             if (code != null) {
                 this.extractContents(code);
             }
+        }
+
+        if(isbn.getText().toString().length() == 0)
+            Toast.makeText(AddEditBookActivity.this, "Scan Book First!", Toast.LENGTH_SHORT).show();
+
+        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            imageView.setImageBitmap(imageBitmap);
+        }
+
+        else if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            imageView.setImageURI(selectedImage);
         }
     }
 

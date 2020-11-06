@@ -8,10 +8,10 @@ public class Book {
     private String status;
     private String ownerUsername;
     private String borrowerUsername;
-    // private (Image?) photo;
+    private String imageUrl;
 
     public Book(String title, String author, String ISBN, String description,
-                String status, String ownerUsername, String borrowerUsername) { //mising photo
+                String status, String ownerUsername, String borrowerUsername, String imageUrl) { //mising photo
         this.title = title;
         this.author = author;
         this.ISBN = ISBN;
@@ -19,6 +19,7 @@ public class Book {
         this.status = status;
         this.ownerUsername = ownerUsername;
         this.borrowerUsername = borrowerUsername;
+        this.imageUrl = imageUrl;
     }
 
     public String getOwnerUsername() {
@@ -33,9 +34,7 @@ public class Book {
         return borrowerUsername;
     }
 
-    public void setBorrowerUsername(String borrowerUsername) {
-        this.borrowerUsername = borrowerUsername;
-    }
+    public void setBorrowerUsername(String borrowerUsername) { this.borrowerUsername = borrowerUsername; }
 
     public String getTitle() {
         return title;
@@ -77,4 +76,7 @@ public class Book {
         this.status = status;
     }
 
+    public String getImageUrl() { return imageUrl; }
+
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 }
