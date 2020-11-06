@@ -5,21 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
     <LinearLayout
         android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="110dp"
         android:background="#319F36"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/edit_profile"
             android:layout_width="233dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:paddingTop="30dp"
             android:text="BookFace"
             android:textAlignment="center"
-            android:paddingTop="30dp"
             android:textColor="#FFFFFF"
             android:textSize="30sp" />
     </LinearLayout>
