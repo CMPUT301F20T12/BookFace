@@ -7,7 +7,7 @@ public class BookTest {
 
     private Book mockBook() {
         return new Book("The Book Title", "Author Name", "1000010000100", "This is a mock book.",
-                "available", "mlee1","");
+                "available", "mlee1","", "");
     }
 
     @Test
