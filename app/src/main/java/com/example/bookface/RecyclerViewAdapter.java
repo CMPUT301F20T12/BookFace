@@ -51,18 +51,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         String docPath = "books/".concat(bookISBN);
         DocumentReference docRef = db.document(docPath);
-        final ViewHolder newHolder = holder;
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    System.out.println("GETTING BOOK DATA");
+//                    System.out.println("GETTING BOOK DATA");
                     System.out.println(document);
                     if (document.exists()) {
                         Map bookData = document.getData();
-                        System.out.println("BOOK DATA ----> "+bookData);
+//                        System.out.println("BOOK DATA ----> "+bookData);
                         if(bookData != null){
                             String title = bookData.get("title").toString();
                             String author = bookData.get("author").toString();
