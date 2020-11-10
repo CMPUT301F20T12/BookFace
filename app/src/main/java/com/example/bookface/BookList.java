@@ -25,17 +25,17 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-public class BookList extends ArrayAdapter<String> {
+public class BookList extends ArrayAdapter<Book> {
 
-    private ArrayList<String> myBooks;
+    private ArrayList<Book> books;
     private Context context;
 
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
 
-    public BookList(Context context, ArrayList<String> myBooks){
-        super(context,0, myBooks);
-        this.myBooks = myBooks;
+    public BookList(Context context, ArrayList<Book> books){
+        super(context,0, books);
+        this.books = books;
         this.context = context;
     }
 
