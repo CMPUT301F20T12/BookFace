@@ -1,5 +1,8 @@
 package com.example.bookface;
 
+/**
+ * This is a class that contains the attributes for a Book
+ */
 public class Book {
     private String title;
     private String author;
@@ -8,11 +11,11 @@ public class Book {
     private String status;
     private String ownerUsername;
     private String borrowerUsername;
-    // private (Image?) photo;
-    private boolean isMine;
+    private String imageUrl;
 
     public Book(String title, String author, String ISBN, String description,
-                String status, String ownerUsername, String borrowerUsername, boolean isMine) { //mising photo
+                String status, String ownerUsername, String borrowerUsername, String imageUrl) {
+
         this.title = title;
         this.author = author;
         this.ISBN = ISBN;
@@ -20,6 +23,7 @@ public class Book {
         this.status = status;
         this.ownerUsername = ownerUsername;
         this.borrowerUsername = borrowerUsername;
+        this.imageUrl = imageUrl;
     }
 
     public String getTitle() {
@@ -62,4 +66,45 @@ public class Book {
         this.status = status;
     }
 
+    public String getOwnerUsername() {
+        return ownerUsername;
+    }
+
+    public void setOwnerUsername(String ownerUsername) {
+        this.ownerUsername = ownerUsername;
+    }
+
+    public String getBorrowerUsername() {
+        return borrowerUsername;
+    }
+
+    public void setBorrowerUsername(String borrowerUsername) {
+        this.borrowerUsername = borrowerUsername;
+    }
+  
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    // for testing
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        Book book = (Book) o;
+        if (title.equals(book.title) && author.equals(book.author) && ISBN.equals(book.ISBN)
+                && description.equals(book.description) && status.equals(book.status)
+                && borrowerUsername.equals(book.borrowerUsername)) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
 }
+
