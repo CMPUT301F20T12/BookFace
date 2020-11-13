@@ -1,12 +1,12 @@
 package com.example.bookface;
 
-
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,24 +25,23 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-public class BookList extends ArrayAdapter<String> {
+public class BookList extends ArrayAdapter<Book> {
 
-    private ArrayList<String> myBooks;
+    private ArrayList<Book> books;
     private Context context;
 
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
 
-    public BookList(Context context, ArrayList<String> myBooks){
-        super(context,0, myBooks);
-        this.myBooks = myBooks;
+    public BookList(Context context, ArrayList<Book> books){
+        super(context,0, books);
+        this.books = books;
         this.context = context;
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-//        return super.getView(position, convertView, parent);
         View view = convertView;
 
 
@@ -57,7 +56,6 @@ public class BookList extends ArrayAdapter<String> {
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             String docPath = "users/"+userName;
-//            System.out.println(docPath);
             DocumentReference docRef = db.document(docPath);
 
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -97,67 +95,5 @@ public class BookList extends ArrayAdapter<String> {
         }
 
         return view;
-
     }
 }
-
-//package com.example.bookface;
-//
-//import java.util.ArrayList;
-//import java.util.Collections;
-//import java.util.List;
-//
-///**
-// * This is a class that keeps track of a list of book objects
-// */
-//public class BookList {
-//    private List<Book> books = new ArrayList<>();
-//
-//    /**
-//     * This adds a book to the list if the book does not exist
-//     * @param book
-//     * This is a candidate book to add
-//     */
-//    public void addBook(Book book) {
-//        if (books.contains(book)) {
-//            throw new IllegalArgumentException();
-//        }
-//        books.add(book);
-//    }
-//
-//
-//    /**
-//     * This method deletes the book given to it
-//     * @param book
-//     * This is a candidate book to delete
-//     * @return
-//     * true if the book given was actually in the list and was deleted successfully
-//     * false otherwise
-//     */
-//    public boolean deleteBook(Book book) {
-//        if (books.contains(book)) {
-//            books.remove(book);
-//            return true;
-//        }
-//        else {
-//            return false;
-//        }
-//    }
-//
-//
-//    /**
-//     * This method searches the book based on the criterion keyword
-//     * @param keyword
-//     * This is the keyword on the basis of which search occurs
-//     * @return
-//     * The list of the books that matches the search
-//     */
-//    public List<Book> searchBook(String keyword) {
-//        List<Book> list = books;
-//        // TODO
-//        // Logic for this method
-//
-//        return list;
-//    }
-//
-//}
