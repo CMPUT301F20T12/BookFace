@@ -48,7 +48,7 @@
 <!--            android:weightSum="2">-->
 
         <SearchView
-            android:id="@+id/SearchView"
+            android:id="@+id/search_bar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:iconifiedByDefault="false"

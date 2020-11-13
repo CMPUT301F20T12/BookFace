@@ -112,10 +112,10 @@ public class UserProfileActivity extends AppCompatActivity {
 //                    Intent toRequests = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
 //                    startActivity(toRequests);
 //                    break;
-//                case R.id.search:
-//                    Intent toSearch = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
-//                    startActivity(toSearch);
-//                    break;
+                case R.id.search:
+                    Intent toSearch = new Intent(UserProfileActivity.this, SearchActivity.class);
+                    startActivity(toSearch);
+                    break;
 //                case R.id.notification:
 //                    Intent toNotification = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
 //                    startActivity(toNotification);

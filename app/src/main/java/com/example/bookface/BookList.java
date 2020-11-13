@@ -40,6 +40,11 @@ public class BookList extends ArrayAdapter<Book> {
         this.context = context;
     }
 
+    /**
+     * The method to do the searching
+     * @param searchTerm - the term entered to search bar
+     * @return arraylist - an array list of searched books
+     */
     public ArrayList<Book> searchForBooks(String searchTerm) {
         searchTerm = searchTerm.toLowerCase(Locale.getDefault());
         ArrayList<Book> arraylist = new ArrayList<Book>();
@@ -47,7 +52,12 @@ public class BookList extends ArrayAdapter<Book> {
             arraylist.addAll(books);
         } else {
             for (Book book : books) {
-                if (book.getDescription().toLowerCase(Locale.getDefault()).contains(searchTerm)) {
+                if (book.getTitle().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+                        book.getAuthor().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+                        book.getISBN().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+                        book.getDescription().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+                        book.getOwnerUsername().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+                        book.getBorrowerUsername().toLowerCase(Locale.getDefault()).contains(searchTerm)) { // search through the fields of a book
                     arraylist.add(book);
                 }
             }
