@@ -4,13 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
   ArrayList<Book> books = new ArrayList<>();
   BookList bookListAdapter;
   ListView bookListView;
@@ -25,6 +26,21 @@ public class SearchActivity extends AppCompatActivity {
     bookListAdapter = new BookList(this, books);
     bookListView = (ListView) findViewById(R.id.bookList);
     bookListView.setAdapter(bookListAdapter);
+
+
+  }
+
+  @Override
+  public boolean onQueryTextSubmit(String query) {
+
+    return false;
+  }
+
+  @Override
+  public boolean onQueryTextChange(String newText) {
+    String text = newText;
+    bookListAdapter.searchForBooks(text);
+    return false;
   }
 
   /**

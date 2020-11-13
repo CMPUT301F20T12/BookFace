@@ -55,7 +55,7 @@
                 android:textColor="#FFFFFF">
             </Button>
             <Button
-                android:id="@+id/filter_books"
+                android:id="@+id/button_search"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:background="#319F36"

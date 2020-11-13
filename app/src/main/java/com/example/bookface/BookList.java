@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -38,6 +39,37 @@ public class BookList extends ArrayAdapter<Book> {
         this.books = books;
         this.context = context;
     }
+
+    public ArrayList<Book> searchForBooks(String searchTerm) {
+        searchTerm = searchTerm.toLowerCase(Locale.getDefault());
+        ArrayList<Book> arraylist = new ArrayList<Book>();
+        if (searchTerm.length() == 0) {
+            arraylist.addAll(books);
+        } else {
+            for (Book book : books) {
+                if (book.getDescription().toLowerCase(Locale.getDefault()).contains(searchTerm)) {
+                    arraylist.add(book);
+                }
+            }
+        }
+        notifyDataSetChanged();
+        return arraylist;
+    }
+
+//    public void filter(String charText) {
+//        charText = charText.toLowerCase(Locale.getDefault());
+//        animalNamesList.clear();
+//        if (charText.length() == 0) {
+//            animalNamesList.addAll(arraylist);
+//        } else {
+//            for (AnimalNames wp : arraylist) {
+//                if (wp.getAnimalName().toLowerCase(Locale.getDefault()).contains(charText)) {
+//                    animalNamesList.add(wp);
+//                }
+//            }
+//        }
+//        notifyDataSetChanged();
+//    }
 
     @NonNull
     @Override
