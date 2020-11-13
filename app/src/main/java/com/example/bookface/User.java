@@ -2,6 +2,9 @@ package com.example.bookface;
 
 import java.util.ArrayList;
 
+/**
+ * This is a class that contains the attributes for a user
+ */
 public class User {
     private String username;
     private String email;
@@ -41,6 +44,7 @@ public class User {
         this.contactNo = contactNo;
     }
 
+    // the following getters and setters to be implemented later - not included in tests
     public ArrayList<String> getBooksOwned() {
         return booksOwned;
     }
@@ -55,5 +59,18 @@ public class User {
 
     public void setBooksBorrowed(ArrayList<String> booksBorrowed) {
         this.booksBorrowed = booksBorrowed;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        User user = (User) o;
+        if (username.equals(user.username) && email.equals(user.email) && contactNo.equals(user.contactNo)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

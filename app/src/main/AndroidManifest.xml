@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.bookface">
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.INTERNET">
+    </uses-permission>
 
     <application
         android:allowBackup="true"
@@ -10,12 +16,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".SearchActivity"></activity>
+        <activity android:name=".MyRequestsActivity"></activity>
         <activity android:name=".BookDescription" />
-        <activity android:name=".AddEditBookActivity"/>
+        <activity android:name=".AddEditBookActivity" />
         <activity android:name=".UserProfileActivity" />
         <activity android:name=".SignupActivity" />
-        <activity android:name=".CaptureAct"/>
-        <activity android:name=".MyBooks"/>
+        <activity android:name=".CaptureAct" />
+        <activity android:name=".MyBooks" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,6 +33,4 @@
         </activity>
     </application>
 
-    <uses-feature android:name="android.hardware.camera"
-        android:required="true" />
 </manifest>

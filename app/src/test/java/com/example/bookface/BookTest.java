@@ -3,11 +3,14 @@ package com.example.bookface;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This is a class to test the getters and setter of the object class Book
+ */
 public class BookTest {
 
     private Book mockBook() {
         return new Book("The Book Title", "Author Name", "1000010000100", "This is a mock book.",
-                "available", "mlee1","", "");
+                "available", "mlee1","pzafra", "image.com");
     }
 
     @Test
@@ -73,6 +76,45 @@ public class BookTest {
         Book book = mockBook();
         book.setStatus("accepted");
         assertEquals("accepted", book.getStatus());
+    }
+
+    @Test
+    public void testGetOwnerUsername() {
+        Book book = mockBook();
+        assertEquals("mlee1", book.getOwnerUsername());
+    }
+
+    @Test
+    public void testSetOwnerUsername() {
+        Book book = mockBook();
+        book.setOwnerUsername("poulomi");
+        assertEquals("poulomi", book.getOwnerUsername());
+    }
+
+    @Test
+    public void testGetBorrowerUsername() {
+        Book book = mockBook();
+        assertEquals("pzafra", book.getBorrowerUsername());
+    }
+
+    @Test
+    public void testSetBorrowerUsername() {
+        Book book = mockBook();
+        book.setBorrowerUsername("kanishk");
+        assertEquals("kanishk", book.getBorrowerUsername());
+    }
+
+    @Test
+    public void testGetImageURL() {
+        Book book = mockBook();
+        assertEquals("image.com", book.getImageUrl());
+    }
+
+    @Test
+    public void testSetImageURL() {
+        Book book = mockBook();
+        book.setImageUrl("imageurl.com");
+        assertEquals("imageurl.com", book.getImageUrl());
     }
 
 }

@@ -11,6 +11,13 @@ public class Notification {
     private String requestStatus;
     private Location location;  // Not sure about this
 
+    public Notification(Book bookRequested, User borrower, String requestStatus, Location location) {
+        this.requestedBook = bookRequested;
+        this.borrower = borrower;
+        this.requestStatus = requestStatus;
+        this.location = location;
+    };
+
     public Book getRequestedBook() {
         return requestedBook;
     }
