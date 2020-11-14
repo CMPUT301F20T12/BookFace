@@ -30,11 +30,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:paddingTop="30dp"
                 android:text="My Books"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
-                android:textSize="32dp"
-                android:paddingTop="30dp"/>
+                android:textSize="32dp" />
 
         </LinearLayout>
 
@@ -46,23 +46,23 @@
             android:weightSum="2"
             android:orientation="horizontal"
             android:padding="20dp">
+
             <Button
                 android:id="@+id/add_book"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:background="#319F36"
                 android:text="ADD"
-                android:textColor="#FFFFFF">
-            </Button>
+                android:textColor="#FFFFFF"></Button>
+
             <Button
                 android:id="@+id/filter_books"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="45dp"
                 android:background="#319F36"
-                android:textColor="#FFFFFF"
                 android:text="Filter"
-                android:layout_marginLeft="45dp">
-        </Button>
+                android:textColor="#FFFFFF"></Button>
 
         </LinearLayout>
     </LinearLayout>
@@ -79,8 +79,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/container">
-    </FrameLayout>
+        android:id="@+id/container"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
