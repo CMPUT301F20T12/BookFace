@@ -124,7 +124,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
-    public  interface OnBookClickListener{
+    public interface OnBookClickListener{
         void onBookClick(int position);
     }
 

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -119,8 +120,11 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
 
     @Override
     public void onBookClick(int position) {
-        myBookList.get(position);
+
+        String bookISBN = myBookList.get(position);
+        //Toast.makeText(MyBooks.this, bookISBN, Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(MyBooks.this, BookDescription.class);
+        intent.putExtra("BOOK_ISBN", bookISBN);
         startActivity(intent);
     }
 }
