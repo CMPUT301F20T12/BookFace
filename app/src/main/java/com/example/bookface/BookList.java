@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,10 +29,11 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-public class BookList extends ArrayAdapter<Book> {
+public class BookList extends ArrayAdapter<Book> implements Filterable{
 
     private ArrayList<Book> books;
     private Context context;
+    private Filter filter;
 
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
@@ -40,23 +43,6 @@ public class BookList extends ArrayAdapter<Book> {
         this.books = books;
         this.context = context;
     }
-
-
-
-//    public void filter(String charText) {
-//        charText = charText.toLowerCase(Locale.getDefault());
-//        animalNamesList.clear();
-//        if (charText.length() == 0) {
-//            animalNamesList.addAll(arraylist);
-//        } else {
-//            for (AnimalNames wp : arraylist) {
-//                if (wp.getAnimalName().toLowerCase(Locale.getDefault()).contains(charText)) {
-//                    animalNamesList.add(wp);
-//                }
-//            }
-//        }
-//        notifyDataSetChanged();
-//    }
 
     @NonNull
     @Override
@@ -89,5 +75,53 @@ public class BookList extends ArrayAdapter<Book> {
         }
 
         return view;
+    }
+
+    @Override
+    public Filter getFilter() {
+        if (filter == null) {
+            filter = new BookFilter();
+        }
+
+        return filter;
+    }
+
+    public class BookFilter extends Filter {
+        @Override
+        protected FilterResults performFiltering(CharSequence searchTerm) {
+            FilterResults filterResults = new FilterResults();
+            ArrayList<Book> tempBooks = new ArrayList<>();
+
+            if (searchTerm != null && books != null) {
+                int length = books.size();
+                for (int i = 0; i < length; i++) {
+                    Book book = books.get(i);
+                    if (book.getTitle().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+                        book.getAuthor().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+                        book.getISBN().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+                        book.getDescription().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+                        book.getOwnerUsername().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+                        book.getBorrowerUsername().toLowerCase(Locale.getDefault()).contains(searchTerm)) { // search through the fields of a book
+                        tempBooks.add(book);
+                    }
+                }
+            } else if (searchTerm.length() == 0 || searchTerm == null) {
+                tempBooks.addAll(books);
+            }
+
+            filterResults.values = tempBooks;
+            filterResults.count = tempBooks.size();
+            return filterResults;
+        }
+
+        @Override
+        protected void publishResults(CharSequence searchTerm, FilterResults filterResults) {
+            books = (ArrayList<Book>) filterResults.values;
+            if (filterResults.count > 0) {
+                notifyDataSetChanged();
+            } else {
+                notifyDataSetInvalidated();
+            }
+        }
     }
 }

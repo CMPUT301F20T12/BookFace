@@ -85,49 +85,26 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
           }
         });
 
-    editSearch = (SearchView) findViewById(R.id.search_bar);
+    editSearch = findViewById(R.id.search_bar);
     editSearch.setOnQueryTextListener(this);
   }
 
   @Override
   public boolean onQueryTextSubmit(String query) {
-
+//    // retrieve search results
+//    if (query.length() > 0) {
+//      bookListAdapter.getFilter().filter(query);
+//    }
     return false;
   }
 
   @Override
   public boolean onQueryTextChange(String newText) {
-    String text = newText;
-//    bookListAdapter.searchForBooks(text);
+    if (newText.length() > 0) {
+      bookListAdapter.getFilter().filter(newText);
+    }
     return false;
   }
-
-  /**
-   * The method to do the searching
-   * @param searchTerm - the term entered to search bar
-   * @return arraylist - an array list of searched books
-   */
-  public ArrayList<Book> searchForBooks(String searchTerm) {
-    searchTerm = searchTerm.toLowerCase(Locale.getDefault());
-    ArrayList<Book> arraylist = new ArrayList<Book>();
-    if (searchTerm.length() == 0) {
-      arraylist.addAll(bookDataList);
-    } else {
-      for (Book book : bookDataList) {
-        if (book.getTitle().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
-            book.getAuthor().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
-            book.getISBN().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
-            book.getDescription().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
-            book.getOwnerUsername().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
-            book.getBorrowerUsername().toLowerCase(Locale.getDefault()).contains(searchTerm)) { // search through the fields of a book
-          arraylist.add(book);
-        }
-      }
-    }
-    bookListAdapter.notifyDataSetChanged();
-    return arraylist;
-  }
-
 
 //  private  BottomNavigationView.OnNavigationItemSelectedListener navBarMethod = new BottomNavigationView.OnNavigationItemSelectedListener() {
 //    @Override
