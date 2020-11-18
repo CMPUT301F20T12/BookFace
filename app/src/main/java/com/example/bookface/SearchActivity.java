@@ -1,26 +1,39 @@
 package com.example.bookface;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 // on click method for username to display profile
 
 public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
-  ArrayList<Book> books = new ArrayList<>();
-  BookList bookListAdapter;
+  private static final String TAG = "SEARCH";
   ListView bookListView;
+  ArrayAdapter<Book> bookListAdapter;
+  ArrayList<Book> bookDataList;
   FirebaseFirestore db;
 
   SearchView editSearch;
@@ -31,17 +44,49 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_search);
 
+    FirebaseFirestore db;
+
     navBar = findViewById(R.id.nav_bar);
     // navBar.setOnNavigationItemSelectedListener(navBarMethod);
 
     // Initialize the book list
-    bookListAdapter = new BookList(this, books);
     bookListView = (ListView) findViewById(R.id.bookList);
+    bookDataList = new ArrayList<>();
+
+    bookListAdapter = new BookList(this, bookDataList);
     bookListView.setAdapter(bookListAdapter);
+
+    db = FirebaseFirestore.getInstance();
+    final CollectionReference bookReference = db.collection("books");
+
+    bookReference
+        .get()
+        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+          @Override
+          public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            if (task.isSuccessful()) {
+              for (QueryDocumentSnapshot doc : task.getResult()) {
+                Log.d(TAG, doc.getId() + " => " + doc.getData());
+                String title = (String) doc.getData().get("title");
+                String author = (String) doc.getData().get("author");
+                String ISBN = doc.getId();
+                String description = (String) doc.getData().get("description");
+                String status = (String) doc.getData().get("status");
+                String ownerUsername = (String) doc.getData().get("ownerUsername");
+                String borrowerUsername = (String) doc.getData().get("borrowerUsername");
+                String imageUrl = (String) doc.getData().get("imageUrl");
+                bookDataList.add(new Book(title, author, ISBN, description,
+                    status, ownerUsername, borrowerUsername, imageUrl)); // add from FireStore
+              }
+              bookListAdapter.notifyDataSetChanged();
+            } else {
+              Log.d(TAG, "Error getting documents: ", task.getException());
+            }
+          }
+        });
 
     editSearch = (SearchView) findViewById(R.id.search_bar);
     editSearch.setOnQueryTextListener(this);
-
   }
 
   @Override
@@ -53,8 +98,34 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
   @Override
   public boolean onQueryTextChange(String newText) {
     String text = newText;
-    bookListAdapter.searchForBooks(text);
+//    bookListAdapter.searchForBooks(text);
     return false;
+  }
+
+  /**
+   * The method to do the searching
+   * @param searchTerm - the term entered to search bar
+   * @return arraylist - an array list of searched books
+   */
+  public ArrayList<Book> searchForBooks(String searchTerm) {
+    searchTerm = searchTerm.toLowerCase(Locale.getDefault());
+    ArrayList<Book> arraylist = new ArrayList<Book>();
+    if (searchTerm.length() == 0) {
+      arraylist.addAll(bookDataList);
+    } else {
+      for (Book book : bookDataList) {
+        if (book.getTitle().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+            book.getAuthor().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+            book.getISBN().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+            book.getDescription().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+            book.getOwnerUsername().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+            book.getBorrowerUsername().toLowerCase(Locale.getDefault()).contains(searchTerm)) { // search through the fields of a book
+          arraylist.add(book);
+        }
+      }
+    }
+    bookListAdapter.notifyDataSetChanged();
+    return arraylist;
   }
 
 

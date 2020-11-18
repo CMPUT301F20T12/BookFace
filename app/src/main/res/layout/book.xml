@@ -23,7 +23,7 @@
             android:paddingTop="10dp">
 
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/book_title"
                 android:layout_width="83dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -43,7 +43,7 @@
             android:paddingRight="20dp">
 
             <TextView
-                android:id="@+id/author"
+                android:id="@+id/book_author"
                 android:layout_width="83dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -63,7 +63,7 @@
             android:paddingRight="20dp">
 
             <TextView
-                android:id="@+id/isbn_text"
+                android:id="@+id/book_isbn_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
@@ -73,7 +73,7 @@
                 android:textSize="20sp"
                 android:textStyle="italic"></TextView>
             <TextView
-                android:id="@+id/isbn"
+                android:id="@+id/book_isbn"
                 android:layout_width="83dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -95,7 +95,7 @@
             android:paddingRight="20dp">
 
             <TextView
-                android:id="@+id/status"
+                android:id="@+id/book_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -117,101 +117,3 @@
             android:weightSum="1"/>
     </LinearLayout>
 </RelativeLayout>
-
-    <!--<?xml version="1.0" encoding="utf-8"?>-->
-
-    <!--<RelativeLayout-->
-    <!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--    android:layout_height="wrap_content"-->
-    <!--    android:layout_width="match_parent"-->
-    <!--    android:orientation="horizontal"-->
-    <!--    android:id="@+id/parent_layout">-->
-
-    <!--    <LinearLayout-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:weightSum="3"-->
-    <!--        android:orientation="vertical">-->
-    <!--        <LinearLayout-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:orientation="horizontal"-->
-    <!--            android:layout_weight="1"-->
-    <!--            android:weightSum="2"-->
-    <!--            android:paddingLeft="20dp"-->
-    <!--            android:paddingRight="20dp"-->
-    <!--            >-->
-    <!--            <TextView-->
-    <!--                android:id="@+id/title"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:padding="5dp"-->
-    <!--                android:layout_weight="1"-->
-    <!--                android:text="Title"-->
-    <!--                android:textSize="20sp">-->
-    <!--            </TextView>-->
-
-    <!--            <TextView-->
-    <!--                android:id="@+id/status"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:padding="5dp"-->
-    <!--                android:layout_weight="1"-->
-    <!--                android:textAlignment="textEnd"-->
-    <!--                android:gravity="end"-->
-    <!--                android:text="Status"-->
-    <!--                android:textSize="20sp">-->
-    <!--            </TextView>-->
-    <!--        </LinearLayout>-->
-
-    <!--        <LinearLayout-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:orientation="horizontal"-->
-    <!--            android:layout_weight="1"-->
-    <!--            android:weightSum="2"-->
-    <!--            android:paddingLeft="20dp"-->
-    <!--            android:paddingRight="20dp">-->
-    <!--            <TextView-->
-    <!--                android:id="@+id/Author"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:padding="5dp"-->
-    <!--                android:layout_weight="1"-->
-    <!--                android:text="Author"-->
-    <!--                android:textSize="20sp">-->
-    <!--            </TextView>-->
-
-    <!--            <TextView-->
-    <!--                android:id="@+id/isbn"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:padding="5dp"-->
-    <!--                android:layout_weight="1"-->
-    <!--                android:textAlignment="textEnd"-->
-    <!--                android:gravity="end"-->
-    <!--                android:text="ISBN"-->
-    <!--                android:textSize="20sp">-->
-    <!--            </TextView>-->
-    <!--        </LinearLayout>-->
-
-    <!--        <LinearLayout-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:orientation="horizontal"-->
-    <!--            android:layout_weight="1"-->
-    <!--            android:weightSum="1"-->
-    <!--            android:paddingLeft="20dp"-->
-    <!--            android:paddingRight="20dp">-->
-    <!--            <TextView-->
-    <!--                android:id="@+id/description"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:padding="5dp"-->
-    <!--                android:layout_weight="1"-->
-    <!--                android:text="Description"-->
-    <!--                android:textSize="20sp">-->
-    <!--            </TextView>-->
-    <!--        </LinearLayout>-->
-    <!--    </LinearLayout>-->
-    <!--</RelativeLayout>-->

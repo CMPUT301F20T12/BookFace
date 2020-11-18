@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -40,31 +41,7 @@ public class BookList extends ArrayAdapter<Book> {
         this.context = context;
     }
 
-    /**
-     * The method to do the searching
-     * @param searchTerm - the term entered to search bar
-     * @return arraylist - an array list of searched books
-     */
-    public ArrayList<Book> searchForBooks(String searchTerm) {
-        searchTerm = searchTerm.toLowerCase(Locale.getDefault());
-        ArrayList<Book> arraylist = new ArrayList<Book>();
-        if (searchTerm.length() == 0) {
-            arraylist.addAll(books);
-        } else {
-            for (Book book : books) {
-                if (book.getTitle().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
-                        book.getAuthor().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
-                        book.getISBN().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
-                        book.getDescription().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
-                        book.getOwnerUsername().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
-                        book.getBorrowerUsername().toLowerCase(Locale.getDefault()).contains(searchTerm)) { // search through the fields of a book
-                    arraylist.add(book);
-                }
-            }
-        }
-        notifyDataSetChanged();
-        return arraylist;
-    }
+
 
 //    public void filter(String charText) {
 //        charText = charText.toLowerCase(Locale.getDefault());
@@ -86,10 +63,21 @@ public class BookList extends ArrayAdapter<Book> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
 
-
         if(view == null){
             view = LayoutInflater.from(context).inflate(R.layout.book, parent,false);
         }
+
+        final Book book = books.get(position);
+
+        TextView bookTitle = view.findViewById(R.id.book_title);
+        TextView bookAuthor = view.findViewById(R.id.book_author);
+        TextView ISBN = view.findViewById(R.id.book_isbn);
+        TextView status = view.findViewById(R.id.book_status);
+
+        bookTitle.setText(book.getTitle());
+        bookAuthor.setText(book.getAuthor());
+        ISBN.setText(book.getISBN());
+        status.setText(book.getStatus());
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         userInstance = mFirebaseAuth.getCurrentUser();
@@ -97,43 +85,7 @@ public class BookList extends ArrayAdapter<Book> {
             String userName = userInstance.getDisplayName();
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            String docPath = "users/"+userName;
-            DocumentReference docRef = db.document(docPath);
-
-            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                private static final String TAG = "BookListMessage";
-
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-//                            Map userData = document.getData();
-//                            DocumentSnapshot document = task.getResult();
-//                            if(userData != null){
-                            List<String> booksOwned = (List<String>) document.get("booksOwned");
-                            String bookISBN = booksOwned.get(position);
-//                            TextView isbn = findViewById();
-//                            isbn.setText(bookISBN);
-                            Log.d(TAG, "onComplete: "+bookISBN);
-
-//                                TextView nameView = findViewById(R.id.user_name);
-//                                TextView emailView = findViewById(R.id.user_email);
-//                                TextView contactView = findViewById(R.id.user_contact);
-//
-//                                nameView.setText(username);
-//                                emailView.setText(email);
-//                                contactView.setText(contact);
-
-                            }
-                        else {
-                            Log.d(TAG, "No such document");
-                        }
-                    } else {
-                        Log.d(TAG, "get failed with ", task.getException());
-                    }
-                }
-            });
+            final CollectionReference booksReference = db.collection("books");
         }
 
         return view;
