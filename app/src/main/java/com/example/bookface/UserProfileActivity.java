@@ -57,7 +57,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         if (document.exists()) {
                             Map userData = document.getData();
                             if(userData != null){
-                                String username = userData.get("username").toString();
+                                String username = ("Welcome  ".concat(userData.get("username").toString())).concat("!");
                                 String email = userData.get("email").toString();
                                 String contact = userData.get("contactNo").toString();
 
