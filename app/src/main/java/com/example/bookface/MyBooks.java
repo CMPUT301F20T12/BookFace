@@ -23,7 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-public class MyBooks extends AppCompatActivity {
+public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.OnBookClickListener {
 
     RecyclerView recycleView;
     ArrayList<String> myBookList;
@@ -45,6 +45,7 @@ public class MyBooks extends AppCompatActivity {
         myBookList = new ArrayList<>();
 
         Context context = this;
+        RecyclerViewAdapter.OnBookClickListener onBookClickListener = this;
         if (userInstance != null){
             String userName = userInstance.getDisplayName();
 
@@ -64,7 +65,7 @@ public class MyBooks extends AppCompatActivity {
 //                            new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(recycleView);
 
                             recycleView = findViewById(R.id.recycle_view);
-                            adapter = new RecyclerViewAdapter(context, myBookList);
+                            adapter = new RecyclerViewAdapter(context, myBookList, onBookClickListener);
                             recycleView.setAdapter(adapter);
                             recycleView.setLayoutManager(new LinearLayoutManager(context));
 
@@ -115,4 +116,11 @@ public class MyBooks extends AppCompatActivity {
             return false;
         }
     };
+
+    @Override
+    public void onBookClick(int position) {
+        myBookList.get(position);
+        Intent intent = new Intent(MyBooks.this, BookDescription.class);
+        startActivity(intent);
+    }
 }
