@@ -65,28 +65,35 @@ public class BookList extends ArrayAdapter<Book> implements Filterable{
         ISBN.setText(book.getISBN());
         status.setText(book.getStatus());
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        userInstance = mFirebaseAuth.getCurrentUser();
-        if (userInstance != null){
-            String userName = userInstance.getDisplayName();
-
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            final CollectionReference booksReference = db.collection("books");
-        }
-
         return view;
+    }
+
+    public int getCount() {
+        return books.size();
     }
 
     @Override
     public Filter getFilter() {
-        if (filter == null) {
-            filter = new BookFilter();
-        }
+        filter = new BookFilter();
 
         return filter;
     }
 
     public class BookFilter extends Filter {
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void publishResults(CharSequence searchTerm, FilterResults filterResults) {
+            ArrayList<Book> filteredBooks = (ArrayList<Book>) filterResults.values;
+
+            if (filterResults.count > 0) {
+                books = filteredBooks;
+                Log.d("SEARCH", String.valueOf(books.size()));
+                notifyDataSetChanged();
+            } else {
+                notifyDataSetInvalidated();
+            }
+        }
+
         @Override
         protected FilterResults performFiltering(CharSequence searchTerm) {
             FilterResults filterResults = new FilterResults();
@@ -112,16 +119,6 @@ public class BookList extends ArrayAdapter<Book> implements Filterable{
             filterResults.values = tempBooks;
             filterResults.count = tempBooks.size();
             return filterResults;
-        }
-
-        @Override
-        protected void publishResults(CharSequence searchTerm, FilterResults filterResults) {
-            books = (ArrayList<Book>) filterResults.values;
-            if (filterResults.count > 0) {
-                notifyDataSetChanged();
-            } else {
-                notifyDataSetInvalidated();
-            }
         }
     }
 }

@@ -92,17 +92,17 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
   @Override
   public boolean onQueryTextSubmit(String query) {
 //    // retrieve search results
-//    if (query.length() > 0) {
-//      bookListAdapter.getFilter().filter(query);
-//    }
+    if (query.length() > 0) {
+      bookListAdapter.getFilter().filter(query);
+    }
     return false;
   }
 
   @Override
   public boolean onQueryTextChange(String newText) {
-    if (newText.length() > 0) {
-      bookListAdapter.getFilter().filter(newText);
-    }
+//    if (newText.length() > 0) {
+//      bookListAdapter.getFilter().filter(newText);
+//    }
     return false;
   }
 
