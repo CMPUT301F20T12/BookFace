@@ -30,11 +30,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:paddingTop="30dp"
                 android:text="Search"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
-                android:textSize="32dp"
-                android:paddingTop="30dp"/>
+                android:textSize="32dp" />
 
         </LinearLayout>
 
@@ -43,21 +43,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:iconifiedByDefault="false"
-            android:queryHint="Search for a book"
-            />
+            android:queryHint="Search for a book" />
+
+        <ListView
+            android:id="@+id/bookList"
+            android:layout_width="match_parent"
+            android:layout_height="575dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp">
+
+        </ListView>
 
     </LinearLayout>
-
-    <ListView
-        android:id="@+id/bookList"
-        android:layout_width="match_parent"
-        android:layout_height="575dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp">
-
-    </ListView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"

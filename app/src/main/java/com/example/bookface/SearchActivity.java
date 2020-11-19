@@ -1,7 +1,6 @@
 package com.example.bookface;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -16,18 +15,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Locale;
-
-// on click method for username to display profile
 
 public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
   private static final String TAG = "SEARCH";
@@ -49,15 +41,37 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     navBar.setOnNavigationItemSelectedListener(navBarMethod);
 
     // Initialize the book list
-    bookListView = (ListView) findViewById(R.id.bookList);
+    bookListView = findViewById(R.id.bookList);
     bookDataList = new ArrayList<>();
 
     bookListAdapter = new BookList(this, bookDataList);
     bookListView.setAdapter(bookListAdapter);
 
     db = FirebaseFirestore.getInstance();
-    final CollectionReference bookReference = db.collection("books");
+    fetchBooks(db);
 
+    editSearch = findViewById(R.id.search_bar);
+    editSearch.setOnQueryTextListener(this);
+  }
+
+  @Override
+  public boolean onQueryTextSubmit(String query) {
+    // retrieve search results on submit
+    if (query.length() > 0) {
+      bookListAdapter.getFilter().filter(query);
+    }
+    return false;
+  }
+
+  @Override
+  public boolean onQueryTextChange(String newText) {
+    // do nothing while typing
+    return false;
+  }
+
+  private void fetchBooks(FirebaseFirestore db) {
+    db = FirebaseFirestore.getInstance();
+    final CollectionReference bookReference = db.collection("books");
     bookReference
         .get()
         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -83,30 +97,11 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
             }
           }
         });
-
-    editSearch = findViewById(R.id.search_bar);
-    editSearch.setOnQueryTextListener(this);
-  }
-
-  @Override
-  public boolean onQueryTextSubmit(String query) {
-    // retrieve search results on submit
-    if (query.length() > 0) {
-      bookListAdapter.getFilter().filter(query);
-    }
-    return false;
-  }
-
-  @Override
-  public boolean onQueryTextChange(String newText) {
-    // do nothing while typing
-    return false;
   }
 
   private  BottomNavigationView.OnNavigationItemSelectedListener navBarMethod = new BottomNavigationView.OnNavigationItemSelectedListener() {
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
 
       switch (menuItem.getItemId()){
         case R.id.my_books:
