@@ -44,10 +44,9 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_search);
 
-    FirebaseFirestore db;
-
     navBar = findViewById(R.id.nav_bar);
-    // navBar.setOnNavigationItemSelectedListener(navBarMethod);
+
+    navBar.setOnNavigationItemSelectedListener(navBarMethod);
 
     // Initialize the book list
     bookListView = (ListView) findViewById(R.id.bookList);
@@ -91,7 +90,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
   @Override
   public boolean onQueryTextSubmit(String query) {
-//    // retrieve search results
+    // retrieve search results on submit
     if (query.length() > 0) {
       bookListAdapter.getFilter().filter(query);
     }
@@ -100,36 +99,34 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
   @Override
   public boolean onQueryTextChange(String newText) {
-//    if (newText.length() > 0) {
-//      bookListAdapter.getFilter().filter(newText);
-//    }
+    // do nothing while typing
     return false;
   }
 
-//  private  BottomNavigationView.OnNavigationItemSelectedListener navBarMethod = new BottomNavigationView.OnNavigationItemSelectedListener() {
-//    @Override
-//    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-//
-//
-//      switch (menuItem.getItemId()){
-//        case R.id.profile:
-//          Intent toMyProfile = new Intent(SearchActivity.this, UserProfileActivity.class);
-//          startActivity(toMyProfile);
-//          break;
-////                case R.id.requests:
-////                    Intent toRequests = new Intent(MyBooks.this, SignupActivity.class);
-////                    startActivity(toRequests);
-////                    break;
-//        case R.id.my_books:
-//          Intent toMyBooks = new Intent(SearchActivity.this, MyBooks.class);
-//          startActivity(toMyBooks);
-//          break;
-////                case R.id.notification:
-////                    Intent toNotification = new Intent(MyBooks.this, SignupActivity.class);
-////                    startActivity(toNotification);
-////                    break;
-//      }
-//      return false;
-//    }
-//  };
+  private  BottomNavigationView.OnNavigationItemSelectedListener navBarMethod = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+
+      switch (menuItem.getItemId()){
+        case R.id.my_books:
+          Intent toMyBooks = new Intent(SearchActivity.this, MyBooks.class);
+          startActivity(toMyBooks);
+          break;
+//                case R.id.requests:
+//                    Intent toRequests = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
+//                    startActivity(toRequests);
+//                    break;
+        case R.id.profile:
+          Intent toMyProfile = new Intent(SearchActivity.this, UserProfileActivity.class);
+          startActivity(toMyProfile);
+          break;
+//                case R.id.notification:
+//                    Intent toNotification = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
+//                    startActivity(toNotification);
+//                    break;
+      }
+      return false;
+    }
+  };
 }
