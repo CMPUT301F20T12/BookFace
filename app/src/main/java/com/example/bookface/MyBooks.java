@@ -36,7 +36,7 @@ public class MyBooks extends AppCompatActivity {
 
     private BottomNavigationView navBar;
 
-        @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_books);
@@ -107,10 +107,10 @@ public class MyBooks extends AppCompatActivity {
 //                    Intent toRequests = new Intent(MyBooks.this, SignupActivity.class);
 //                    startActivity(toRequests);
 //                    break;
-//                case R.id.search:
-//                    Intent toSearch = new Intent(MyBooks.this, SignupActivity.class);
-//                    startActivity(toSearch);
-//                    break;
+                case R.id.search:
+                    Intent toSearch = new Intent(MyBooks.this, SearchActivity.class);
+                    startActivity(toSearch);
+                    break;
 //                case R.id.notification:
 //                    Intent toNotification = new Intent(MyBooks.this, SignupActivity.class);
 //                    startActivity(toNotification);
