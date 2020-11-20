@@ -6,32 +6,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-public class BookList extends ArrayAdapter<Book> {
+public class BookList extends ArrayAdapter<Book> implements Filterable{
 
     private ArrayList<Book> books;
+    private ArrayList<Book> originalBooks;
     private Context context;
-
-    FirebaseAuth mFirebaseAuth;
-    FirebaseUser userInstance;
+    private Filter filter;
 
     public BookList(Context context, ArrayList<Book> books){
         super(context,0, books);
@@ -44,56 +35,81 @@ public class BookList extends ArrayAdapter<Book> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
 
-
         if(view == null){
             view = LayoutInflater.from(context).inflate(R.layout.book, parent,false);
         }
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        userInstance = mFirebaseAuth.getCurrentUser();
-        if (userInstance != null){
-            String userName = userInstance.getDisplayName();
+        final Book book = books.get(position);
 
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            String docPath = "users/"+userName;
-            DocumentReference docRef = db.document(docPath);
+        TextView bookTitle = view.findViewById(R.id.book_title);
+        TextView bookAuthor = view.findViewById(R.id.book_author);
+        TextView ISBN = view.findViewById(R.id.book_isbn);
+        TextView status = view.findViewById(R.id.book_status);
 
-            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                private static final String TAG = "BookListMessage";
-
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-//                            Map userData = document.getData();
-//                            DocumentSnapshot document = task.getResult();
-//                            if(userData != null){
-                            List<String> booksOwned = (List<String>) document.get("booksOwned");
-                            String bookISBN = booksOwned.get(position);
-//                            TextView isbn = findViewById();
-//                            isbn.setText(bookISBN);
-                            Log.d(TAG, "onComplete: "+bookISBN);
-
-//                                TextView nameView = findViewById(R.id.user_name);
-//                                TextView emailView = findViewById(R.id.user_email);
-//                                TextView contactView = findViewById(R.id.user_contact);
-//
-//                                nameView.setText(username);
-//                                emailView.setText(email);
-//                                contactView.setText(contact);
-
-                            }
-                        else {
-                            Log.d(TAG, "No such document");
-                        }
-                    } else {
-                        Log.d(TAG, "get failed with ", task.getException());
-                    }
-                }
-            });
-        }
+        bookTitle.setText(book.getTitle());
+        bookAuthor.setText(book.getAuthor());
+        ISBN.setText(book.getISBN());
+        status.setText(book.getStatus());
 
         return view;
+    }
+
+    public int getCount() {
+        return books.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        filter = new BookFilter();
+
+        return filter;
+    }
+
+    public class BookFilter extends Filter {
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void publishResults(CharSequence searchTerm, FilterResults filterResults) {
+            ArrayList<Book> filteredBooks = (ArrayList<Book>) filterResults.values;
+
+            if (filterResults.count > 0) {
+                books = filteredBooks;
+                Log.d("SEARCH", String.valueOf(books.size()));
+                notifyDataSetChanged();
+            } else {
+                notifyDataSetInvalidated();
+            }
+        }
+
+        @Override
+        protected FilterResults performFiltering(CharSequence searchTerm) {
+            FilterResults filterResults = new FilterResults();
+            ArrayList<Book> tempBooks = new ArrayList<>();
+
+            if (originalBooks == null) {
+                originalBooks = new ArrayList<>(books);
+            }
+
+            if (searchTerm == null || searchTerm.length() == 0) {
+                filterResults.count = originalBooks.size();
+                filterResults.values = originalBooks;
+            } else {
+                int length = books.size();
+                for (int i = 0; i < length; i++) {
+                    Book book = books.get(i);
+                    if (book.getTitle().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+                        book.getAuthor().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+                        book.getISBN().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+                        book.getDescription().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+                        book.getOwnerUsername().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
+                        book.getBorrowerUsername().toLowerCase(Locale.getDefault()).contains(searchTerm)) { // search through the fields of a book
+                        tempBooks.add(book);
+                    }
+                }
+                filterResults.values = tempBooks;
+                filterResults.count = tempBooks.size();
+            }
+
+            return filterResults;
+        }
     }
 }
