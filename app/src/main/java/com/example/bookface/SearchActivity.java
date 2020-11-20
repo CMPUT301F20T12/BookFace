@@ -59,13 +59,20 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     // retrieve search results on submit
     if (query.length() > 0) {
       bookListAdapter.getFilter().filter(query);
+    } else { // if search is cleared
+      fetchBooks(db);
+      bookListAdapter.getFilter().filter("");
     }
     return false;
   }
 
   @Override
   public boolean onQueryTextChange(String newText) {
-    // do nothing while typing
+    // if search is cleared
+    if (newText.length() == 0) {
+      fetchBooks(db);
+      bookListAdapter.getFilter().filter("");
+    }
     return false;
   }
 

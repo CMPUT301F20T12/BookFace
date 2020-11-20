@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 public class BookList extends ArrayAdapter<Book> implements Filterable{
 
     private ArrayList<Book> books;
+    private ArrayList<Book> originalBooks;
     private Context context;
     private Filter filter;
 
@@ -84,7 +85,14 @@ public class BookList extends ArrayAdapter<Book> implements Filterable{
             FilterResults filterResults = new FilterResults();
             ArrayList<Book> tempBooks = new ArrayList<>();
 
-            if (searchTerm != null && books != null) {
+            if (originalBooks == null) {
+                originalBooks = new ArrayList<>(books);
+            }
+
+            if (searchTerm == null || searchTerm.length() == 0) {
+                filterResults.count = originalBooks.size();
+                filterResults.values = originalBooks;
+            } else {
                 int length = books.size();
                 for (int i = 0; i < length; i++) {
                     Book book = books.get(i);
@@ -97,12 +105,10 @@ public class BookList extends ArrayAdapter<Book> implements Filterable{
                         tempBooks.add(book);
                     }
                 }
-            } else if (searchTerm.length() == 0 || searchTerm == null) {
-                tempBooks.addAll(books);
+                filterResults.values = tempBooks;
+                filterResults.count = tempBooks.size();
             }
 
-            filterResults.values = tempBooks;
-            filterResults.count = tempBooks.size();
             return filterResults;
         }
     }
