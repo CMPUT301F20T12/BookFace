@@ -57,9 +57,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-
+/**
+ * This class is the activity that is used to Add/Edit Books into the system
+ */
 public class AddEditBookActivity extends AppCompatActivity implements View.OnClickListener {
 
+    // View declarations
     private TextView scan;
     private TextView back;
     private EditText isbn;
@@ -71,9 +74,11 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
     private FloatingActionButton galleryButton;
     private ImageView imageView;
 
+    // Constant values that will be used later for Camera stuff
     static final int REQUEST_IMAGE_CAPTURE = 101;
     static final int RESULT_LOAD_IMAGE = 1;
 
+    // Variable declarations
     private Book book;
     String localIsbn, localAuthors, localDescription, localTitle, localImage, localUsername;
 
@@ -86,6 +91,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_book);
 
+        // View retrieval
         scan = findViewById(R.id.scanBookButton);
         back = findViewById(R.id.backAddEditBookButton);
         isbn = findViewById(R.id.editISBN);
@@ -96,11 +102,15 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
         cameraButton = findViewById(R.id.cameraImage);
         galleryButton = findViewById(R.id.galleryImage);
         imageView = findViewById(R.id.addEditImageView);
+
+        // Setting the values
         mRequestQueue = Volley.newRequestQueue(this);
         mFirebaseAuth = FirebaseAuth.getInstance();
 
+        // Setting up the onClickListener for scan button
         scan.setOnClickListener(this);
 
+        // Setting up the onClickListener for back button
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,6 +119,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
+        // Setting up the onClickListener for camera button
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,6 +133,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
+        // Setting up the onClickListener for gallery button
         galleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,6 +166,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
             });
         }
 
+        // Setting up the onClickListener for confirm button
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,8 +183,8 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                     title.setError("FIELD CANNOT BE EMPTY");
                 else if(imageView.getDrawable() == null)
                     Toast.makeText(AddEditBookActivity.this, "Image not attached!", Toast.LENGTH_SHORT).show();
-                else{
-                    localIsbn  =isbn.getText().toString();
+                else {
+                    localIsbn = isbn.getText().toString();
                     localAuthors = author.getText().toString();
                     localTitle = title.getText().toString();
                     localDescription = description.getText().toString();
@@ -201,6 +214,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                     }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
                             // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                             taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
                             {
@@ -214,7 +228,9 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
 
                                     localUsername = userInstance.getDisplayName();
 
-                                    book = new Book(localTitle, localAuthors, localIsbn, localDescription, "Available", localUsername, "Null", localImage);
+                                    // Make the instance of the book
+                                    book = new Book(localTitle, localAuthors, localIsbn, localDescription,
+                                            "Available", localUsername, "Null", localImage);
 
                                     db.collection("books")
                                             .document(book.getISBN()).set(book).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -241,12 +257,13 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
 
                                                                 docRef.update("booksOwned", myBookList)
                                                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
-
                                                                             @Override
                                                                             public void onSuccess(Void aVoid) {
                                                                                 Log.d(TAG, "DocumentSnapshot successfully updated!");
-                                                                                Toast.makeText(AddEditBookActivity.this, "Book Added", Toast.LENGTH_SHORT).show();
-                                                                                Intent toMyBooks = new Intent(AddEditBookActivity.this, MyBooks.class);
+                                                                                Toast.makeText(AddEditBookActivity.this,
+                                                                                        "Book Added", Toast.LENGTH_SHORT).show();
+                                                                                Intent toMyBooks = new Intent(
+                                                                                        AddEditBookActivity.this, MyBooks.class);
                                                                                 startActivity(toMyBooks);
                                                                             }
                                                                         })
@@ -256,44 +273,53 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                                                                 Log.w(TAG, "Error updating document", e);
                                                                             }
                                                                         });
-
-
 //                                                                db.document(docPath+"/booksOwned").set(myBookList);
                                                             }
                                                         }
-                                                        else{
+                                                        else {
                                                             System.out.println("DOC does not exist");
                                                         }
                                                     }
                                                 }
                                             });
-
-
-
-
-
                                         }
                                     })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(AddEditBookActivity.this, "Error Adding Book", Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(AddEditBookActivity.this, "Error Adding Book",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                 }
                             });
-                        }});
+                        }
+                    });
                 }
             }
         });
     }
 
+    /**
+     * This method is used to handle the onClick to create a scan object of the scan class
+     * @param v
+     * This is the View Object
+     */
     @Override
     public void onClick(View v) {
         Scan scanObj = new Scan(AddEditBookActivity.this);
         scanObj.scanCode();
     }
 
+    /**
+     * This is used to overwrite onActivityResult in order to get the image from the scan, camera and gallery calls
+     * @param requestCode
+     * This is
+     * @param resultCode
+     * This is
+     * @param data
+     * This is
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -306,7 +332,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
             }
         }
 
-        else if(isbn.getText().toString().length() == 0)
+        else if (isbn.getText().toString().length() == 0)
             Toast.makeText(AddEditBookActivity.this, "Scan Book First!", Toast.LENGTH_SHORT).show();
 
         else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
@@ -327,6 +353,13 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
+    /**
+     * This method parses the input stringified json from web and then extracts data from it
+     * @param key
+     * This is the url
+     * @param code
+     * intent result from which contents need to be extracted out
+     */
     public void parseJson(String key, String code) {
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, key.toString(), null,
                 new Response.Listener<JSONObject>() {
@@ -347,6 +380,8 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                             break;
                                         }
                                     } catch (Exception e) {
+                                        // TODO
+                                        // Handle the exception
                                     }
                                 }
                                 if (flag == 1) {
@@ -365,10 +400,12 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                 }
                             }
                             if(flag ==0){
-                                Toast.makeText(AddEditBookActivity.this, "Book Not Found, Add Manually!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddEditBookActivity.this, "Book Not Found, Add Manually!",
+                                        Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
-                            Toast.makeText(AddEditBookActivity.this, "Book Not Found, Add Manually!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddEditBookActivity.this, "Book Not Found, Add Manually!",
+                                    Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                             Log.e("TAG" , e.toString());
                         }
@@ -382,10 +419,15 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
         mRequestQueue.add(request);
     }
 
+    /**
+     * This method extract the contents out of the Intent result string
+     * @param code
+     * This is the Intent result string from which the contents need to be extracted out
+     */
     public void extractContents(String code) {
         Uri uri=Uri.parse(BASE_URL+code);
-        Uri.Builder buider = uri.buildUpon();
-        this.parseJson(buider.toString(), code);
+        Uri.Builder builder = uri.buildUpon();
+        this.parseJson(builder.toString(), code);
     }
 
 }

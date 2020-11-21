@@ -32,12 +32,16 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+/**
+ * This class is the activity that displays info of the book selected
+ */
 public class BookDescription extends AppCompatActivity {
 
     // Declare the fireAuth variable to get the currentUser()
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
 
+    // Declaration of some variables
     String owner;
     String author;
     String borrower;

@@ -101,10 +101,10 @@ public class Book {
                 && description.equals(book.description) && status.equals(book.status)
                 && borrowerUsername.equals(book.borrowerUsername)) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
-
     }
 }
 
