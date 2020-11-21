@@ -57,8 +57,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-//                    System.out.println("GETTING BOOK DATA");
-                    System.out.println(document);
+//                    System.out.println("GETTING BOOK DATA")
                     if (document.exists()) {
                         Map bookData = document.getData();
 //                        System.out.println("BOOK DATA ----> "+bookData);
@@ -68,6 +67,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             String status = bookData.get("status").toString();
                             String isbn = bookData.get("isbn").toString();
 
+                            System.out.println("INSIDE RECYCLEVIEW");
+//                            System.out.println(holder);
                             holder.title.setText(title);
                             holder.isbn.setText(isbn);
                             holder.author.setText(author);
@@ -106,10 +107,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         public ViewHolder(View view) {
             super(view);
-            isbn = view.findViewById(R.id.isbn);
-            title = view.findViewById(R.id.title);
-            author = view.findViewById(R.id.author);
-            status = view.findViewById(R.id.status);
+            isbn = view.findViewById(R.id.book_isbn);
+            title = view.findViewById(R.id.book_title);
+            author = view.findViewById(R.id.book_author);
+            status = view.findViewById(R.id.book_status);
 
         }
     }

@@ -3,6 +3,7 @@ package com.example.bookface;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 
 public class MyBooks extends AppCompatActivity {
 
+    private static final String TAG = "MY_BOOKS_MSG";
     RecyclerView recycleView;
     ArrayList<String> myBookList;
     RecyclerViewAdapter adapter;
@@ -43,6 +45,8 @@ public class MyBooks extends AppCompatActivity {
 
             mFirebaseAuth = FirebaseAuth.getInstance();
             userInstance = mFirebaseAuth.getCurrentUser();
+
+        Log.d(TAG, "onCreate: IN MY BOOKS");
             myBookList = new ArrayList<>();
             addBookButton = (Button) findViewById(R.id.add_book);
 
@@ -62,6 +66,7 @@ public class MyBooks extends AppCompatActivity {
                         if (document.exists()) {
                             myBookList = (ArrayList<String>)document.get("booksOwned");
                             System.out.println(myBookList);
+                            System.out.println("PRINTED MY BOOKS");
 
 //                            new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(recycleView);
 

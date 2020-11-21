@@ -219,6 +219,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                     book = new Book(localTitle, localAuthors, localIsbn, localDescription, "Available", localUsername, "Null", localImage);
 
                                     db.collection("books")
+//                                            .document(book.getISBN()+localUsername).set(book).addOnSuccessListener(new OnSuccessListener<Void>()
                                             .document(book.getISBN()).set(book).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
