@@ -6,8 +6,8 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
-    <uses-permission android:name="android.permission.INTERNET">
-    </uses-permission>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -16,8 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SearchActivity"></activity>
-        <activity android:name=".MyRequestsActivity"></activity>
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".MyRequestsActivity" />
         <activity android:name=".BookDescription" />
         <activity android:name=".AddEditBookActivity" />
         <activity android:name=".UserProfileActivity" />

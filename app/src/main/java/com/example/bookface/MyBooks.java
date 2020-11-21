@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,20 +34,20 @@ public class MyBooks extends AppCompatActivity {
 
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
-
     private BottomNavigationView navBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.my_books);
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.my_books);
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        userInstance = mFirebaseAuth.getCurrentUser();
-        myBookList = new ArrayList<>();
+            mFirebaseAuth = FirebaseAuth.getInstance();
+            userInstance = mFirebaseAuth.getCurrentUser();
+            myBookList = new ArrayList<>();
+            addBookButton = (Button) findViewById(R.id.add_book);
 
-        Context context = this;
-        if (userInstance != null){
+            Context context = this;
+            if (userInstance != null){
             String userName = userInstance.getDisplayName();
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -78,10 +79,12 @@ public class MyBooks extends AppCompatActivity {
             });
         }
 
-        addBookButton = findViewById(R.id.add_book);
         addBookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // This button does not work for some reason Ignore the Toast debugging statement
+                Toast.makeText(getApplicationContext(), "add button was clicked", Toast.LENGTH_SHORT).show();
+
                 Intent toAddEditBooks = new Intent(MyBooks.this, AddEditBookActivity.class);
                 startActivity(toAddEditBooks);
             }

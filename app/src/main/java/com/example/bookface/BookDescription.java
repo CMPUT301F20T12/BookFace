@@ -46,6 +46,7 @@ public class BookDescription extends AppCompatActivity {
     String status;
     String isbn;
     String imgUrl;
+    String currentUser = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,21 +62,23 @@ public class BookDescription extends AppCompatActivity {
         Button btnTop = findViewById(R.id.myBooksOrSearchButton);
         Button btnBottom = findViewById(R.id.collectOrSendRequestButton);
 
-        TextView textAuthor = findViewById(R.id.authorNameText);
-        TextView textTitle = findViewById(R.id.titleText);
-        TextView textIsbn = findViewById(R.id.isbnText);
-        TextView textStatus = findViewById(R.id.statusText);
-        TextView textDescHeading = findViewById(R.id.descriptionHeadingText);
-        TextView textDescription = findViewById(R.id.bookDescriptionText);
-        TextView textBorrower = findViewById(R.id.borrowerNameText);
+        TextView textAuthor = (TextView) findViewById(R.id.authorNameText);
+        TextView textTitle = (TextView) findViewById(R.id.titleText);
+        textTitle.setText(Html.fromHtml("<b>" + title + "</b>"));
+        TextView textIsbn = (TextView) findViewById(R.id.isbnText);
+        TextView textStatus = (TextView) findViewById(R.id.statusText);
+        TextView textDescHeading = (TextView) findViewById(R.id.descriptionHeadingText);
+        TextView textDescription = (TextView) findViewById(R.id.bookDescriptionText);
+        TextView textBorrower = (TextView) findViewById(R.id.borrowerNameText);
         ImageView image = (ImageView) findViewById(R.id.imageView);
 
-        String currentUser = null;
-
         if (userInstance != null){
-            currentUser = userInstance.getDisplayName();
+            currentUser = (String) userInstance.getDisplayName();
 
-            isbn = (String) savedInstanceState.getSerializable("Book");
+            Bundle b = getIntent().getExtras();
+            if (b!= null) {
+                isbn = (String) b.get("Book");
+            }
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -91,70 +94,67 @@ public class BookDescription extends AppCompatActivity {
                         status = value.getString("status");
                         title = value.getString("title");
                         imgUrl = value.getString("imageUrl");
+
+                        textAuthor.setText(author);
+                        textIsbn.setText(isbn);
+                        textStatus.setText(status);
+                        textDescHeading.setText(Html.fromHtml("<b>DESCRIPTION:</b>"));
+                        textDescription.setText(description);
+                        textBorrower.setText(borrower);
+                        Picasso.with(getApplicationContext()).load(imgUrl).into(image);
+                    }
+
+                    // TODO
+                    if (owner.equals(currentUser)) {
+//                        Toast.makeText(getApplicationContext(), "Entered the area", Toast.LENGTH_SHORT).show();
+                        btnEdit.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // Call Add/Edit Book activity
+                                Intent toAddEditBooks = new Intent(BookDescription.this, AddEditBookActivity.class);
+                                toAddEditBooks.putExtra("Book", isbn);
+                                startActivity(toAddEditBooks);
+                            }
+                        });
+
+                        btnTop.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // Call MyBooks Activity
+                                finish();
+                            }
+                        });
+
+                        btnBottom.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // Call the functionality to collect the book
+                            }
+                        });
+                    }
+                    else {
+//                        Toast.makeText(getApplicationContext(), "Did not enter the area", Toast.LENGTH_SHORT).show();
+                        btnTop.setText("Search");
+                        btnEdit.setVisibility(View.INVISIBLE);
+                        btnBottom.setText("Send Request");
+                        btnTop.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // Call Search Books Activity
+                            }
+                        });
+
+                        btnBottom.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // Call Send Request Activity
+                            }
+                        });
+                        textBorrower.setVisibility(View.INVISIBLE);
                     }
                 }
             });
         }
-        
-        // TODO
-        if (owner != currentUser) {
-            btnTop.setText("Search");
-            btnEdit.setVisibility(View.INVISIBLE);
-            btnBottom.setText("Send Request");
-            btnTop.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Call Search Books Activity
-                }
-            });
-
-            btnBottom.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Call Send Request Activity
-                }
-            });
-            textBorrower.setVisibility(View.INVISIBLE);
-        }
-        else {
-            btnEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Call Add/Edit Book activity
-                    Intent toAddEditBooks = new Intent(BookDescription.this, AddEditBookActivity.class);
-                    toAddEditBooks.putExtra("isbnNumber", isbn);
-                    startActivity(toAddEditBooks);
-                }
-            });
-
-            btnTop.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Call MyBooks Activity
-                    Intent toMyBooks = new Intent(BookDescription.this, MyBooks.class);
-                    startActivity(toMyBooks);
-                }
-            });
-
-            btnBottom.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Call the functionality to collect the book
-                }
-            });
-            textBorrower.setText(borrower);
-        }
-
-        // TODO
-        textAuthor.setText(author);
-        textDescHeading.setText(Html.fromHtml("<b>DESCRIPTION:</b>"));
-        textIsbn.setText(isbn);
-        textDescription.setText(description);
-        textStatus.setText(status);
-        textTitle.setText(Html.fromHtml("<b>" + title + "</b>"));
-
-        Picasso.with(this).load(imgUrl).into(image);
-
     }
 
 

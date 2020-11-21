@@ -131,8 +131,9 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
-        if (savedInstanceState!=null) {
-            String isbnNumber = (String) savedInstanceState.getSerializable("isbnNumber");
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
+            String isbnNumber = (String) b.get("Book");
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
             final DocumentReference docRef = db.collection("books").document(isbnNumber);
@@ -146,6 +147,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                         description.setText(value.getString("description"));
 //                        status.value.getString("status"));
                         title.setText(value.getString("title"));
+                        isbn.setText(isbnNumber);
                         String imgUrl = value.getString("imageUrl");
 
                         Picasso.with(AddEditBookActivity.this).load(imgUrl).into(imageView);
