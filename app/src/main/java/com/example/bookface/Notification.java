@@ -9,7 +9,7 @@ public class Notification {
     private Book requestedBook;
     private User borrower;
     private String requestStatus;
-    private Location location;  // Not sure
+    private Location location;  // Not sure about this
 
     public Notification(Book bookRequested, User borrower, String requestStatus, Location location) {
         this.requestedBook = bookRequested;
@@ -50,7 +50,6 @@ public class Notification {
         this.location = location;
     }
 
-
     /**
      * This method displays the notification on the user screen
      * @return
@@ -59,7 +58,6 @@ public class Notification {
     public boolean displayNotification() {
         // TODO
         // Logic for this method
-
         return true;
     }
 }

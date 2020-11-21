@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.toolbox.Volley;
@@ -41,12 +42,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -126,6 +130,31 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                 startActivityForResult(i, RESULT_LOAD_IMAGE);
             }
         });
+
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
+            String isbnNumber = (String) b.get("Book");
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            final DocumentReference docRef = db.collection("books").document(isbnNumber);
+            docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                    if (error == null && value.exists() && value != null) {
+//                        owner = value.getString("ownerUsername");
+//                        borrower = value.getString("borrowerUsername");
+                        author.setText(value.getString("author"));
+                        description.setText(value.getString("description"));
+//                        status.value.getString("status"));
+                        title.setText(value.getString("title"));
+                        isbn.setText(isbnNumber);
+                        String imgUrl = value.getString("imageUrl");
+
+                        Picasso.with(AddEditBookActivity.this).load(imgUrl).into(imageView);
+                    }
+                }
+            });
+        }
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
