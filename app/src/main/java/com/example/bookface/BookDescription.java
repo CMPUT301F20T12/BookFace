@@ -52,7 +52,8 @@ public class BookDescription extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_description);
+//        setContentView(R.layout.activity_book_description);
+        setContentView(R.layout.activity_bookdescription_updated);
 
         // Retrieve the objects passed into the intent object
         // TODO
@@ -65,10 +66,9 @@ public class BookDescription extends AppCompatActivity {
 
         TextView textAuthor = (TextView) findViewById(R.id.authorNameText);
         TextView textTitle = (TextView) findViewById(R.id.titleText);
-        textTitle.setText(Html.fromHtml("<b>" + title + "</b>"));
         TextView textIsbn = (TextView) findViewById(R.id.isbnText);
         TextView textStatus = (TextView) findViewById(R.id.statusText);
-        TextView textDescHeading = (TextView) findViewById(R.id.descriptionHeadingText);
+//        TextView textDescHeading = (TextView) findViewById(R.id.descriptionHeadingText);
         TextView textDescription = (TextView) findViewById(R.id.bookDescriptionText);
         TextView textBorrower = (TextView) findViewById(R.id.borrowerNameText);
         ImageView image = (ImageView) findViewById(R.id.imageView);
@@ -90,7 +90,6 @@ public class BookDescription extends AppCompatActivity {
                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                     if (error == null && value.exists() && value != null) {
                         owner = value.getString("ownerUsername");
-                        borrower = value.getString("borrowerUsername");
                         author = value.getString("author");
                         isbn = value.getString("isbn");
                         description = value.getString("description");
@@ -98,10 +97,16 @@ public class BookDescription extends AppCompatActivity {
                         title = value.getString("title");
                         imgUrl = value.getString("imageUrl");
 
+                        if (value.get("borrowerUserName") == null) {
+                            borrower = "No current borrower";
+                        } else {
+                            borrower = value.get("borrowerUserName").toString();
+                        }
+
                         textAuthor.setText(author);
                         textIsbn.setText(isbn);
                         textStatus.setText(status);
-                        textDescHeading.setText(Html.fromHtml("<b>DESCRIPTION:</b>"));
+                        textTitle.setText(Html.fromHtml("<b>" + title + "</b>"));
                         textDescription.setText(description);
                         textBorrower.setText(borrower);
                         Picasso.with(getApplicationContext()).load(imgUrl).into(image);
