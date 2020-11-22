@@ -45,6 +45,7 @@ public class BookDescription extends AppCompatActivity {
     String description;
     String status;
     String isbn;
+    String bookId;
     String imgUrl;
     String currentUser = null;
 
@@ -76,13 +77,14 @@ public class BookDescription extends AppCompatActivity {
             currentUser = (String) userInstance.getDisplayName();
 
             Bundle b = getIntent().getExtras();
+            System.out.println(b.get("BOOK_ID"));
             if (b!= null) {
-                isbn = (String) b.get("Book");
+                bookId = (String) b.get("BOOK_ID");
             }
-
+            System.out.println("BOOKS ID: "+bookId);
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            final DocumentReference docRef = db.collection("books").document(isbn+currentUser);
+            final DocumentReference docRef = db.collection("books").document(bookId);
             docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -90,6 +92,7 @@ public class BookDescription extends AppCompatActivity {
                         owner = value.getString("ownerUsername");
                         borrower = value.getString("borrowerUsername");
                         author = value.getString("author");
+                        isbn = value.getString("isbn");
                         description = value.getString("description");
                         status = value.getString("status");
                         title = value.getString("title");

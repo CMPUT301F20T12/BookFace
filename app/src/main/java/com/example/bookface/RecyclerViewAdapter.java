@@ -28,17 +28,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private static final String TAG = "RecyclerViewAdapter";
     private ArrayList<String> myBooks;
     private Context context;
+    private OnBookClickListener onBookClickListener;
 
-    public RecyclerViewAdapter(Context context, ArrayList<String> myBooks) {
+    public RecyclerViewAdapter(Context context, ArrayList<String> myBooks, OnBookClickListener onBookClickListener) {
         this.myBooks = myBooks;
         this.context = context;
+        this.onBookClickListener=onBookClickListener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.book, parent, false);
-        ViewHolder holder = new ViewHolder(view);
+        ViewHolder holder = new ViewHolder(view, onBookClickListener);
         return holder;
     }
 
@@ -57,7 +59,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-//                    System.out.println("GETTING BOOK DATA")
+//                    System.out.println("GETTING BOOK DATA");
+                    System.out.println(document);
                     if (document.exists()) {
                         Map bookData = document.getData();
 //                        System.out.println("BOOK DATA ----> "+bookData);
@@ -67,8 +70,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             String status = bookData.get("status").toString();
                             String isbn = bookData.get("isbn").toString();
 
-                            System.out.println("INSIDE RECYCLEVIEW");
-//                            System.out.println(holder);
                             holder.title.setText(title);
                             holder.isbn.setText(isbn);
                             holder.author.setText(author);
@@ -82,8 +83,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     }
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
-                    }
                 }
+            }
         });
 
     }
@@ -99,22 +100,32 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView title;
         TextView isbn;
         TextView author;
         TextView status;
+        OnBookClickListener onBookClickListener;
 
-        public ViewHolder(View view) {
+        public ViewHolder(View view, OnBookClickListener onBookClickListener) {
             super(view);
             isbn = view.findViewById(R.id.book_isbn);
             title = view.findViewById(R.id.book_title);
             author = view.findViewById(R.id.book_author);
             status = view.findViewById(R.id.book_status);
+            this.onBookClickListener = onBookClickListener;
 
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            onBookClickListener.onBookClick(getAdapterPosition());
         }
     }
 
+    public interface OnBookClickListener{
+        void onBookClick(int position);
+    }
 
 }
-

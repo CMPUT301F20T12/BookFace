@@ -3,9 +3,7 @@ package com.example.bookface;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -26,9 +24,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-public class MyBooks extends AppCompatActivity {
+public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.OnBookClickListener {
 
-    private static final String TAG = "MY_BOOKS_MSG";
     RecyclerView recycleView;
     ArrayList<String> myBookList;
     RecyclerViewAdapter adapter;
@@ -36,22 +33,21 @@ public class MyBooks extends AppCompatActivity {
 
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
+
     private BottomNavigationView navBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.my_books);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.my_books);
 
-            mFirebaseAuth = FirebaseAuth.getInstance();
-            userInstance = mFirebaseAuth.getCurrentUser();
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        userInstance = mFirebaseAuth.getCurrentUser();
+        myBookList = new ArrayList<>();
 
-        Log.d(TAG, "onCreate: IN MY BOOKS");
-            myBookList = new ArrayList<>();
-            addBookButton = (Button) findViewById(R.id.add_book);
-
-            Context context = this;
-            if (userInstance != null){
+        Context context = this;
+        RecyclerViewAdapter.OnBookClickListener onBookClickListener = this;
+        if (userInstance != null){
             String userName = userInstance.getDisplayName();
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -66,12 +62,11 @@ public class MyBooks extends AppCompatActivity {
                         if (document.exists()) {
                             myBookList = (ArrayList<String>)document.get("booksOwned");
                             System.out.println(myBookList);
-                            System.out.println("PRINTED MY BOOKS");
 
 //                            new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(recycleView);
 
                             recycleView = findViewById(R.id.recycle_view);
-                            adapter = new RecyclerViewAdapter(context, myBookList);
+                            adapter = new RecyclerViewAdapter(context, myBookList, onBookClickListener);
                             recycleView.setAdapter(adapter);
                             recycleView.setLayoutManager(new LinearLayoutManager(context));
 
@@ -84,20 +79,15 @@ public class MyBooks extends AppCompatActivity {
             });
         }
 
+        addBookButton = findViewById(R.id.add_book);
         addBookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // This button does not work for some reason Ignore the Toast debugging statement
-                Toast.makeText(getApplicationContext(), "add button was clicked", Toast.LENGTH_SHORT).show();
-
                 Intent toAddEditBooks = new Intent(MyBooks.this, AddEditBookActivity.class);
                 startActivity(toAddEditBooks);
             }
         });
 
-            // TODO
-            // Add on Item click listener
-            // Redirect to BookDescription Activity
     }
 
 
@@ -115,10 +105,10 @@ public class MyBooks extends AppCompatActivity {
 //                    Intent toRequests = new Intent(MyBooks.this, SignupActivity.class);
 //                    startActivity(toRequests);
 //                    break;
-                case R.id.search:
-                    Intent toSearch = new Intent(MyBooks.this, SearchActivity.class);
-                    startActivity(toSearch);
-                    break;
+//                case R.id.search:
+//                    Intent toSearch = new Intent(MyBooks.this, SignupActivity.class);
+//                    startActivity(toSearch);
+//                    break;
 //                case R.id.notification:
 //                    Intent toNotification = new Intent(MyBooks.this, SignupActivity.class);
 //                    startActivity(toNotification);
@@ -127,4 +117,14 @@ public class MyBooks extends AppCompatActivity {
             return false;
         }
     };
+
+    @Override
+    public void onBookClick(int position) {
+
+        String bookId = myBookList.get(position);
+        //Toast.makeText(MyBooks.this, bookISBN, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(MyBooks.this, BookDescription.class);
+        intent.putExtra("BOOK_ID", bookId);
+        startActivity(intent);
+    }
 }
