@@ -179,10 +179,14 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                     localDescription = description.getText().toString();
 
                     FirebaseStorage storage = FirebaseStorage.getInstance();
+                    mFirebaseAuth = FirebaseAuth.getInstance();
+
+
+                    String localUsername1 = mFirebaseAuth.getCurrentUser().getDisplayName();
 
                     StorageReference storageRef = storage.getReferenceFromUrl("gs://bookface-cmput301f20t12.appspot.com");
-                    StorageReference mountainsRef = storageRef.child(localIsbn);
-                    StorageReference mountainImagesRef = storageRef.child("images/"+localIsbn);
+                    StorageReference mountainsRef = storageRef.child(localIsbn+localUsername1);
+                    StorageReference mountainImagesRef = storageRef.child("images/"+localIsbn+localUsername1);
 
                     mountainsRef.getName().equals(mountainImagesRef.getName());    // true
                     mountainsRef.getPath().equals(mountainImagesRef.getPath());    // false
@@ -220,7 +224,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
 
                                     db.collection("books")
 //                                            .document(book.getISBN()+localUsername).set(book).addOnSuccessListener(new OnSuccessListener<Void>()
-                                            .document(book.getISBN()).set(book).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            .document(book.getISBN()+localUsername).set(book).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
 
@@ -239,7 +243,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
 
                                                                 final String TAG = "Completeion Message" ;
                                                                 ArrayList<String> myBookList = (ArrayList<String>)document.get("booksOwned");
-                                                                myBookList.add(localIsbn);
+                                                                myBookList.add(localIsbn+localUsername);
                                                                 System.out.println(myBookList);
 
                                                                 docRef.update("booksOwned", myBookList)

@@ -89,7 +89,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                 Log.d(TAG, doc.getId() + " => " + doc.getData());
                 String title = (String) doc.getData().get("title");
                 String author = (String) doc.getData().get("author");
-                String ISBN = doc.getId();
+                String ISBN = (String) doc.getData().get("isbn");
                 String description = (String) doc.getData().get("description");
                 String status = (String) doc.getData().get("status");
                 String ownerUsername = (String) doc.getData().get("ownerUsername");

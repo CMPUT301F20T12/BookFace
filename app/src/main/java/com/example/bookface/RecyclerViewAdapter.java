@@ -46,10 +46,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: called");
 
-        final String bookISBN = (myBooks.get(position)).trim();
+        final String bookId = (myBooks.get(position)).trim();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        String docPath = "books/".concat(bookISBN);
+        String docPath = "books/".concat(bookId);
         DocumentReference docRef = db.document(docPath);
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

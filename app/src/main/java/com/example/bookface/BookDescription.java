@@ -82,7 +82,7 @@ public class BookDescription extends AppCompatActivity {
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            final DocumentReference docRef = db.collection("books").document(isbn);
+            final DocumentReference docRef = db.collection("books").document(isbn+currentUser);
             docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
