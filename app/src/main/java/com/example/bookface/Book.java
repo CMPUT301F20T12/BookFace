@@ -1,9 +1,12 @@
 package com.example.bookface;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * This is a class that contains the attributes for a Book
  */
-public class Book {
+public class Book implements Parcelable {
     private String title;
     private String author;
     private String ISBN;
@@ -25,6 +28,29 @@ public class Book {
         this.borrowerUsername = borrowerUsername;
         this.imageUrl = imageUrl;
     }
+
+    protected Book(Parcel in) {
+        title = in.readString();
+        author = in.readString();
+        ISBN = in.readString();
+        description = in.readString();
+        status = in.readString();
+        ownerUsername = in.readString();
+        borrowerUsername = in.readString();
+        imageUrl = in.readString();
+    }
+
+    public static final Creator<Book> CREATOR = new Creator<Book>() {
+        @Override
+        public Book createFromParcel(Parcel in) {
+            return new Book(in);
+        }
+
+        @Override
+        public Book[] newArray(int size) {
+            return new Book[size];
+        }
+    };
 
     public String getTitle() {
         return title;
@@ -105,6 +131,23 @@ public class Book {
             return false;
         }
 
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(author);
+        dest.writeString(ISBN);
+        dest.writeString(description);
+        dest.writeString(status);
+        dest.writeString(ownerUsername);
+        dest.writeString(borrowerUsername);
+        dest.writeString(imageUrl);
     }
 }
 
