@@ -68,8 +68,8 @@ public class BookDescription extends AppCompatActivity {
             btnBottom.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // Call Send Request Activity
-
+                    // Open Dialog to call Send Request Activity
+                    openDialog();
                 }
             });
             textBorrower.setVisibility(View.INVISIBLE);
@@ -116,4 +116,10 @@ public class BookDescription extends AppCompatActivity {
 //        Intent showImage = new Intent(BookDescription.this, AddImage.class);
 //        startActivity(showImage);
 //    }
+
+    public void openDialog() {
+        SendRequestDialog sendRequestDialog = new SendRequestDialog();
+        sendRequestDialog.show(getSupportFragmentManager(), "Send Request");
+    }
+
 }
