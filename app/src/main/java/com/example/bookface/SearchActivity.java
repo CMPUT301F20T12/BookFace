@@ -5,8 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -52,6 +55,15 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
     editSearch = findViewById(R.id.search_bar);
     editSearch.setOnQueryTextListener(this);
+
+    bookListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+        Intent intent = new Intent(SearchActivity.this, BookDescription.class);
+        intent.putExtra("book", bookDataList.get(position));
+        startActivity(intent);
+      }
+    });
   }
 
   @Override
