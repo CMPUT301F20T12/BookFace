@@ -127,7 +127,7 @@ public class BookDescription extends AppCompatActivity {
                             public void onClick(View view) {
                                 // Call Add/Edit Book activity
                                 Intent toAddEditBooks = new Intent(BookDescription.this, AddEditBookActivity.class);
-                                toAddEditBooks.putExtra("Book", isbn);
+                                toAddEditBooks.putExtra("Book", bookId);
                                 startActivity(toAddEditBooks);
                             }
                         });
