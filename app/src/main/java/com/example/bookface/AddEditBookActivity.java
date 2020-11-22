@@ -104,8 +104,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toMyBooks = new Intent(AddEditBookActivity.this, MyBooks.class);
-                startActivity(toMyBooks);
+                finish();
             }
         });
 
