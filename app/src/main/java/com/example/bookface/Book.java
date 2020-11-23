@@ -1,5 +1,8 @@
 package com.example.bookface;
 
+import android.os.Parcel;
+
+
 /**
  * This is a class that contains the attributes for a Book
  */
@@ -25,6 +28,7 @@ public class Book {
         this.borrowerUsername = borrowerUsername;
         this.imageUrl = imageUrl;
     }
+
 
     public String getTitle() {
         return title;
@@ -106,5 +110,6 @@ public class Book {
         }
 
     }
+
 }
 
