@@ -196,6 +196,7 @@ public class BookDescription extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 // Call Search Books Activity
+                                finish();
                             }
                         });
 
@@ -203,6 +204,7 @@ public class BookDescription extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 // Call Send Request Activity
+                                openDialog();
                             }
                         });
                         textBorrower.setVisibility(View.INVISIBLE);
@@ -213,8 +215,8 @@ public class BookDescription extends AppCompatActivity {
     }
 
 
-//    public void clickImage(View view) {
-//        Intent showImage = new Intent(BookDescription.this, AddImage.class);
-//        startActivity(showImage);
-//    }
+    public void openDialog() {
+        SendRequestDialog sendRequestDialog = new SendRequestDialog();
+        sendRequestDialog.show(getSupportFragmentManager(), "Send Request");
+    }
 }
