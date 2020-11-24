@@ -116,7 +116,8 @@ public class BookDescription extends AppCompatActivity {
                         textDescription.setText(description);
                         textBorrower.setText(borrower);
                         textOwner.setText("@".concat(owner));
-                        Picasso.with(getApplicationContext()).load(imgUrl).into(image);
+                        if(imgUrl!="")
+                            Picasso.with(getApplicationContext()).load(imgUrl).into(image);
                     }
 
                     textOwner.setOnClickListener(new View.OnClickListener() {

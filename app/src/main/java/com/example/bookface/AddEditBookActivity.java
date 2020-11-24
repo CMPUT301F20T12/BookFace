@@ -69,6 +69,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
     private Button confirm;
     private FloatingActionButton cameraButton;
     private FloatingActionButton galleryButton;
+    private FloatingActionButton deleteButton;
     private ImageView imageView;
 
     static final int REQUEST_IMAGE_CAPTURE = 101;
@@ -95,11 +96,14 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
         confirm = findViewById(R.id.addEditBookConfirm);
         cameraButton = findViewById(R.id.cameraImage);
         galleryButton = findViewById(R.id.galleryImage);
+        deleteButton = findViewById(R.id.deleteImage);
         imageView = findViewById(R.id.addEditImageView);
         mRequestQueue = Volley.newRequestQueue(this);
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         scan.setOnClickListener(this);
+
+        Bundle b = getIntent().getExtras();
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,7 +134,38 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
-        Bundle b = getIntent().getExtras();
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(b != null){
+                    String bookId = (String) b.get("Book");
+                    System.out.println(bookId);
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    String docPath = "books/"+bookId;
+
+                    DocumentReference docRef = db.document(docPath);
+
+                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    Map bookData = document.getData();
+                                    bookData.put("imageUrl", "");
+                                    docRef.set(bookData);
+                                }
+                            } else {
+
+                            }
+                        }
+                    });
+                }
+                imageView.setImageBitmap(null);
+            }
+        });
+
+
         if (b != null) {
             String bookId = (String) b.get("Book");
             FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -148,8 +183,8 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                         title.setText(value.getString("title"));
                         isbn.setText(value.getString("isbn"));
                         String imgUrl = value.getString("imageUrl");
-
-                        Picasso.with(AddEditBookActivity.this).load(imgUrl).into(imageView);
+                        if(imgUrl!="")
+                            Picasso.with(AddEditBookActivity.this).load(imgUrl).into(imageView);
                     }
                 }
             });
@@ -169,8 +204,8 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                     author.setError("FIELD CANNOT BE EMPTY");
                 else if(title.getText().toString().length()==0)
                     title.setError("FIELD CANNOT BE EMPTY");
-                else if(imageView.getDrawable() == null)
-                    Toast.makeText(AddEditBookActivity.this, "Image not attached!", Toast.LENGTH_SHORT).show();
+//                else if(imageView.getDrawable() == null)
+//                    Toast.makeText(AddEditBookActivity.this, "Image not attached!", Toast.LENGTH_SHORT).show();
                 else{
                     localIsbn  =isbn.getText().toString();
                     localAuthors = author.getText().toString();
@@ -251,7 +286,9 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                                                                 @Override
                                                                                 public void onSuccess(Void aVoid) {
                                                                                     Log.d(TAG, "DocumentSnapshot successfully updated!");
-
+                                                                                    Toast.makeText(AddEditBookActivity.this, "Book Added", Toast.LENGTH_SHORT).show();
+                                                                                    Intent toMyBooks = new Intent(AddEditBookActivity.this, MyBooks.class);
+                                                                                    startActivity(toMyBooks);
                                                                                 }
                                                                             })
                                                                             .addOnFailureListener(new OnFailureListener() {
@@ -271,9 +308,11 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                                     }
                                                 });
                                             }
-                                            Toast.makeText(AddEditBookActivity.this, "Book Added", Toast.LENGTH_SHORT).show();
-                                            Intent toMyBooks = new Intent(AddEditBookActivity.this, MyBooks.class);
-                                            startActivity(toMyBooks);
+                                            else {
+                                                Toast.makeText(AddEditBookActivity.this, "Book Added", Toast.LENGTH_SHORT).show();
+                                                Intent toMyBooks = new Intent(AddEditBookActivity.this, MyBooks.class);
+                                                startActivity(toMyBooks);
+                                            }
                                         }
                                     })
                                             .addOnFailureListener(new OnFailureListener() {
