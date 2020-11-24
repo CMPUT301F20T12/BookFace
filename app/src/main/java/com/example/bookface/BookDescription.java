@@ -119,6 +119,46 @@ public class BookDescription extends AppCompatActivity {
                         Picasso.with(getApplicationContext()).load(imgUrl).into(image);
                     }
 
+                    textOwner.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // Call MyBooks Activity
+
+//                                String ownerName = textOwner.getText().toString();
+
+                            String docPath = "users/"+owner;
+                            DocumentReference docRef = db.document(docPath);
+                            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            Map userData = document.getData();
+                                            if(userData != null){
+                                                String email = userData.get("email").toString();
+                                                String contact = userData.get("contactNo").toString();
+
+                                                Bundle bundle = new Bundle();
+                                                bundle.putString("USERNAME", owner);
+                                                bundle.putString("USER_EMAIL", email);
+                                                bundle.putString("USER_CONTACT", contact);
+
+                                                UserProfileFragment userProfileFragment = new UserProfileFragment();
+                                                userProfileFragment.setArguments(bundle);
+                                                userProfileFragment.show(getSupportFragmentManager(),"userProfileFragment");
+                                            }
+                                        } else {
+                                            Log.d(TAG, "No such document");
+                                        }
+                                    } else {
+                                        Log.d(TAG, "get failed with ", task.getException());
+                                    }
+                                }
+                            });
+                        }
+                    });
+
                     // TODO
                     if (owner.equals(currentUser)) {
 //                        Toast.makeText(getApplicationContext(), "Entered the area", Toast.LENGTH_SHORT).show();
@@ -129,46 +169,6 @@ public class BookDescription extends AppCompatActivity {
                                 Intent toAddEditBooks = new Intent(BookDescription.this, AddEditBookActivity.class);
                                 toAddEditBooks.putExtra("Book", bookId);
                                 startActivity(toAddEditBooks);
-                            }
-                        });
-
-                        textOwner.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                // Call MyBooks Activity
-
-//                                String ownerName = textOwner.getText().toString();
-
-                                String docPath = "users/"+owner;
-                                DocumentReference docRef = db.document(docPath);
-                                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            DocumentSnapshot document = task.getResult();
-                                            if (document.exists()) {
-                                                Map userData = document.getData();
-                                                if(userData != null){
-                                                    String email = userData.get("email").toString();
-                                                    String contact = userData.get("contactNo").toString();
-
-                                                    Bundle bundle = new Bundle();
-                                                    bundle.putString("USERNAME", owner);
-                                                    bundle.putString("USER_EMAIL", email);
-                                                    bundle.putString("USER_CONTACT", contact);
-
-                                                    UserProfileFragment userProfileFragment = new UserProfileFragment();
-                                                    userProfileFragment.setArguments(bundle);
-                                                    userProfileFragment.show(getSupportFragmentManager(),"userProfileFragment");
-                                                }
-                                            } else {
-                                                Log.d(TAG, "No such document");
-                                            }
-                                        } else {
-                                            Log.d(TAG, "get failed with ", task.getException());
-                                        }
-                                    }
-                                });
                             }
                         });
 
