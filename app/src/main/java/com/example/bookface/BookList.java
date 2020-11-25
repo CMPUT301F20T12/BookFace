@@ -17,19 +17,40 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-public class BookList extends ArrayAdapter<Book> implements Filterable{
+/**
+ * This is the class that is used to make the custom list of array of the Books
+ */
+public class BookList extends ArrayAdapter<Book> implements Filterable {
 
     private ArrayList<Book> books;
     private ArrayList<Book> originalBooks;
     private Context context;
     private Filter filter;
 
+    /**
+     * This is the constructor
+     * @param context
+     * The context of the app
+     * @param books
+     * This is the array of the books
+     */
     public BookList(Context context, ArrayList<Book> books){
         super(context,0, books);
         this.books = books;
         this.context = context;
     }
 
+    /**
+     *
+     * @param position
+     *
+     * @param convertView
+     *
+     * @param parent
+     *
+     * @return view
+     *
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -54,10 +75,20 @@ public class BookList extends ArrayAdapter<Book> implements Filterable{
         return view;
     }
 
+    /**
+     * This method returns the count of the number of books
+     * @return
+     * The number of books inside the book list
+     */
     public int getCount() {
         return books.size();
     }
 
+    /**
+     * Override the getFilter method
+     * @return
+     * The filter
+     */
     @Override
     public Filter getFilter() {
         filter = new BookFilter();
@@ -65,6 +96,9 @@ public class BookList extends ArrayAdapter<Book> implements Filterable{
         return filter;
     }
 
+    /**
+     * This class ....
+     */
     public class BookFilter extends Filter {
         @SuppressWarnings("unchecked")
         @Override
@@ -80,6 +114,13 @@ public class BookList extends ArrayAdapter<Book> implements Filterable{
             }
         }
 
+        /**
+         * Override the performFiltering method
+         * @param searchTerm
+         *
+         * @return filterResults
+         *
+         */
         @Override
         protected FilterResults performFiltering(CharSequence searchTerm) {
             FilterResults filterResults = new FilterResults();
@@ -92,7 +133,8 @@ public class BookList extends ArrayAdapter<Book> implements Filterable{
             if (searchTerm == null || searchTerm.length() == 0) {
                 filterResults.count = originalBooks.size();
                 filterResults.values = originalBooks;
-            } else {
+            }
+            else {
                 int length = books.size();
                 for (int i = 0; i < length; i++) {
                     Book book = books.get(i);

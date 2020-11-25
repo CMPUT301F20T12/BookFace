@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+/**
+ * This activity is used to show the requests that the user has sent
+ */
 public class MyRequestsActivity extends AppCompatActivity {
 
     @Override

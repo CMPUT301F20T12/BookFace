@@ -15,18 +15,36 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+/**
+ * This class is used to Edit the profile
+ */
 public class EditProfileFragment extends DialogFragment {
+    // Declare variables
     String contact;
     EditText contactEdit;
     private OnFragmentInteractionListener listener;
 
+    /**
+     * This is the constructor
+     * @param number
+     * This is the contact number of the user
+     */
     public EditProfileFragment(String number) { this.contact = number; }
 
+    /**
+     * Implement the interface method
+     */
     public interface OnFragmentInteractionListener {
         void onEditProfileConfirmPressed(String number);
     }
 
-    //This method does the input validation for Edit text input in dialog box
+    /**
+     * This method does the input validation for Edit text input in dialog box
+     * @param num
+     *
+     * @return
+     *
+     */
     public boolean validateInput(String num){
             if(num.contains("+")){
                 num = num.substring(2, num.length());
@@ -34,6 +52,10 @@ public class EditProfileFragment extends DialogFragment {
             return (num.length() == 10) && num.matches("\\d+");
     }
 
+    /**
+     * Override the onAttach method
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -45,7 +67,13 @@ public class EditProfileFragment extends DialogFragment {
         }
     }
 
-    //This method creates a dialog box, sets the current field of Gear object, accepts input, validates it and updates the Gear Object.
+
+    /**
+     * This method creates a dialog box, sets the current field of User object, accepts input, validates it and updates the User Object.
+     * @param savedInstanceState
+     * @return
+     * The created dialog box
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

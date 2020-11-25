@@ -24,16 +24,31 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * This is a class to implement the on item click listener in the recyclerView in myBooks activity
+ */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+    // Variable declarations
     private static final String TAG = "RecyclerViewAdapter";
     private ArrayList<String> myBooks;
     private Context context;
 
+    /**
+     * This is the constructor
+     * @param context
+     * @param myBooks
+     */
     public RecyclerViewAdapter(Context context, ArrayList<String> myBooks) {
         this.myBooks = myBooks;
         this.context = context;
     }
 
+    /**
+     * This does ....
+     * @param parent
+     * @param viewType
+     * @return
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -42,6 +57,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return holder;
     }
 
+    /**
+     * This does .....
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: called");
@@ -87,6 +107,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     }
 
+    /**
+     * This retrieves the number of books
+     * @return
+     * the number of books
+     */
     @Override
     public int getItemCount() {
         if(this.myBooks!=null){
@@ -98,12 +123,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     }
 
+    /**
+     * This class does ...
+     */
     public class ViewHolder extends RecyclerView.ViewHolder{
+        // Variable declarations
         TextView title;
         TextView isbn;
         TextView author;
         TextView status;
 
+        /**
+         * This is the constructor
+         * @param view
+         */
         public ViewHolder(View view) {
             super(view);
             isbn = view.findViewById(R.id.isbn);

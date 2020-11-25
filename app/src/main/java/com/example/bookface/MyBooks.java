@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,8 +25,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * This class displays the list of the books owned by the user
+ */
 public class MyBooks extends AppCompatActivity {
 
+    // Variable declarations
     RecyclerView recycleView;
     ArrayList<String> myBookList;
     RecyclerViewAdapter adapter;
@@ -33,36 +38,38 @@ public class MyBooks extends AppCompatActivity {
 
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
-
     private BottomNavigationView navBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.my_books);
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.my_books);
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        userInstance = mFirebaseAuth.getCurrentUser();
-        myBookList = new ArrayList<>();
+            mFirebaseAuth = FirebaseAuth.getInstance();
+            userInstance = mFirebaseAuth.getCurrentUser();
+            myBookList = new ArrayList<>();
+            addBookButton = (Button) findViewById(R.id.add_book);
 
-        Context context = this;
-        if (userInstance != null){
+            Context context = this;
+            if (userInstance != null){
             String userName = userInstance.getDisplayName();
 
+            // Find the user document from the firebase
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             String docPath = "users/"+userName;
             DocumentReference docRef = db.document(docPath);
 
+            // Read the user document to retrieve all the books he/she owns
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
+                            // set the books in the recyclerView
                             myBookList = (ArrayList<String>)document.get("booksOwned");
                             System.out.println(myBookList);
 
-//                            new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(recycleView);
 
                             recycleView = findViewById(R.id.recycle_view);
                             adapter = new RecyclerViewAdapter(context, myBookList);
@@ -78,7 +85,6 @@ public class MyBooks extends AppCompatActivity {
             });
         }
 
-        addBookButton = findViewById(R.id.add_book);
         addBookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,35 +92,23 @@ public class MyBooks extends AppCompatActivity {
                 startActivity(toAddEditBooks);
             }
         });
-
-            // TODO
-            // Add on Item click listener
-            // Redirect to BookDescription Activity
     }
 
-
+    /**
+     * This is used to setup the bottom navigation bar
+     */
     private  BottomNavigationView.OnNavigationItemSelectedListener navBarMethod = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
-
             switch (menuItem.getItemId()){
                 case R.id.profile:
                     Intent toMyProfile = new Intent(MyBooks.this, UserProfileActivity.class);
                     startActivity(toMyProfile);
                     break;
-//                case R.id.requests:
-//                    Intent toRequests = new Intent(MyBooks.this, SignupActivity.class);
-//                    startActivity(toRequests);
-//                    break;
                 case R.id.search:
                     Intent toSearch = new Intent(MyBooks.this, SearchActivity.class);
                     startActivity(toSearch);
                     break;
-//                case R.id.notification:
-//                    Intent toNotification = new Intent(MyBooks.this, SignupActivity.class);
-//                    startActivity(toNotification);
-//                    break;
             }
             return false;
         }

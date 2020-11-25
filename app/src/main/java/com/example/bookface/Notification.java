@@ -6,11 +6,19 @@ import android.location.Location;
  * This is a class that contains the attributes and methods for sending a notification
  */
 public class Notification {
+    // variable declarations
     private Book requestedBook;
     private User borrower;
     private String requestStatus;
-    private Location location;  // Not sure about this
+    private Location location;
 
+    /**
+     * This is the constructor
+     * @param bookRequested
+     * @param borrower
+     * @param requestStatus
+     * @param location
+     */
     public Notification(Book bookRequested, User borrower, String requestStatus, Location location) {
         this.requestedBook = bookRequested;
         this.borrower = borrower;
@@ -18,6 +26,7 @@ public class Notification {
         this.location = location;
     };
 
+    // Getters and setters
     public Book getRequestedBook() {
         return requestedBook;
     }

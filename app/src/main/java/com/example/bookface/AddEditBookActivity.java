@@ -91,7 +91,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_book);
 
-        // View retrieval
+        // Views retrieval
         scan = findViewById(R.id.scanBookButton);
         back = findViewById(R.id.backAddEditBookButton);
         isbn = findViewById(R.id.editISBN);
@@ -143,21 +143,23 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
-        if (savedInstanceState!=null) {
-            String isbnNumber = (String) savedInstanceState.getSerializable("isbnNumber");
+        // Check for the passed book
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
+            // If passed then retrieve the book and set the fields of its value
+            String isbnNumber = (String) b.get("Book");
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+            // Firebase document listener
             final DocumentReference docRef = db.collection("books").document(isbnNumber);
             docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                     if (error == null && value.exists() && value != null) {
-//                        owner = value.getString("ownerUsername");
-//                        borrower = value.getString("borrowerUsername");
                         author.setText(value.getString("author"));
                         description.setText(value.getString("description"));
-//                        status.value.getString("status"));
                         title.setText(value.getString("title"));
+                        isbn.setText(isbnNumber);
                         String imgUrl = value.getString("imageUrl");
 
                         Picasso.with(AddEditBookActivity.this).load(imgUrl).into(imageView);
@@ -273,7 +275,6 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                                                                 Log.w(TAG, "Error updating document", e);
                                                                             }
                                                                         });
-//                                                                db.document(docPath+"/booksOwned").set(myBookList);
                                                             }
                                                         }
                                                         else {
