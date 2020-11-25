@@ -3,6 +3,8 @@ package com.example.bookface;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
@@ -30,10 +32,13 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class BookDescription extends AppCompatActivity {
 
+    private static final String TAG = "BOOK_DESC_MSG";
     // Declare the fireAuth variable to get the currentUser()
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
@@ -45,13 +50,15 @@ public class BookDescription extends AppCompatActivity {
     String description;
     String status;
     String isbn;
+    String bookId;
     String imgUrl;
     String currentUser = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_description);
+//        setContentView(R.layout.activity_book_description);
+        setContentView(R.layout.activity_bookdescription_updated);
 
         // Retrieve the objects passed into the intent object
         // TODO
@@ -64,45 +71,94 @@ public class BookDescription extends AppCompatActivity {
 
         TextView textAuthor = (TextView) findViewById(R.id.authorNameText);
         TextView textTitle = (TextView) findViewById(R.id.titleText);
-        textTitle.setText(Html.fromHtml("<b>" + title + "</b>"));
         TextView textIsbn = (TextView) findViewById(R.id.isbnText);
         TextView textStatus = (TextView) findViewById(R.id.statusText);
-        TextView textDescHeading = (TextView) findViewById(R.id.descriptionHeadingText);
+//        TextView textDescHeading = (TextView) findViewById(R.id.descriptionHeadingText);
         TextView textDescription = (TextView) findViewById(R.id.bookDescriptionText);
         TextView textBorrower = (TextView) findViewById(R.id.borrowerNameText);
+        TextView textOwner = (TextView) findViewById(R.id.ownerNameText);
         ImageView image = (ImageView) findViewById(R.id.imageView);
 
         if (userInstance != null){
             currentUser = (String) userInstance.getDisplayName();
 
             Bundle b = getIntent().getExtras();
+            System.out.println(b.get("BOOK_ID"));
             if (b!= null) {
-                isbn = (String) b.get("Book");
+                bookId = (String) b.get("BOOK_ID");
             }
-
+            System.out.println("BOOKS ID: "+bookId);
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            final DocumentReference docRef = db.collection("books").document(isbn);
+            final DocumentReference docRef = db.collection("books").document(bookId);
             docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                     if (error == null && value.exists() && value != null) {
                         owner = value.getString("ownerUsername");
-                        borrower = value.getString("borrowerUsername");
                         author = value.getString("author");
+                        isbn = value.getString("isbn");
                         description = value.getString("description");
                         status = value.getString("status");
                         title = value.getString("title");
                         imgUrl = value.getString("imageUrl");
 
+                        if (value.get("borrowerUserName") == null) {
+                            borrower = "No current borrower";
+                        } else {
+                            borrower = value.get("borrowerUserName").toString();
+                        }
+
                         textAuthor.setText(author);
                         textIsbn.setText(isbn);
                         textStatus.setText(status);
-                        textDescHeading.setText(Html.fromHtml("<b>DESCRIPTION:</b>"));
+                        textTitle.setText(Html.fromHtml("<b>" + title + "</b>"));
                         textDescription.setText(description);
                         textBorrower.setText(borrower);
-                        Picasso.with(getApplicationContext()).load(imgUrl).into(image);
+                        textOwner.setText("@".concat(owner));
+                        if(imgUrl!="")
+                            Picasso.with(getApplicationContext()).load(imgUrl).into(image);
                     }
+
+                    textOwner.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // Call MyBooks Activity
+
+//                                String ownerName = textOwner.getText().toString();
+
+                            String docPath = "users/"+owner;
+                            DocumentReference docRef = db.document(docPath);
+                            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            Map userData = document.getData();
+                                            if(userData != null){
+                                                String email = userData.get("email").toString();
+                                                String contact = userData.get("contactNo").toString();
+
+                                                Bundle bundle = new Bundle();
+                                                bundle.putString("USERNAME", owner);
+                                                bundle.putString("USER_EMAIL", email);
+                                                bundle.putString("USER_CONTACT", contact);
+
+                                                UserProfileFragment userProfileFragment = new UserProfileFragment();
+                                                userProfileFragment.setArguments(bundle);
+                                                userProfileFragment.show(getSupportFragmentManager(),"userProfileFragment");
+                                            }
+                                        } else {
+                                            Log.d(TAG, "No such document");
+                                        }
+                                    } else {
+                                        Log.d(TAG, "get failed with ", task.getException());
+                                    }
+                                }
+                            });
+                        }
+                    });
 
                     // TODO
                     if (owner.equals(currentUser)) {
@@ -112,7 +168,7 @@ public class BookDescription extends AppCompatActivity {
                             public void onClick(View view) {
                                 // Call Add/Edit Book activity
                                 Intent toAddEditBooks = new Intent(BookDescription.this, AddEditBookActivity.class);
-                                toAddEditBooks.putExtra("Book", isbn);
+                                toAddEditBooks.putExtra("Book", bookId);
                                 startActivity(toAddEditBooks);
                             }
                         });
@@ -141,6 +197,7 @@ public class BookDescription extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 // Call Search Books Activity
+                                finish();
                             }
                         });
 
@@ -148,6 +205,7 @@ public class BookDescription extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 // Call Send Request Activity
+                                openDialog();
                             }
                         });
                         textBorrower.setVisibility(View.INVISIBLE);
@@ -158,8 +216,8 @@ public class BookDescription extends AppCompatActivity {
     }
 
 
-//    public void clickImage(View view) {
-//        Intent showImage = new Intent(BookDescription.this, AddImage.class);
-//        startActivity(showImage);
-//    }
+    public void openDialog() {
+        SendRequestDialog sendRequestDialog = new SendRequestDialog();
+        sendRequestDialog.show(getSupportFragmentManager(), "Send Request");
+    }
 }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -25,7 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-public class MyBooks extends AppCompatActivity {
+public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.OnBookClickListener {
 
     RecyclerView recycleView;
     ArrayList<String> myBookList;
@@ -34,20 +33,21 @@ public class MyBooks extends AppCompatActivity {
 
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
+
     private BottomNavigationView navBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.my_books);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.my_books);
 
-            mFirebaseAuth = FirebaseAuth.getInstance();
-            userInstance = mFirebaseAuth.getCurrentUser();
-            myBookList = new ArrayList<>();
-            addBookButton = (Button) findViewById(R.id.add_book);
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        userInstance = mFirebaseAuth.getCurrentUser();
+        myBookList = new ArrayList<>();
 
-            Context context = this;
-            if (userInstance != null){
+        Context context = this;
+        RecyclerViewAdapter.OnBookClickListener onBookClickListener = this;
+        if (userInstance != null){
             String userName = userInstance.getDisplayName();
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -66,7 +66,7 @@ public class MyBooks extends AppCompatActivity {
 //                            new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(recycleView);
 
                             recycleView = findViewById(R.id.recycle_view);
-                            adapter = new RecyclerViewAdapter(context, myBookList);
+                            adapter = new RecyclerViewAdapter(context, myBookList, onBookClickListener);
                             recycleView.setAdapter(adapter);
                             recycleView.setLayoutManager(new LinearLayoutManager(context));
 
@@ -79,20 +79,15 @@ public class MyBooks extends AppCompatActivity {
             });
         }
 
+        addBookButton = findViewById(R.id.add_book);
         addBookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // This button does not work for some reason Ignore the Toast debugging statement
-                Toast.makeText(getApplicationContext(), "add button was clicked", Toast.LENGTH_SHORT).show();
-
                 Intent toAddEditBooks = new Intent(MyBooks.this, AddEditBookActivity.class);
                 startActivity(toAddEditBooks);
             }
         });
 
-            // TODO
-            // Add on Item click listener
-            // Redirect to BookDescription Activity
     }
 
 
@@ -122,4 +117,14 @@ public class MyBooks extends AppCompatActivity {
             return false;
         }
     };
+
+    @Override
+    public void onBookClick(int position) {
+
+        String bookId = myBookList.get(position);
+        //Toast.makeText(MyBooks.this, bookISBN, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(MyBooks.this, BookDescription.class);
+        intent.putExtra("BOOK_ID", bookId);
+        startActivity(intent);
+    }
 }
