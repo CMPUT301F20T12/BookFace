@@ -43,14 +43,14 @@
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_weight="2"
+            android:layout_weight="3"
             android:orientation="vertical">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/cameraImage"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:layout_marginTop="55dp"
+                android:layout_marginTop="0dp"
                 android:layout_weight="1"
                 android:clickable="true"
                 app:backgroundTint="#5DB075"
@@ -61,12 +61,23 @@
                 android:id="@+id/galleryImage"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="2dp"
                 android:layout_weight="1"
                 android:clickable="true"
                 app:backgroundTint="#5DB075"
                 app:rippleColor="#FFFFFF"
                 app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/deleteImage"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_marginTop="2dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                app:backgroundTint="#5DB075"
+                app:rippleColor="#FFFFFF"
+                app:srcCompat="@android:drawable/ic_menu_delete" />
         </LinearLayout>
 
     </LinearLayout>

@@ -72,6 +72,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
     private Button confirm;
     private FloatingActionButton cameraButton;
     private FloatingActionButton galleryButton;
+    private FloatingActionButton deleteButton;
     private ImageView imageView;
 
     // Constant values that will be used later for Camera stuff
@@ -101,6 +102,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
         confirm = findViewById(R.id.addEditBookConfirm);
         cameraButton = findViewById(R.id.cameraImage);
         galleryButton = findViewById(R.id.galleryImage);
+        deleteButton = findViewById(R.id.deleteImage);
         imageView = findViewById(R.id.addEditImageView);
 
         // Setting the values
@@ -110,12 +112,14 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
         // Setting up the onClickListener for scan button
         scan.setOnClickListener(this);
 
+        // Check for the passed book
+        Bundle b = getIntent().getExtras();
+        
         // Setting up the onClickListener for back button
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toMyBooks = new Intent(AddEditBookActivity.this, MyBooks.class);
-                startActivity(toMyBooks);
+                finish();
             }
         });
 
@@ -142,16 +146,45 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                 startActivityForResult(i, RESULT_LOAD_IMAGE);
             }
         });
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(b != null){
+                    String bookId = (String) b.get("Book");
+                    System.out.println(bookId);
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    String docPath = "books/"+bookId;
 
-        // Check for the passed book
-        Bundle b = getIntent().getExtras();
+                    DocumentReference docRef = db.document(docPath);
+
+                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    Map bookData = document.getData();
+                                    bookData.put("imageUrl", "");
+                                    docRef.set(bookData);
+                                }
+                            } else {
+
+                            }
+                        }
+                    });
+                }
+                imageView.setImageBitmap(null);
+            }
+        });
+
+
         if (b != null) {
             // If passed then retrieve the book and set the fields of its value
-            String isbnNumber = (String) b.get("Book");
+            String bookId = (String) b.get("Book");
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
             // Firebase document listener
-            final DocumentReference docRef = db.collection("books").document(isbnNumber);
+            final DocumentReference docRef = db.collection("books").document(bookId);
             docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -159,10 +192,10 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                         author.setText(value.getString("author"));
                         description.setText(value.getString("description"));
                         title.setText(value.getString("title"));
-                        isbn.setText(isbnNumber);
+                        isbn.setText(value.getString("isbn"));
                         String imgUrl = value.getString("imageUrl");
-
-                        Picasso.with(AddEditBookActivity.this).load(imgUrl).into(imageView);
+                        if(imgUrl!="")
+                            Picasso.with(AddEditBookActivity.this).load(imgUrl).into(imageView);
                     }
                 }
             });
@@ -185,17 +218,21 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                     title.setError("FIELD CANNOT BE EMPTY");
                 else if(imageView.getDrawable() == null)
                     Toast.makeText(AddEditBookActivity.this, "Image not attached!", Toast.LENGTH_SHORT).show();
-                else {
-                    localIsbn = isbn.getText().toString();
+                else{
+                    localIsbn  =isbn.getText().toString();
                     localAuthors = author.getText().toString();
                     localTitle = title.getText().toString();
                     localDescription = description.getText().toString();
 
                     FirebaseStorage storage = FirebaseStorage.getInstance();
+                    mFirebaseAuth = FirebaseAuth.getInstance();
+
+
+                    String localUsername1 = mFirebaseAuth.getCurrentUser().getDisplayName();
 
                     StorageReference storageRef = storage.getReferenceFromUrl("gs://bookface-cmput301f20t12.appspot.com");
-                    StorageReference mountainsRef = storageRef.child(localIsbn);
-                    StorageReference mountainImagesRef = storageRef.child("images/"+localIsbn);
+                    StorageReference mountainsRef = storageRef.child(localIsbn+localUsername1);
+                    StorageReference mountainImagesRef = storageRef.child("images/"+localIsbn+localUsername1);
 
                     mountainsRef.getName().equals(mountainImagesRef.getName());    // true
                     mountainsRef.getPath().equals(mountainImagesRef.getPath());    // false
@@ -235,10 +272,10 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                             "Available", localUsername, "Null", localImage);
 
                                     db.collection("books")
-                                            .document(book.getISBN()).set(book).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                            .document(book.getISBN()+localUsername).set(book).addOnSuccessListener(new OnSuccessListener<Void>()
+                                            .document(book.getISBN()+localUsername).set(book).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-
                                             String docPath = "users/".concat(localUsername);
                                             DocumentReference docRef = db.document(docPath);
 

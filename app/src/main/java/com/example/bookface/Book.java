@@ -1,5 +1,8 @@
 package com.example.bookface;
 
+import android.os.Parcel;
+
+
 /**
  * This is a class that contains the attributes for a Book
  */
@@ -119,5 +122,6 @@ public class Book {
             return false;
         }
     }
+
 }
 

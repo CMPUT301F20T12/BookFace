@@ -5,8 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -24,7 +27,7 @@ import java.util.ArrayList;
 /**
  * This is the class that is responsible for the search activity
  */
-public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener 
     // Declare variables
     ListView bookListView;
     ArrayAdapter<Book> bookListAdapter;
@@ -56,6 +59,20 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
         editSearch = findViewById(R.id.search_bar);
         editSearch.setOnQueryTextListener(this);
+        
+        // Set up on ItemClickListener for the books in the activity
+        bookListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                Intent intent = new Intent(SearchActivity.this, BookDescription.class);
+                Book book = bookDataList.get(position);
+                String bookId = book.getISBN()+book.getOwnerUsername();
+                System.out.println("On click book id --> "+bookId);
+                intent.putExtra("BOOK_ID", bookId);
+                startActivity(intent);
+                }
+            });
+        }
     }
 
     @Override
@@ -87,36 +104,37 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
      * @param db
      */
     private void fetchBooks(FirebaseFirestore db) {
-          db = FirebaseFirestore.getInstance();
-          final CollectionReference bookReference = db.collection("books");
-          bookReference
-              .get()
-              .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-              @Override
-              public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                  if (task.isSuccessful()) {
-                      for (QueryDocumentSnapshot doc : task.getResult()) {
-                          Log.d(TAG, doc.getId() + " => " + doc.getData());
-                          String title = (String) doc.getData().get("title");
-                          String author = (String) doc.getData().get("author");
-                          String ISBN = doc.getId();
-                          String description = (String) doc.getData().get("description");
-                          String status = (String) doc.getData().get("status");
-                          String ownerUsername = (String) doc.getData().get("ownerUsername");
-                          String borrowerUsername = (String) doc.getData().get("borrowerUsername");
-                          String imageUrl = (String) doc.getData().get("imageUrl");
-                          bookDataList.add(new Book(title, author, ISBN, description,
-                          status, ownerUsername, borrowerUsername, imageUrl)); // add from FireStore
-                      }
-                      bookListAdapter.notifyDataSetChanged();
-                  }
-                  else {
-                      Log.d(TAG, "Error getting documents: ", task.getException());
-                  }
-              }
-          });
+        db = FirebaseFirestore.getInstance();
+        final CollectionReference bookReference = db.collection("books");
+        bookReference
+            .get()
+            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            Log.d(TAG, doc.getId() + " => " + doc.getData());
+                            String title = (String) doc.getData().get("title");
+                            String author = (String) doc.getData().get("author");
+                            String ISBN = (String) doc.getData().get("isbn");
+                            String description = (String) doc.getData().get("description");
+                            String status = (String) doc.getData().get("status");
+                            String ownerUsername = (String) doc.getData().get("ownerUsername");
+                            String borrowerUsername = (String) doc.getData().get("borrowerUsername");
+                            String imageUrl = (String) doc.getData().get("imageUrl");
+                            // add from FireStore
+                            bookDataList.add(new Book(title, author, ISBN, description,
+                                status, ownerUsername, borrowerUsername, imageUrl));
+                        }
+                        bookListAdapter.notifyDataSetChanged();
+                    } 
+                    else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
+                    }
+                }
+            });
     }
-
+    
     /**
      * This is used to implement the bottom navigation bar
      */
@@ -124,7 +142,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
             new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.my_books:
                         Intent toMyBooks = new Intent(SearchActivity.this, MyBooks.class);
                         startActivity(toMyBooks);
