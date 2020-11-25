@@ -27,7 +27,7 @@ import java.util.ArrayList;
 /**
  * This is the class that is responsible for the search activity
  */
-public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener 
+public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     // Declare variables
     ListView bookListView;
     ArrayAdapter<Book> bookListAdapter;
@@ -73,7 +73,6 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                 }
             });
         }
-    }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
@@ -142,17 +141,17 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
             new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.my_books:
-                        Intent toMyBooks = new Intent(SearchActivity.this, MyBooks.class);
-                        startActivity(toMyBooks);
-                        break;
-                    case R.id.profile:
-                        Intent toMyProfile = new Intent(SearchActivity.this, UserProfileActivity.class);
-                        startActivity(toMyProfile);
-                        break;
-                }
-                return false;
+            switch (menuItem.getItemId()) {
+                case R.id.my_books:
+                    Intent toMyBooks = new Intent(SearchActivity.this, MyBooks.class);
+                    startActivity(toMyBooks);
+                    break;
+                case R.id.profile:
+                    Intent toMyProfile = new Intent(SearchActivity.this, UserProfileActivity.class);
+                    startActivity(toMyProfile);
+                    break;
             }
-        };
-    }
+            return false;
+        }
+    };
+}
