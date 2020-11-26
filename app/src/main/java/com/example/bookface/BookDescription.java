@@ -116,8 +116,18 @@ public class BookDescription extends AppCompatActivity {
                         textDescription.setText(description);
                         textBorrower.setText(borrower);
                         textOwner.setText("@".concat(owner));
-                        if(imgUrl!="")
+                        if(!imgUrl.equals(""))
                             Picasso.with(getApplicationContext()).load(imgUrl).into(image);
+
+                            // Show the enlarged image
+                            image.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent toZoom = new Intent(BookDescription.this, ZoomActivity.class);
+                                    toZoom.putExtra("imgURL", imgUrl);
+                                    startActivity(toZoom);
+                                }
+                            });
                     }
 
                     textOwner.setOnClickListener(new View.OnClickListener() {

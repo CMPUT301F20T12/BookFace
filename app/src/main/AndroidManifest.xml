@@ -15,6 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ZoomActivity"></activity>
         <activity android:name=".SearchActivity" />
         <activity android:name=".MyRequestsActivity" />
         <activity android:name=".BookDescription" />
