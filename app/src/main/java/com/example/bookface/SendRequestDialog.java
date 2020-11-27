@@ -71,7 +71,7 @@ public class SendRequestDialog extends AppCompatDialogFragment {
                         DocumentReference bookRequestedRef = db.collection("books").document(bookid);
 
                         // add request docref to sentrequests for the borrower
-                        borrowerRef.update("sentrequests", FieldValue.arrayUnion(requestRef));
+                        borrowerRef.update("sentrequests", FieldValue.arrayUnion(requestid));
 
                         // add request docref to requestlist for the book
                         bookRequestedRef.update("requestlist", FieldValue.arrayUnion(requestRef));
@@ -90,10 +90,3 @@ public class SendRequestDialog extends AppCompatDialogFragment {
         return builder.create();
     }
 }
-
-
-//request object in firebase
-// bookid
-// borroweruserid
-// request status
-// location
