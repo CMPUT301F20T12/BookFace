@@ -23,6 +23,7 @@
         <activity android:name=".SignupActivity" />
         <activity android:name=".CaptureAct" />
         <activity android:name=".MyBooks" />
+        <activity android:name=".ViewRequestActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -28,10 +28,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.io.Serializable;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Map;
@@ -53,7 +56,11 @@ public class BookDescription extends AppCompatActivity {
     String bookId;
     String imgUrl;
     String currentUser = null;
-    ArrayList<Request> requesterList;
+
+
+//    @SerializedName("requestList")
+//    @Expose
+//    ArrayList<Request> requestList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -196,7 +203,10 @@ public class BookDescription extends AppCompatActivity {
                             public void onClick(View view) {
 //
                                 Intent intent = new Intent(BookDescription.this, ViewRequestActivity.class);
-                                intent.putExtra("REQ_LIST", requesterList);
+                                intent.putExtra("BOOK_ISBN", isbn);
+                                intent.putExtra("BOOK_OWNER", owner);
+                                System.out.println("ISBN  "+isbn);
+//                                intent.putExtra(, requesterList);
                                 startActivity(intent);
                             }
                         });
