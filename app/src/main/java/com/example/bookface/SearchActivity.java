@@ -130,10 +130,10 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
           Intent toMyBooks = new Intent(SearchActivity.this, MyBooks.class);
           startActivity(toMyBooks);
           break;
-//                case R.id.requests:
-//                    Intent toRequests = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
-//                    startActivity(toRequests);
-//                    break;
+        case R.id.requests:
+          Intent toRequests = new Intent(SearchActivity.this, MyRequestsActivity.class);
+          startActivity(toRequests);
+          break;
         case R.id.profile:
           Intent toMyProfile = new Intent(SearchActivity.this, UserProfileActivity.class);
           startActivity(toMyProfile);
@@ -141,7 +141,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 //                case R.id.notification:
 //                    Intent toNotification = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
 //                    startActivity(toNotification);
-//                    break;
+//                   s break;
       }
       return false;
     }
