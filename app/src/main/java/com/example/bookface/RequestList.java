@@ -21,8 +21,8 @@ public class RequestList extends ArrayAdapter<Request> {
     private ArrayList<Request> requests;
     private Context context;
 
-    public RequestList(Context context, ArrayList<Request> requests){
-        super(context,0, requests);
+    public RequestList(Context context, ArrayList<Request> requests) {
+        super(context, 0, requests);
         this.requests = requests;
         this.context = context;
     }

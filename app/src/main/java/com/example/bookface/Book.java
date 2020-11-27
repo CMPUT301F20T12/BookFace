@@ -7,6 +7,7 @@ import android.os.Parcel;
  * This is a class that contains the attributes for a Book
  */
 public class Book {
+    // Declare variables
     private String title;
     private String author;
     private String ISBN;
@@ -16,6 +17,17 @@ public class Book {
     private String borrowerUsername;
     private String imageUrl;
 
+    /**
+     * This is the constructor
+     * @param title
+     * @param author
+     * @param ISBN
+     * @param description
+     * @param status
+     * @param ownerUsername
+     * @param borrowerUsername
+     * @param imageUrl
+     */
     public Book(String title, String author, String ISBN, String description,
                 String status, String ownerUsername, String borrowerUsername, String imageUrl) {
 
@@ -29,7 +41,7 @@ public class Book {
         this.imageUrl = imageUrl;
     }
 
-
+    // Getters and Setters
     public String getTitle() {
         return title;
     }
@@ -105,10 +117,10 @@ public class Book {
                 && description.equals(book.description) && status.equals(book.status)
                 && borrowerUsername.equals(book.borrowerUsername)) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
-
     }
 
 }

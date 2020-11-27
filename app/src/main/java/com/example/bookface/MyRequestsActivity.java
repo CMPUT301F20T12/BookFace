@@ -10,6 +10,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * This activity is used to show the requests that the user has sent
+ */
 public class MyRequestsActivity extends AppCompatActivity {
     ListView requestListView;
     ArrayAdapter<Request> requestListAdapter;
