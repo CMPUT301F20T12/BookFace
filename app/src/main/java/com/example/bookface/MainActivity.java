@@ -18,8 +18,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * This is the main activity that is run
+ */
 public class MainActivity extends AppCompatActivity {
 
+    // Declare variables
     EditText emailID, password;
     Button buttonLogin;
     TextView SignupPrompt;
@@ -27,19 +31,26 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
+    /**
+     * onCreate method is overwritten
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Firebase is initialized
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        // View initializations
         mFirebaseAuth = FirebaseAuth.getInstance();
         emailID = findViewById(R.id.editTextTextEmailAddress);
         password = findViewById(R.id.editTextNumberPassword);
         buttonLogin = findViewById(R.id.button);
         SignupPrompt = findViewById(R.id.textView);
 
+        // Firebase listener
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -56,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        // Login button logic
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 String email = emailID.getText().toString();
                 String pwd = password.getText().toString();
 
-
+                // Validate the inputs
                 if (email.isEmpty() || pwd.isEmpty()){
 
                     if(email.isEmpty()){
@@ -90,15 +102,14 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(MainActivity.this, "Login Unsuccessful", Toast.LENGTH_SHORT).show();
                             }
                             else{
-//                                Intent addEdit = new Intent(MainActivity.this, AddEditBookActivity.class);
-//                                startActivity(addEdit);
+                                // Go to User Profile
                                 Intent i = new Intent(MainActivity.this, UserProfileActivity.class);
                                 startActivity(i);
                             }
                         }
                     });
                 }
-
+                // Login error
                 else {
                     Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
                 }
