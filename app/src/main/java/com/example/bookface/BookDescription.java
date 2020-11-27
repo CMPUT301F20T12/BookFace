@@ -111,7 +111,8 @@ public class BookDescription extends AppCompatActivity {
 
                         if (value.get("borrowerUserName") == null) {
                             borrower = "No current borrower";
-                        } else {
+                        } 
+                        else {
                             borrower = value.get("borrowerUserName").toString();
                         }
 
@@ -122,8 +123,19 @@ public class BookDescription extends AppCompatActivity {
                         textDescription.setText(description);
                         textBorrower.setText(borrower);
                         textOwner.setText("@".concat(owner));
-                        if(imgUrl!="")
+                        if(imgUrl!="") {
                             Picasso.with(getApplicationContext()).load(imgUrl).into(image);
+                      
+                            // Show the enlarged image
+                            image.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent toZoom = new Intent(BookDescription.this, ZoomActivity.class);
+                                    toZoom.putExtra("imgURL", imgUrl);
+                                    startActivity(toZoom);
+                                }
+                            });
+                        }
                     }
 
                     textOwner.setOnClickListener(new View.OnClickListener() {
@@ -155,10 +167,12 @@ public class BookDescription extends AppCompatActivity {
                                                 userProfileFragment.setArguments(bundle);
                                                 userProfileFragment.show(getSupportFragmentManager(),"userProfileFragment");
                                             }
-                                        } else {
+                                        } 
+                                        else {
                                             Log.d(TAG, "No such document");
                                         }
-                                    } else {
+                                    } 
+                                    else {
                                         Log.d(TAG, "get failed with ", task.getException());
                                     }
                                 }
