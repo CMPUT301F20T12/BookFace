@@ -53,6 +53,7 @@ public class BookDescription extends AppCompatActivity {
     String bookId;
     String imgUrl;
     String currentUser = null;
+    ArrayList<Request> requesterList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +79,8 @@ public class BookDescription extends AppCompatActivity {
         TextView textBorrower = (TextView) findViewById(R.id.borrowerNameText);
         TextView textOwner = (TextView) findViewById(R.id.ownerNameText);
         ImageView image = (ImageView) findViewById(R.id.imageView);
+        ImageView viewRequestIcon = (ImageView) findViewById((R.id.viewRequestHead));
+
 
         if (userInstance != null){
             currentUser = (String) userInstance.getDisplayName();
@@ -185,6 +188,16 @@ public class BookDescription extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 // Call the functionality to collect the book
+                            }
+                        });
+
+                        viewRequestIcon.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+//
+                                Intent intent = new Intent(BookDescription.this, ViewRequestActivity.class);
+                                intent.putExtra("REQ_LIST", requesterList);
+                                startActivity(intent);
                             }
                         });
                     }
