@@ -18,6 +18,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.journeyapps.barcodescanner.DecoderResultPointCallback;
 
 import java.io.Serializable;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -45,17 +46,20 @@ public class ViewRequestUserList extends ArrayAdapter<DocumentReference>{
             view = LayoutInflater.from(context).inflate(R.layout.view_request_user, parent,false);
         }
 
-        System.out.println("PRINTING IN REQUESTER LIST LAST!");
+        System.out.println("PRINTING IN REQUESTER LIST!");
         final DocumentReference requestDocReference = requestList.get(position);
+//        System.out.println("REQ DOC REF: "+requestDocReference);
         View finalView = view;
         requestDocReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot request = task.getResult();
+                    System.out.println("REQ: "+request);
                     if (request.exists()) {
                         TextView requesterView = finalView.findViewById(R.id.requesterName);
                         Map requestData = request.getData();
+                        System.out.println("REQUEST DATA: "+requestData);
                         String requesterName = requestData.get("borrowerid").toString();
                         System.out.println("Requester name: "+requesterName);
                         requesterView.setText(requesterName);
@@ -72,6 +76,7 @@ public class ViewRequestUserList extends ArrayAdapter<DocumentReference>{
 
     public int getCount() {
         if(requestList != null){
+//            System.out.println("SIZE OF LIST: "+requestList.size());
             return requestList.size();
         }
         else{

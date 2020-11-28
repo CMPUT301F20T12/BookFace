@@ -22,8 +22,6 @@ public class ViewRequestActivity extends AppCompatActivity {
     ArrayAdapter<DocumentReference> requestListAdapter;
 
 //    ArrayList<Request> requestDataList;
-    String bookIsbn;
-    String bookOwner;
     String bookId;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -35,13 +33,12 @@ public class ViewRequestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_request);
 
         requestListView = findViewById(R.id.requestList);
-        bookIsbn = this.getIntent().getStringExtra("BOOK_ISBN");
-        bookOwner = this.getIntent().getStringExtra("BOOK_OWNER");
-        bookId = bookIsbn.concat(bookOwner);
+        bookId = this.getIntent().getStringExtra("BOOK_ID");
 
         System.out.println("ISBN IN VIEW_ACTIVITY  "+ bookId);
 
         DocumentReference docRef = db.collection("books").document(bookId);
+        System.out.println("DOC REF "+docRef);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             private static final String TAG = "ViewRequestActivity_MSG";
 
@@ -49,13 +46,16 @@ public class ViewRequestActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
+                    System.out.println("DOCUMENT "+document);
                     if (document.exists()) {
-                        ArrayList<DocumentReference> requestDocReferences = (ArrayList<DocumentReference>) document.get("requestList");
+                        ArrayList<DocumentReference> requestDocReferences = (ArrayList<DocumentReference>) document.get("requestlist");
+                        System.out.println("REQ DOC REF IN VIEW "+requestDocReferences);
                         if(requestDocReferences!=null){
 
                             requestListView = findViewById(R.id.requestList);
 
                             requestListAdapter = new ViewRequestUserList(ViewRequestActivity.this, requestDocReferences);
+                            System.out.println("DOC REFERENCES "+requestDocReferences);
                             requestListView.setAdapter(requestListAdapter);
                         }
 

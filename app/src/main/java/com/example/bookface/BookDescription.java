@@ -203,8 +203,9 @@ public class BookDescription extends AppCompatActivity {
                             public void onClick(View view) {
 //
                                 Intent intent = new Intent(BookDescription.this, ViewRequestActivity.class);
-                                intent.putExtra("BOOK_ISBN", isbn);
-                                intent.putExtra("BOOK_OWNER", owner);
+//                                intent.putExtra("BOOK_ISBN", isbn);
+//                                intent.putExtra("BOOK_OWNER", owner);
+                                intent.putExtra("BOOK_ID",isbn.concat(owner));
                                 System.out.println("ISBN  "+isbn);
 //                                intent.putExtra(, requesterList);
                                 startActivity(intent);
