@@ -45,6 +45,7 @@ public class BookDescription extends AppCompatActivity {
     // Declare the fireAuth variable to get the currentUser()
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
+    FirestoreController mFirestoreController;
 
     // Declaration of some variables
     String owner;
@@ -91,29 +92,30 @@ public class BookDescription extends AppCompatActivity {
             if (b!= null) {
                 bookId = (String) b.get("BOOK_ID");
             }
-            System.out.println("BOOKS ID: "+bookId);
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            mFirestoreController = new FirestoreController();
 
             // Firebase document listener
-            final DocumentReference docRef = db.collection("books").document(bookId);
+            final DocumentReference docRef = mFirestoreController.getDocRef("books", bookId);
           
             docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                     if (error == null && value.exists() && value != null) {
-                        owner = value.getString("ownerUsername");
-                        author = value.getString("author");
-                        isbn = value.getString("isbn");
-                        description = value.getString("description");
-                        status = value.getString("status");
-                        title = value.getString("title");
-                        imgUrl = value.getString("imageUrl");
+                        Book book = value.toObject(Book.class);
+                        owner = book.getOwnerUsername();
+                        author = book.getAuthor();
+                        isbn = book.getISBN();
+                        description = book.getDescription();
+                        status = book.getStatus();
+                        title = book.getTitle();
+                        imgUrl = book.getImageUrl();
+                        String borrowerUsername = book.getBorrowerUsername();
 
-                        if (value.get("borrowerUserName") == null) {
+                        if (borrowerUsername == null) {
                             borrower = "No current borrower";
                         } 
                         else {
-                            borrower = value.get("borrowerUserName").toString();
+                            borrower = borrowerUsername;
                         }
 
                         textAuthor.setText(author);
@@ -142,21 +144,17 @@ public class BookDescription extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             // Call MyBooks Activity
-
-//                                String ownerName = textOwner.getText().toString();
-
-                            String docPath = "users/"+owner;
-                            DocumentReference docRef = db.document(docPath);
+                            DocumentReference docRef = mFirestoreController.getDocRef("users", owner);
                             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                     if (task.isSuccessful()) {
                                         DocumentSnapshot document = task.getResult();
                                         if (document.exists()) {
-                                            Map userData = document.getData();
-                                            if(userData != null){
-                                                String email = userData.get("email").toString();
-                                                String contact = userData.get("contactNo").toString();
+                                            User user = document.toObject(User.class);
+                                            if(user != null){
+                                                String email = user.getEmail();
+                                                String contact = user.getContactNo();
 
                                                 Bundle bundle = new Bundle();
                                                 bundle.putString("USERNAME", owner);

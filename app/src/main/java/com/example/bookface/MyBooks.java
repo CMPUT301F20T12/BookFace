@@ -37,6 +37,7 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
 
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
+    FirestoreController mFirestoreController;
 
     private BottomNavigationView navBar;
 
@@ -55,9 +56,8 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
             String userName = userInstance.getDisplayName();
 
             // Find the user document from the firebase
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            String docPath = "users/"+userName;
-            DocumentReference docRef = db.document(docPath);
+            mFirestoreController = new FirestoreController();
+            DocumentReference docRef = mFirestoreController.getDocRef("users", userName);
 
             // Read the user document to retrieve all the books he/she owns
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -69,7 +69,6 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
                             // set the books in the recyclerView
                             myBookList = (ArrayList<String>)document.get("booksOwned");
                             System.out.println(myBookList);
-
 
                             recycleView = findViewById(R.id.recycle_view);
                             adapter = new RecyclerViewAdapter(context, myBookList, onBookClickListener);

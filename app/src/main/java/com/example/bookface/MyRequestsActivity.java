@@ -17,7 +17,7 @@ public class MyRequestsActivity extends AppCompatActivity {
     ListView requestListView;
     ArrayAdapter<Request> requestListAdapter;
     ArrayList<Request> requests;
-    FirebaseFirestore db;
+    FirestoreController mFirestoreController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +30,6 @@ public class MyRequestsActivity extends AppCompatActivity {
         requestListAdapter = new RequestList(this, requests);
         requestListView.setAdapter(requestListAdapter);
 
-        db = FirebaseFirestore.getInstance();
+        mFirestoreController = new FirestoreController();
     }
 }

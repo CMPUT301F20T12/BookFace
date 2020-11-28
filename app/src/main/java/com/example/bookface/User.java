@@ -28,6 +28,10 @@ public class User {
         this.booksBorrowed = new ArrayList<String>();
     }
 
+    public User() {
+
+    }
+
     // Getters and setters
     public String getUsername() {
         return username;

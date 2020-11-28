@@ -36,7 +36,7 @@ public class SignupActivity extends AppCompatActivity {
     EditText emailID, password, contactField, usernameField;
     Button buttonSignup;
     TextView loginPrompt;
-
+    FirestoreController mFirestoreController;
     FirebaseAuth mFirebaseAuth;
 
     @Override
@@ -79,9 +79,9 @@ public class SignupActivity extends AppCompatActivity {
                                 Toast.makeText(SignupActivity.this, "SignupActivity failed", Toast.LENGTH_SHORT).show();
                             }
                             else {
-                                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                db.collection("users")
-                                        .document(newUser.getUsername()).set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                mFirestoreController = new FirestoreController();
+                                DocumentReference docRef = mFirestoreController.getDocRef("users", newUser.getUsername());
+                                docRef.set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 FirebaseUser userInstance = mFirebaseAuth.getInstance().getCurrentUser();

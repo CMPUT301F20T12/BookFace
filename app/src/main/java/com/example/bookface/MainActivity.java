@@ -40,9 +40,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Firebase is initialized
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         // View initializations
         mFirebaseAuth = FirebaseAuth.getInstance();
         emailID = findViewById(R.id.editTextTextEmailAddress);

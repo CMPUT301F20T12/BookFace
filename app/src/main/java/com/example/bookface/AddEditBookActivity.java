@@ -40,6 +40,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -82,8 +83,9 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
     // Variable declarations
     private Book book;
     String localIsbn, localAuthors, localDescription, localTitle, localImage, localUsername;
-
+    String bookId;
     FirebaseAuth mFirebaseAuth;
+    FirestoreController mFirestoreController;
 
     private RequestQueue mRequestQueue;
     private static  final  String BASE_URL="https://www.googleapis.com/books/v1/volumes?q=";
@@ -108,13 +110,17 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
         // Setting the values
         mRequestQueue = Volley.newRequestQueue(this);
         mFirebaseAuth = FirebaseAuth.getInstance();
-
+        mFirestoreController = new FirestoreController();
         // Setting up the onClickListener for scan button
         scan.setOnClickListener(this);
 
         // Check for the passed book
         Bundle b = getIntent().getExtras();
-        
+        if (b != null) {
+            bookId = (String) b.get("Book");
+        }
+        DocumentReference docRef = mFirestoreController.getDocRef("books", bookId);
+
         // Setting up the onClickListener for back button
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,10 +158,8 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                 if(b != null){
                     String bookId = (String) b.get("Book");
                     System.out.println(bookId);
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    String docPath = "books/"+bookId;
 
-                    DocumentReference docRef = db.document(docPath);
+
 
                     docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
@@ -168,7 +172,6 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                     docRef.set(bookData);
                                 }
                             } else {
-
                             }
                         }
                     });
@@ -179,21 +182,16 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
 
 
         if (b != null) {
-            // If passed then retrieve the book and set the fields of its value
-            String bookId = (String) b.get("Book");
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-            // Firebase document listener
-            final DocumentReference docRef = db.collection("books").document(bookId);
             docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                     if (error == null && value.exists() && value != null) {
-                        author.setText(value.getString("author"));
-                        description.setText(value.getString("description"));
-                        title.setText(value.getString("title"));
-                        isbn.setText(value.getString("isbn"));
-                        String imgUrl = value.getString("imageUrl");
+                        Book book = value.toObject(Book.class);
+                        author.setText(book.getAuthor());
+                        description.setText(book.getDescription());
+                        title.setText(book.getTitle());
+                        isbn.setText(book.getISBN());
+                        String imgUrl = book.getImageUrl();
                         if(imgUrl!="")
                             Picasso.with(AddEditBookActivity.this).load(imgUrl).into(imageView);
                     }
@@ -209,7 +207,6 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
             }
 
             private void writeDB() {
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
                 if(isbn.getText().toString().length()==0)
                     isbn.setError("FIELD CANNOT BE EMPTY");
                 else if(author.getText().toString().length()==0)
@@ -270,15 +267,11 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                     // Make the instance of the book
                                     book = new Book(localTitle, localAuthors, localIsbn, localDescription,
                                             "Available", localUsername, "Null", localImage);
-
-                                    db.collection("books")
-//                                            .document(book.getISBN()+localUsername).set(book).addOnSuccessListener(new OnSuccessListener<Void>()
-                                            .document(book.getISBN()+localUsername).set(book).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    CollectionReference collRef = mFirestoreController.getCollRef("books");
+                                    collRef.document(book.getISBN()+localUsername).set(book).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            String docPath = "users/".concat(localUsername);
-                                            DocumentReference docRef = db.document(docPath);
-
+                                            DocumentReference docRef = mFirestoreController.getDocRef("users", localUsername);
                                             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -289,7 +282,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                                             System.out.println("DOCUMENT EXISTS!");
                                                             if(userData != null){
 
-                                                                final String TAG = "Completeion Message" ;
+                                                                final String TAG = "Completion Message" ;
                                                                 ArrayList<String> myBookList = (ArrayList<String>)document.get("booksOwned");
                                                                 myBookList.add(localIsbn);
                                                                 System.out.println(myBookList);

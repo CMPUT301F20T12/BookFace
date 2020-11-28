@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -32,12 +33,11 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     ListView bookListView;
     ArrayAdapter<Book> bookListAdapter;
     ArrayList<Book> bookDataList;
-    FirebaseFirestore db;
     SearchView editSearch;
     private BottomNavigationView navBar;
-
-    // Initialize constant
     private static final String TAG = "SEARCH";
+
+    FirestoreController mFirestoreController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +54,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         bookListAdapter = new BookList(this, bookDataList);
         bookListView.setAdapter(bookListAdapter);
 
-        db = FirebaseFirestore.getInstance();
-        fetchBooks(db);
+        fetchBooks();
 
         editSearch = findViewById(R.id.search_bar);
         editSearch.setOnQueryTextListener(this);
@@ -65,7 +64,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 Intent intent = new Intent(SearchActivity.this, BookDescription.class);
-                Book book = bookDataList.get(position);
+                Book book = bookListAdapter.getItem(position);
                 String bookId = book.getISBN()+book.getOwnerUsername();
                 System.out.println("On click book id --> "+bookId);
                 intent.putExtra("BOOK_ID", bookId);
@@ -82,7 +81,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         }
         // if search is cleared
         else {
-            fetchBooks(db);
+            fetchBooks();
             bookListAdapter.getFilter().filter("");
         }
         return false;
@@ -92,7 +91,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     public boolean onQueryTextChange(String newText) {
         // if search is cleared
         if (newText.length() == 0) {
-            fetchBooks(db);
+            fetchBooks();
             bookListAdapter.getFilter().filter("");
         }
         return false;
@@ -100,11 +99,10 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
     /**
      * This method is used to fetch the books from the firebase
-     * @param db
      */
-    private void fetchBooks(FirebaseFirestore db) {
-        db = FirebaseFirestore.getInstance();
-        final CollectionReference bookReference = db.collection("books");
+    private void fetchBooks() {
+        mFirestoreController = new FirestoreController();
+        final CollectionReference bookReference = mFirestoreController.getCollRef("books");
         bookReference
             .get()
             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -112,18 +110,9 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot doc : task.getResult()) {
-                            Log.d(TAG, doc.getId() + " => " + doc.getData());
-                            String title = (String) doc.getData().get("title");
-                            String author = (String) doc.getData().get("author");
-                            String ISBN = (String) doc.getData().get("isbn");
-                            String description = (String) doc.getData().get("description");
-                            String status = (String) doc.getData().get("status");
-                            String ownerUsername = (String) doc.getData().get("ownerUsername");
-                            String borrowerUsername = (String) doc.getData().get("borrowerUsername");
-                            String imageUrl = (String) doc.getData().get("imageUrl");
+                            Book book = doc.toObject(Book.class);
                             // add from FireStore
-                            bookDataList.add(new Book(title, author, ISBN, description,
-                                status, ownerUsername, borrowerUsername, imageUrl));
+                            bookDataList.add(book);
                         }
                         bookListAdapter.notifyDataSetChanged();
                     } 

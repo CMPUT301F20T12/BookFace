@@ -41,6 +41,10 @@ public class Book {
         this.imageUrl = imageUrl;
     }
 
+    public Book() {
+
+    }
+
     // Getters and Setters
     public String getTitle() {
         return title;

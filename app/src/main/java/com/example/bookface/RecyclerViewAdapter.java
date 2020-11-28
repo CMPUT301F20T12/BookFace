@@ -34,6 +34,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Context context;
     private OnBookClickListener onBookClickListener;
 
+    FirestoreController mFirestoreController;
+
     /**
      * This is the constructor
      * @param context
@@ -69,44 +71,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Log.d(TAG, "onBindViewHolder: called");
 
         final String bookId = (myBooks.get(position)).trim();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        String docPath = "books/".concat(bookId);
-        DocumentReference docRef = db.document(docPath);
-
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        mFirestoreController = new FirestoreController();
+        DocumentReference docRef = mFirestoreController.getDocRef("books", bookId);
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-//                    System.out.println("GETTING BOOK DATA");
-                    System.out.println(document);
-                    if (document.exists()) {
-                        Map bookData = document.getData();
-//                        System.out.println("BOOK DATA ----> "+bookData);
-                        if(bookData != null){
-                            String title = bookData.get("title").toString();
-                            String author = bookData.get("author").toString();
-                            String status = bookData.get("status").toString();
-                            String isbn = bookData.get("isbn").toString();
-
-                            holder.title.setText(title);
-                            holder.isbn.setText(isbn);
-                            holder.author.setText(author);
-                            holder.status.setText(status);
-
-                            Log.d(TAG, "INSIDE THE SUCCESS CONDITION");
-
-                        }
-                    } else {
-                        Log.d(TAG, "No such document");
-                    }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Book book = documentSnapshot.toObject(Book.class);
+                holder.title.setText(book.getTitle());
+                holder.isbn.setText(book.getISBN());
+                holder.author.setText(book.getAuthor());
+                holder.status.setText(book.getStatus());
             }
         });
-
     }
 
     /**

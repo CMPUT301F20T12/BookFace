@@ -42,6 +42,7 @@ public class UserProfileActivity extends AppCompatActivity implements EditProfil
     TextView nameView;
     TextView emailView;
     TextView contactView;
+    FirestoreController mFirestoreController;
 
     private BottomNavigationView navBar;
 
@@ -55,6 +56,8 @@ public class UserProfileActivity extends AppCompatActivity implements EditProfil
         navBar.setOnNavigationItemSelectedListener(navBarMethod);
         mFirebaseAuth = FirebaseAuth.getInstance();
         userInstance = mFirebaseAuth.getCurrentUser();
+        mFirestoreController = new FirestoreController();
+
         if (userInstance != null){
             userName = userInstance.getDisplayName();
             nameView = findViewById(R.id.user_name);
@@ -125,12 +128,8 @@ public class UserProfileActivity extends AppCompatActivity implements EditProfil
         mFirebaseAuth = FirebaseAuth.getInstance();
         userInstance = mFirebaseAuth.getCurrentUser();
         if (userInstance != null){
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
             String userName = userInstance.getDisplayName();
-            String docPath = "users/"+userName;
-
-            DocumentSnapshot x;
-            DocumentReference docRef = db.document(docPath);
+            DocumentReference docRef = mFirestoreController.getDocRef("users", userName);
 
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
