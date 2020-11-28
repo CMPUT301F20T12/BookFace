@@ -69,15 +69,15 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/viewRequestHead"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="89dp"
-            app:srcCompat="@drawable/ic_baseline_call_received_24" />
+<!--        <ImageView-->
+<!--            android:id="@+id/viewRequestHead"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_marginEnd="10dp"-->
+<!--            android:layout_marginBottom="89dp"-->
+<!--            app:srcCompat="@drawable/ic_baseline_call_received_24" />-->
 
 
         <TextView
@@ -229,12 +229,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:text="Collect"
+        android:color="#4CAF50"
+        android:text="Button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.507"
-        app:layout_constraintStart_toStartOf="parent"
-        android:color="#4CAF50"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/editButton"

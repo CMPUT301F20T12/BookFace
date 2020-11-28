@@ -24,21 +24,27 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * This class is used to handle the signup activity for the app
+ */
 public class SignupActivity extends AppCompatActivity {
 
+    // Initialize constants
     private static final String TAG = "Confirmation" ;
+
+    // Declare variables
     EditText emailID, password, contactField, usernameField;
     Button buttonSignup;
     TextView loginPrompt;
 
     FirebaseAuth mFirebaseAuth;
-//
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        // Assign the values to the variables
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         emailID = findViewById(R.id.editTextTextEmailAddress);
@@ -48,6 +54,7 @@ public class SignupActivity extends AppCompatActivity {
         buttonSignup = findViewById(R.id.button);
         loginPrompt = findViewById(R.id.textView);
 
+        // Set the OnCliCkListener for the Signup Button
         buttonSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,19 +65,20 @@ public class SignupActivity extends AppCompatActivity {
 
                 User newUser = new User(user, email, contact);
 
-                if (email.isEmpty() || pwd.isEmpty() || contact.isEmpty() || user.isEmpty()){
+                if (email.isEmpty() || pwd.isEmpty() || contact.isEmpty() || user.isEmpty()) {
                     Toast.makeText(SignupActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 }
 
                 // When email and password are both valid
-                else if (!(email.isEmpty() && pwd.isEmpty() && contact.isEmpty() && user.isEmpty())){
-                    mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
+                else if (!(email.isEmpty() && pwd.isEmpty() && contact.isEmpty() && user.isEmpty())) {
+                    mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(
+                            SignupActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(!task.isSuccessful()){
+                            if (!task.isSuccessful()) {
                                 Toast.makeText(SignupActivity.this, "SignupActivity failed", Toast.LENGTH_SHORT).show();
                             }
-                            else{
+                            else {
                                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                                 db.collection("users")
                                         .document(newUser.getUsername()).set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -87,33 +95,35 @@ public class SignupActivity extends AppCompatActivity {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                 if (task.isSuccessful()) {
-//                                                                    Log.d(TAG, "User Updated!"+userInstance.getDisplayName());
                                                                     System.out.println("User Updated!"+userInstance.getDisplayName());
-                                                                    Toast.makeText(SignupActivity.this, "User Created", Toast.LENGTH_SHORT).show();
-                                                                    startActivity(new Intent(SignupActivity.this, MainActivity.class));
+                                                                    Toast.makeText(SignupActivity.this, "User Created",
+                                                                            Toast.LENGTH_SHORT).show();
+                                                                    startActivity(new Intent(SignupActivity.this,
+                                                                            MainActivity.class));
                                                                 }
                                                             }
-                                                        });
-
+                                                        }
+                                                );
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(SignupActivity.this, "Error in creating User", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(SignupActivity.this, "Error in creating User",
+                                                        Toast.LENGTH_SHORT).show();
                                             }
                                         });
                             }
                         }
                     });
                 }
-
                 else {
                     Toast.makeText(SignupActivity.this, "Error", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
+        // Set the onClickListener for the loginPrompt
         loginPrompt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,6 +131,5 @@ public class SignupActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
     }
 }

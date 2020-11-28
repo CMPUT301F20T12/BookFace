@@ -1,20 +1,21 @@
 package com.example.bookface;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.google.firebase.firestore.DocumentReference;
-
-
 /**
  * This is a class that contains the attributes for a Request
  */
-public class Request implements Parcelable {
+public class Request {
+    // Variable declarations
     private Book bookRequested;
-    private DocumentReference borrower;
+    private User borrower;
     private String requestStatus;
 
-    public Request(Book bookRequested, DocumentReference borrower, String requestStatus) {
+    /**
+     * This is the constructor
+     * @param bookRequested
+     * @param borrower
+     * @param requestStatus
+     */
+    public Request(Book bookRequested, User borrower, String requestStatus) {
         this.bookRequested = bookRequested;
         this.borrower = borrower;
         this.requestStatus = requestStatus;
@@ -22,53 +23,41 @@ public class Request implements Parcelable {
 
     //TODO: Location Object
 
-    protected Request(Parcel in) {
-        requestStatus = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(requestStatus);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Request> CREATOR = new Creator<Request>() {
-        @Override
-        public Request createFromParcel(Parcel in) {
-            return new Request(in);
-        }
-
-        @Override
-        public Request[] newArray(int size) {
-            return new Request[size];
-        }
-    };
-
+    /**
+     * This method is used to notify the owner
+     * @return
+     */
     public boolean notifyOwner(){
         return false;
     }
 
+    /**
+     * This method is used to notify the borrower
+     * @return
+     */
     public boolean notifyBorrower(){
         return false;
     }
 
+    /**
+     * This method is used to get the book that was requested
+     * @return
+     * The book that was requested
+     */
     public Book getBookRequested() {
         return bookRequested;
     }
 
+    // Getters and setters
     public void setBookRequested(Book bookRequested) {
         this.bookRequested = bookRequested;
     }
 
-    public DocumentReference getBorrower() {
+    public User getBorrower() {
         return borrower;
     }
 
-    public void setBorrower(DocumentReference borrower) {
+    public void setBorrower(User borrower) {
         this.borrower = borrower;
     }
 
