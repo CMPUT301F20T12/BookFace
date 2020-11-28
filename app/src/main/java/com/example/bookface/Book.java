@@ -2,6 +2,10 @@ package com.example.bookface;
 
 import android.os.Parcel;
 
+import com.google.firebase.firestore.DocumentReference;
+
+import java.util.ArrayList;
+
 
 /**
  * This is a class that contains the attributes for a Book
@@ -16,6 +20,8 @@ public class Book {
     private String ownerUsername;
     private String borrowerUsername;
     private String imageUrl;
+    private ArrayList<DocumentReference> requestlist;
+
 
     /**
      * This is the constructor
@@ -39,6 +45,7 @@ public class Book {
         this.ownerUsername = ownerUsername;
         this.borrowerUsername = borrowerUsername;
         this.imageUrl = imageUrl;
+        this.requestlist = new ArrayList<DocumentReference>();
     }
 
     // Getters and Setters
@@ -104,6 +111,14 @@ public class Book {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public ArrayList<DocumentReference> getRequestlist() {
+        return requestlist;
+    }
+
+    public void setRequestlist(ArrayList<DocumentReference> requestlist) {
+        this.requestlist = requestlist;
     }
 
     // for testing

@@ -216,8 +216,6 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                     author.setError("FIELD CANNOT BE EMPTY");
                 else if(title.getText().toString().length()==0)
                     title.setError("FIELD CANNOT BE EMPTY");
-                else if(imageView.getDrawable() == null)
-                    Toast.makeText(AddEditBookActivity.this, "Image not attached!", Toast.LENGTH_SHORT).show();
                 else{
                     localIsbn  =isbn.getText().toString();
                     localAuthors = author.getText().toString();
