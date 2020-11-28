@@ -65,15 +65,18 @@ public class RequestAcceptDeclineFragment extends DialogFragment {
             userEmail.setText(email);
             userContact.setText(contact);
 
+            DocumentReference bookRef = db.collection("books").document(bookId);
+            DocumentReference reqRef = db.collection("requests").document(requestId);
+
         acceptBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DocumentReference bookRef = db.collection("books").document(bookId);
                 bookRef.update("status", "Accepted");
-                DocumentReference reqRef = db.collection("requests").document(requestId);
                 reqRef.update("requeststatus", "Accepted").addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+
+                        // implement notifications here
 
                         bookRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
@@ -170,6 +173,7 @@ public class RequestAcceptDeclineFragment extends DialogFragment {
         declineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
 
                 DocumentReference reqRef = db.collection("requests").document(requestId);
                 reqRef.update("requeststatus", "Declined").addOnSuccessListener(new OnSuccessListener<Void>() {
