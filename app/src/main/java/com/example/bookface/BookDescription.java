@@ -123,7 +123,7 @@ public class BookDescription extends AppCompatActivity {
                         textDescription.setText(description);
                         textBorrower.setText(borrower);
                         textOwner.setText("@".concat(owner));
-                        if(imgUrl!="") {
+                        if(!imgUrl.equals("")) {
                             Picasso.with(getApplicationContext()).load(imgUrl).into(image);
                       
                             // Show the enlarged image
@@ -235,6 +235,9 @@ public class BookDescription extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method is used to open a dialog box in order to send request
+     */
     public void openDialog() {
         SendRequestDialog sendRequestDialog = new SendRequestDialog();
         sendRequestDialog.show(getSupportFragmentManager(), "Send Request");

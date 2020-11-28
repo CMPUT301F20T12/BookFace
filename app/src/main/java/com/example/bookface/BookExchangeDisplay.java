@@ -1,38 +1,29 @@
 package com.example.bookface;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.LocationCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
@@ -48,16 +39,13 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
- * This class handles the activity for Book exchange
+ * This activity handles the display of the request once accepted
  */
-public class BookExchange extends AppCompatActivity implements OnMapReadyCallback {
+public class BookExchangeDisplay extends AppCompatActivity implements OnMapReadyCallback {
 
     // Declare variables
-    Location currentLocation;
-    FusedLocationProviderClient fusedLocationProviderClient;
     Geocoder geo, geoStartUp;
     GoogleMap gMap;
     FirebaseAuth mFirebaseAuth;
@@ -66,13 +54,10 @@ public class BookExchange extends AppCompatActivity implements OnMapReadyCallbac
     String requestId, rStatus, borrowerId, bookId;
     String currentUser = null;
 
-    // Initialize the constants
-    private static final int REQUEST_CODE = 101;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_exchange);
+        setContentView(R.layout.activity_book_exchange_display);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         userInstance = mFirebaseAuth.getCurrentUser();
@@ -84,18 +69,14 @@ public class BookExchange extends AppCompatActivity implements OnMapReadyCallbac
         TextView textTitle = (TextView) findViewById(R.id.titleText);
         TextView textIsbn = (TextView) findViewById(R.id.isbnText);
         TextView textStatus = (TextView) findViewById(R.id.statusText);
-        TextView textRequests = (TextView) findViewById(R.id.viewRequestsText);
         ImageView image = (ImageView) findViewById(R.id.imageView);
 
-        // Set the value of the fields in the textViews
         if (userInstance != null){
             currentUser = (String) userInstance.getDisplayName();
 
             // Retrieve the request passed through the intent
             Bundle b = getIntent().getExtras();
-//            System.out.println(b.get("BOOK_ID"));
             if (b!= null) {
-//                bookId = (String) b.get("BOOK_ID");
                 requestId = (String) b.get("REQUEST_ID");
             }
             FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -140,23 +121,11 @@ public class BookExchange extends AppCompatActivity implements OnMapReadyCallbac
 
                                 // TODO
                                 if (owner.equals(currentUser)) {
-                                    // Get the current location
-                                    fusedLocationProviderClient =
-                                            LocationServices.getFusedLocationProviderClient(BookExchange.this);
-                                    fetchLastLocation();
-
-                                    textRequests.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            // Call Requests activity for this particular book
-                                        }
-                                    });
-
                                     btnTop.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
                                             // Call MyBooks Activity
-                                            Intent toMyBooks = new Intent(BookExchange.this, MyBooks.class);
+                                            Intent toMyBooks = new Intent(BookExchangeDisplay.this, MyBooks.class);
                                             startActivity(toMyBooks);
                                         }
                                     });
@@ -164,29 +133,32 @@ public class BookExchange extends AppCompatActivity implements OnMapReadyCallbac
                                     btnBottom.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            // Set the location
-                                            // Code built upon: https://firebaseopensource.com/projects/firebase/geofire-android/
-                                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("path/to/geofire");
-                                            GeoFire geoFire = new GeoFire(ref);
-                                            geoFire.setLocation(requestId, new GeoLocation(currentLocation.getLatitude(),
-                                                    currentLocation.getLongitude()), new GeoFire.CompletionListener() {
-                                                @Override
-                                                public void onComplete(String key, DatabaseError error) {
-                                                    if (error != null) {
-                                                        System.err.println("There was an error saving the location to GeoFire: " + error);
-                                                    } else {
-                                                        System.out.println("Location saved on server successfully!");
-                                                    }
-                                                }
-                                            });
-
-                                            // Call the functionality to intent to display the book exchange
-                                            Intent toBookExchangeDisplay = new Intent(BookExchange.this,
-                                                    BookExchangeDisplay.class);
-                                            toBookExchangeDisplay.putExtra("REQUEST_ID", requestId);
-                                            startActivity(toBookExchangeDisplay);
+                                            // Handle the book scan to handover
                                         }
                                     });
+                                }
+                                else {
+                                    btnTop.setText("My Requests");
+                                    if (status.equals("borrowed".toLowerCase())) {
+                                        btnBottom.setText("Scan to Return");
+                                    }
+                                    else {
+                                        btnBottom.setText("Scan to Borrow");
+                                    }
+                                    btnTop.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            // Call MyRequests Activity
+                                        }
+                                    });
+
+                                    btnBottom.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            // Call to scan the book to return/borrow
+                                        }
+                                    });
+
                                 }
                             }
                         }
@@ -196,45 +168,42 @@ public class BookExchange extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    /**
-     * This method fetches the current location of the device
-     * This code was built up upon the video: https://www.youtube.com/watch?v=boyyLhXAZAQ&feature=youtu.be
-     */
-    private void fetchLastLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]
-                    {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
-            return;
-        }
-        Task<Location> task = fusedLocationProviderClient.getLastLocation();
-
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-                    currentLocation = location;
-                    Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + " " + currentLocation.getLongitude(),
-                            Toast.LENGTH_SHORT).show();
-                    SupportMapFragment supportMapFragment = (SupportMapFragment)
-                            getSupportFragmentManager().findFragmentById(R.id.map);
-                    supportMapFragment.getMapAsync(BookExchange.this);
-                }
-            }
-        });
-    }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
+        Location currentLocation = null;
         TextView textAddress = (TextView) findViewById(R.id.addressText);
 
-        // Retrieve current location and put marker
+        // Retrieve current location from the firebase
+        // Code built upon: https://firebaseopensource.com/projects/firebase/geofire-android/
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("path/to/geofire");
+        GeoFire geoFire = new GeoFire(ref);
+
+        geoFire.getLocation(requestId, new LocationCallback() {
+            @Override
+            public void onLocationResult(String key, GeoLocation location) {
+                if (location != null) {
+                    currentLocation.setLatitude(location.latitude);
+                    currentLocation.setLongitude(location.longitude);
+                    System.out.println(String.format("The location for key %s is [%f,%f]", key, location.latitude, location.longitude));
+                }
+                else {
+                    System.out.println(String.format("There is no location for key %s in GeoFire", key));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.err.println("There was an error getting the GeoFire location: " + databaseError);
+            }
+        });
+
+        // Go to the location address
         LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         gMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
 
+        // Display the address
         List<Address> addresses = null;
         geoStartUp = new Geocoder(this, Locale.getDefault());
 
@@ -248,46 +217,8 @@ public class BookExchange extends AppCompatActivity implements OnMapReadyCallbac
             e.printStackTrace();
         }
         if (addresses != null) {
+            // Insert marker at the location
             gMap.addMarker(new MarkerOptions().position(latLng));
-        }
-
-        // Get the new location
-        if (gMap != null) {
-            geo = new Geocoder(BookExchange.this, Locale.getDefault());
-
-            gMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                @Override
-                public void onMapClick(LatLng latLng) {
-                    try {
-                        gMap.clear();
-                        if (geo == null) {
-                            geo = new Geocoder(BookExchange.this, Locale.getDefault());
-                        }
-                        List<Address> address = geo.getFromLocation(latLng.latitude, latLng.longitude, 1);
-                        if (address.size() > 0) {
-                            gMap.addMarker(new MarkerOptions().position(latLng));
-                            String add = address.get(0).getAddressLine(0);
-                            textAddress.setText(add);
-                        }
-                    }
-                    catch (IOException ex) {
-                        if (ex != null)
-                            Toast.makeText(BookExchange.this, "Error:" + ex.getMessage().toString()
-                                    , Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    fetchLastLocation();
-                }
-                break;
         }
     }
 }
