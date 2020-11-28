@@ -27,8 +27,8 @@ import java.util.ArrayList;
  */
 public class MyRequestsActivity extends AppCompatActivity {
     ListView requestListView;
-    ArrayAdapter<Request> requestListAdapter;
-    ArrayList<Request> requests;
+    ArrayAdapter<DocumentReference> requestListAdapter;
+    ArrayList<DocumentReference> requests;
     FirebaseFirestore db;
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
@@ -41,10 +41,11 @@ public class MyRequestsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_requests);
 
 
-        requests = new ArrayList<>();
+//        requests = new ArrayList<>();
 
-        requestListAdapter = new RequestList(this, requests);
-        requestListView.setAdapter(requestListAdapter);
+        requestListView = findViewById(R.id.requestList);
+//        requestListAdapter = new RequestList(this, requests);
+//        requestListView.setAdapter(requestListAdapter);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         userInstance = mFirebaseAuth.getCurrentUser();
@@ -65,8 +66,8 @@ public class MyRequestsActivity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         // set the books in the recyclerView
-                        requests = (ArrayList<Request>)document.get("requestssent");
-
+                        requests = (ArrayList<DocumentReference>) document.get("sentrequests");
+                        System.out.println("THIS IS REQUEST SENT: "+requests);
                         requestListAdapter = new RequestList(context, requests);
                         requestListView.setAdapter(requestListAdapter);
 

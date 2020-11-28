@@ -18,6 +18,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ public class SendRequestDialog extends AppCompatDialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle("Send Request?")
-                .setMessage("This will send a book request. The owner will be notified if your request is accepted")
+                .setMessage("This will send a book request to the owner. You will be notified if your request is accepted.")
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
@@ -43,13 +44,18 @@ public class SendRequestDialog extends AppCompatDialogFragment {
                         String bookid = bundle.getString("bookid");
                         String borrowerid = bundle.getString("borrowerid");
 
+                        DocumentReference reqBookRef = db.collection("books").document(bookid);
+                        DocumentReference borrowerRef = db.collection("users").document(borrowerid);
+
                         String requestid = bookid+borrowerid;
 
                         // Add a request to requests collection in Firestore
                         Map<String, Object> request = new HashMap<>();
-                        request.put("bookid", bookid);
-                        request.put("borrowerid", borrowerid);
+                        request.put("bookid", reqBookRef);
+                        request.put("borrowerid", borrowerRef);
                         request.put("requeststatus", "pending");
+
+                        System.out.println("REQ OBJ: "+request);
 
                         db.collection("requests").document(requestid)
                                 .set(request)
@@ -66,15 +72,14 @@ public class SendRequestDialog extends AppCompatDialogFragment {
                                     }
                                 });
 
-                        DocumentReference borrowerRef = db.collection("users").document(borrowerid);
+
                         DocumentReference requestRef = db.collection("requests").document(requestid);
-                        DocumentReference bookRequestedRef = db.collection("books").document(bookid);
 
                         // add request docref to sentrequests for the borrower
-                        borrowerRef.update("sentrequests", FieldValue.arrayUnion(requestid));
+                        borrowerRef.update("sentrequests", FieldValue.arrayUnion(requestRef));
 
                         // add request docref to requestlist for the book
-                        bookRequestedRef.update("requestlist", FieldValue.arrayUnion(requestRef));
+                        reqBookRef.update("requestlist", FieldValue.arrayUnion(requestRef));
 
                         // redirect to MyRequests
                         Intent toMyRequests = new Intent(SendRequestDialog.this.getActivity(), MyRequestsActivity.class);
