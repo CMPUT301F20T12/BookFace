@@ -64,9 +64,25 @@ public class ViewRequestUserList extends ArrayAdapter<DocumentReference>{
                         TextView requesterView = finalView.findViewById(R.id.requesterName);
                         Map requestData = request.getData();
                         System.out.println("REQUEST DATA: "+requestData);
-                        String requesterName = requestData.get("borrowerid").toString();
-                        System.out.println("Requester name: "+requesterName);
-                        requesterView.setText(requesterName);
+                        DocumentReference borrowerRef = (DocumentReference) requestData.get("borrowerid");
+
+                        borrowerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        Map borrowerData = document.getData();
+                                        String requesterName = borrowerData.get("username").toString();
+                                        requesterView.setText(requesterName);
+                                    } else {
+                                        Log.d(TAG, "No such document");
+                                    }
+                                } else {
+                                    Log.d(TAG, "get failed with ", task.getException());
+                                }
+                            }
+                        });
 
                     } else {
                         Log.d(TAG, "No such document");
