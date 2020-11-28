@@ -29,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.w3c.dom.Document;
 import org.w3c.dom.Text;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -73,6 +74,84 @@ public class RequestAcceptDeclineFragment extends DialogFragment {
                 reqRef.update("requeststatus", "Accepted").addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+
+                        bookRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot book = task.getResult();
+                                    if (book.exists()) {
+                                        Map bookData = book.getData();
+
+                                        ArrayList<DocumentReference> requestReferences = (ArrayList<DocumentReference>) book.get("requestlist");
+                                        for (DocumentReference reqRef:requestReferences)
+                                        {
+                                            System.out.println("REQ_REF:  "+reqRef);
+                                            reqRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        DocumentSnapshot document = task.getResult();
+                                                        if (document.exists()) {
+                                                            Map reqData = document.getData();
+                                                            String reqStatus = reqData.get("requeststatus").toString();
+                                                            DocumentReference borrower = (DocumentReference) reqData.get("borrowerid");
+                                                            System.out.println("RQ_STATUS: "+reqStatus);
+                                                            if(reqStatus.equals("Accepted")==false){
+                                                                borrower.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                        if (task.isSuccessful()) {
+                                                                            DocumentSnapshot document = task.getResult();
+                                                                            if (document.exists()) {
+                                                                                Map borrowerData = document.getData();
+                                                                                ArrayList<DocumentReference> sentReq = (ArrayList<DocumentReference>) borrowerData.get("sentrequests");
+                                                                                sentReq.remove(reqRef);
+                                                                                borrower.update("sentrequests",sentReq);
+                                                                            } else {
+                                                                                Log.d(TAG, "No such document");
+                                                                            }
+                                                                        } else {
+                                                                            Log.d(TAG, "get failed with ", task.getException());
+                                                                        }
+                                                                    }
+                                                                });
+                                                                reqRef.delete()
+                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                            @Override
+                                                                            public void onSuccess(Void aVoid) {
+                                                                                Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                                                                            }
+                                                                        })
+                                                                        .addOnFailureListener(new OnFailureListener() {
+                                                                            @Override
+                                                                            public void onFailure(@NonNull Exception e) {
+                                                                                Log.w(TAG, "Error deleting document", e);
+                                                                            }
+                                                                        });
+                                                            }
+                                                        } else {
+                                                            Log.d(TAG, "No such document");
+                                                        }
+                                                    } else {
+                                                        Log.d(TAG, "get failed with ", task.getException());
+                                                    }
+                                                }
+                                            });
+                                        }
+
+
+
+                                    } else {
+                                        Log.d(TAG, "No such document");
+                                    }
+                                } else {
+                                    Log.d(TAG, "get failed with ", task.getException());
+                                }
+                            }
+                        });
+
+
                         ArrayList<DocumentReference> updatedReqList = new ArrayList<>();
                         updatedReqList.add(reqRef);
                         bookRef.update("requestlist", updatedReqList);
