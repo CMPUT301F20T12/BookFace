@@ -13,6 +13,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,28 +48,31 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * This class handles the activity for Book exchange
  */
 public class SetLocationActivity extends AppCompatActivity implements OnMapReadyCallback {
-
-    // Declare variables
-    Location currentLocation;
-    FusedLocationProviderClient fusedLocationProviderClient;
-    Geocoder geo, geoStartUp;
-    GoogleMap gMap;
-    FirebaseAuth mFirebaseAuth;
-    FirebaseUser userInstance;
-    String owner, author, borrower, title, status, isbn, imgUrl;
-    String requestId, rStatus, borrowerId, bookId;
-    String currentUser = null;
+            // Declare variables
+    private Location currentLocation;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private Geocoder geo, geoStartUp;
+    private GoogleMap gMap;
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser userInstance;
+    private String owner, author, borrower, title, status, isbn, imgUrl;
+    private String requestId, rStatus, borrowerId, bookId;
+    private String currentUser = null;
+//    private DocumentReference docRefRequest;
 
     // Initialize the constants
     private static final int REQUEST_CODE = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        final String TAG = "SetLocationTag";
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_location);
 
@@ -81,7 +86,6 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
         TextView textTitle = (TextView) findViewById(R.id.titleText);
         TextView textIsbn = (TextView) findViewById(R.id.isbnText);
         TextView textStatus = (TextView) findViewById(R.id.statusText);
-        TextView textRequests = (TextView) findViewById(R.id.viewRequestsText);
         ImageView image = (ImageView) findViewById(R.id.imageView);
 
         // Set the value of the fields in the textViews
@@ -94,6 +98,7 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
             if (b!= null) {
 //                bookId = (String) b.get("BOOK_ID");
                 requestId = (String) b.get("REQUEST_ID");
+                System.out.println("REQ ID: "+ requestId);
             }
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -103,91 +108,111 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                     if (error == null && value.exists() && value != null) {
-                        bookId = value.getString("bookid");
-                        borrowerId = value.getString("borrowerid");
-                        rStatus = value.getString("requeststatus");
-                    }
+                        docRefRequest.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        Map requestData = document.getData();
+                                        DocumentReference bookRef = (DocumentReference) requestData.get("bookid");
+                                        bookRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 
-                    DocumentReference docRefBook = db.collection("books").document(bookId);
-                    docRefBook.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                            if (error == null && value.exists() && value != null) {
-                                owner = value.getString("ownerUsername");
-                                author = value.getString("author");
-                                isbn = value.getString("isbn");
-                                status = value.getString("status");
-                                title = value.getString("title");
-                                imgUrl = value.getString("imageUrl");
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    DocumentSnapshot value = task.getResult();
+                                                    if (value.exists()) {
+//
+                                                        Map bookData = value.getData();
+                                                        owner = bookData.get("ownerUsername").toString();
+                                                        author = bookData.get("author").toString();
+                                                        isbn = value.get("isbn").toString();
+                                                        status = value.get("status").toString();
+                                                        title = value.get("title").toString();
+                                                        imgUrl = value.get("imageUrl").toString();
+                                                        System.out.println("Owner: "+owner+" ++++++++++++++++");
+                                                        System.out.println("ISBN: "+isbn+" ++++++++++++++++");
 
-                                if (value.get("borrowerUserName") == null) {
-                                    borrower = "No current borrower";
-                                }
-                                else {
-                                    borrower = value.get("borrowerUserName").toString();
-                                }
+                                                        if (value.get("borrowerUserName") == null) {
+                                                            borrower = "No current borrower";
+                                                        }
+                                                        else {
+                                                            borrower = value.get("borrowerUserName").toString();
+                                                        }
 
-                                textAuthor.setText(author);
-                                textIsbn.setText(isbn);
-                                textStatus.setText(status);
-                                textTitle.setText(Html.fromHtml("<b>" + title + "</b>"));
-                                if (!imgUrl.equals("")) {
-                                    Picasso.with(getApplicationContext()).load(imgUrl).into(image);
-                                }
+                                                        textAuthor.setText(author);
+                                                        textIsbn.setText(isbn);
+                                                        textStatus.setText(status);
+                                                        textTitle.setText(Html.fromHtml("<b>" + title + "</b>"));
+                                                        if (!imgUrl.equals("")) {
+                                                            Picasso.with(getApplicationContext()).load(imgUrl).into(image);
+                                                        }
+                    //
+                    //                                // TODO
+                                                    if (owner.equals(currentUser)) {
+                                                        // Get the current location
+                                                        fusedLocationProviderClient =
+                                                                LocationServices.getFusedLocationProviderClient(SetLocationActivity.this);
+                                                        fetchLastLocation();
 
-                                // TODO
-                                if (owner.equals(currentUser)) {
-                                    // Get the current location
-                                    fusedLocationProviderClient =
-                                            LocationServices.getFusedLocationProviderClient(SetLocationActivity.this);
-                                    fetchLastLocation();
 
-                                    textRequests.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            // Call Requests activity for this particular book
-                                        }
-                                    });
 
-                                    btnTop.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            // Call MyBooks Activity
-                                            Intent toMyBooks = new Intent(SetLocationActivity.this, MyBooks.class);
-                                            startActivity(toMyBooks);
-                                        }
-                                    });
+                                                        btnTop.setOnClickListener(new View.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(View view) {
+                                                                // Call MyBooks Activity
+                                                                Intent toMyBooks = new Intent(SetLocationActivity.this, MyBooks.class);
+                                                                startActivity(toMyBooks);
+                                                            }
+                                                        });
 
-                                    btnBottom.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            // Set the location
-                                            // Code built upon: https://firebaseopensource.com/projects/firebase/geofire-android/
-                                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("path/to/geofire");
-                                            GeoFire geoFire = new GeoFire(ref);
-                                            geoFire.setLocation(requestId, new GeoLocation(currentLocation.getLatitude(),
-                                                    currentLocation.getLongitude()), new GeoFire.CompletionListener() {
-                                                @Override
-                                                public void onComplete(String key, DatabaseError error) {
-                                                    if (error != null) {
-                                                        System.err.println("There was an error saving the location to GeoFire: " + error);
-                                                    } else {
-                                                        System.out.println("Location saved on server successfully!");
+                                                        btnBottom.setOnClickListener(new View.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(View view) {
+                                                                // Set the location
+                                                                // Code built upon: https://firebaseopensource.com/projects/firebase/geofire-android/
+                                                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("path/to/geofire");
+                                                                GeoFire geoFire = new GeoFire(ref);
+                                                                geoFire.setLocation(requestId, new GeoLocation(currentLocation.getLatitude(),
+                                                                        currentLocation.getLongitude()), new GeoFire.CompletionListener() {
+                                                                    @Override
+                                                                    public void onComplete(String key, DatabaseError error) {
+                                                                        if (error != null) {
+                                                                            System.err.println("There was an error saving the location to GeoFire: " + error);
+                                                                        } else {
+                                                                            System.out.println("Location saved on server successfully!");
+                                                                        }
+                                                                    }
+                                                                });
+
+                                                                // Call the functionality to intent to display the book exchange
+                                                                Intent toBookExchangeDisplay = new Intent(SetLocationActivity.this,
+                                                                        BookExchangeDisplayActivity.class);
+                                                                toBookExchangeDisplay.putExtra("REQUEST_ID", requestId);
+                                                                startActivity(toBookExchangeDisplay);
+                                                            }
+                                                        });
                                                     }
-                                                }
-                                            });
 
-                                            // Call the functionality to intent to display the book exchange
-                                            Intent toBookExchangeDisplay = new Intent(SetLocationActivity.this,
-                                                    BookExchangeDisplayActivity.class);
-                                            toBookExchangeDisplay.putExtra("REQUEST_ID", requestId);
-                                            startActivity(toBookExchangeDisplay);
-                                        }
-                                    });
+                                                    } else {
+                                                        Log.d(TAG, "No such document");
+                                                    }
+                                                } else {
+                                                    Log.d(TAG, "get failed with ", task.getException());
+                                                }
+                                            }
+                                        });
+
+                                    } else {
+                                        Log.d(TAG, "No such document");
+                                    }
+                                } else {
+                                    Log.d(TAG, "get failed with ", task.getException());
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
             });
         }
@@ -216,7 +241,7 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
                             Toast.LENGTH_SHORT).show();
                     SupportMapFragment supportMapFragment = (SupportMapFragment)
                             getSupportFragmentManager().findFragmentById(R.id.map);
-                    supportMapFragment.getMapAsync(SetLocationActivity.this);
+                    supportMapFragment.getMapAsync((OnMapReadyCallback) SetLocationActivity.this);
                 }
             }
         });
@@ -265,6 +290,7 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
                             gMap.addMarker(new MarkerOptions().position(latLng));
                             String add = address.get(0).getAddressLine(0);
                             textAddress.setText(add);
+//                            docRefRequest.update("address",add);
                         }
                     }
                     catch (IOException ex) {

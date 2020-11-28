@@ -1,5 +1,6 @@
 package com.example.bookface;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,6 +23,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
@@ -37,6 +40,7 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * This activity handles the display of the request once accepted
@@ -61,7 +65,7 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
         userInstance = mFirebaseAuth.getCurrentUser();
 
         Button btnTop = findViewById(R.id.myBooksOrMyRequestsButton);
-        Button btnBottom = findViewById(R.id.confirmButton);
+        Button btnBottom = findViewById(R.id.scanBookButton);
 
         TextView textAuthor = (TextView) findViewById(R.id.authorNameText);
         TextView textTitle = (TextView) findViewById(R.id.titleText);
@@ -79,88 +83,103 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
             }
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            // Retrieve the book from firebase
+
             DocumentReference docRefRequest = db.collection("requests").document(requestId);
             docRefRequest.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                     if (error == null && value.exists() && value != null) {
-                        bookId = value.getString("bookid");
-                        borrowerId = value.getString("borrowerid");
-                        rStatus = value.getString("requeststatus");
-                    }
+                        docRefRequest.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        Map requestData = document.getData();
+                                        DocumentReference bookRef = (DocumentReference) requestData.get("bookid");
+                                        bookRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 
-                    DocumentReference docRefBook = db.collection("books").document(bookId);
-                    docRefBook.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                            if (error == null && value.exists() && value != null) {
-                                owner = value.getString("ownerUsername");
-                                author = value.getString("author");
-                                isbn = value.getString("isbn");
-                                status = value.getString("status");
-                                title = value.getString("title");
-                                imgUrl = value.getString("imageUrl");
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    DocumentSnapshot value = task.getResult();
+                                                    if (value.exists()) {
+//
+                                                        Map bookData = value.getData();
+                                                        owner = bookData.get("ownerUsername").toString();
+                                                        author = bookData.get("author").toString();
+                                                        isbn = value.get("isbn").toString();
+                                                        status = value.get("status").toString();
+                                                        title = value.get("title").toString();
+                                                        imgUrl = value.get("imageUrl").toString();
+                                                        System.out.println("Owner: "+owner+" ++++++++++++++++");
+                                                        System.out.println("ISBN: "+isbn+" ++++++++++++++++");
 
-                                if (value.get("borrowerUserName") == null) {
-                                    borrower = "No current borrower";
-                                }
-                                else {
-                                    borrower = value.get("borrowerUserName").toString();
-                                }
+                                                        if (value.get("borrowerUserName") == null) {
+                                                            borrower = "No current borrower";
+                                                        }
+                                                        else {
+                                                            borrower = value.get("borrowerUserName").toString();
+                                                        }
 
-                                textAuthor.setText(author);
-                                textIsbn.setText(isbn);
-                                textStatus.setText(status);
-                                textTitle.setText(Html.fromHtml("<b>" + title + "</b>"));
-                                if (!imgUrl.equals("")) {
-                                    Picasso.with(getApplicationContext()).load(imgUrl).into(image);
-                                }
+                                                        textAuthor.setText(author);
+                                                        textIsbn.setText(isbn);
+                                                        textStatus.setText(status);
+                                                        textTitle.setText(Html.fromHtml("<b>" + title + "</b>"));
+                                                        if (!imgUrl.equals("")) {
+                                                            Picasso.with(getApplicationContext()).load(imgUrl).into(image);
+                                                        }
 
-                                // TODO
-                                if (owner.equals(currentUser)) {
-                                    btnTop.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            // Call MyBooks Activity
-                                            Intent toMyBooks = new Intent(BookExchangeDisplayActivity.this, MyBooks.class);
-                                            startActivity(toMyBooks);
-                                        }
-                                    });
+                                                        // TODO
+                                                        if (owner.equals(currentUser)) {
+                                                            btnTop.setOnClickListener(new View.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View view) {
+                                                                    // Call MyBooks Activity
+                                                                    Intent toMyBooks = new Intent(BookExchangeDisplayActivity.this, MyBooks.class);
+                                                                    startActivity(toMyBooks);
+                                                                }
+                                                            });
 
-                                    btnBottom.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            // Handle the book scan to handover
-                                        }
-                                    });
-                                }
-                                else {
-                                    btnTop.setText("My Requests");
-                                    if (status.equals("borrowed".toLowerCase())) {
-                                        btnBottom.setText("Scan to Return");
+                                                            btnBottom.setOnClickListener(new View.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View view) {
+                                                                    // Handle the book scan to handover
+                                                                }
+                                                            });
+                                                        }
+                                                        else {
+                                                            btnTop.setText("My Requests");
+                                                            if (status.equals("borrowed".toLowerCase())) {
+                                                                btnBottom.setText("Scan to Return");
+                                                            }
+                                                            else {
+                                                                btnBottom.setText("Scan to Borrow");
+                                                            }
+                                                            btnTop.setOnClickListener(new View.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View view) {
+                                                                    // Call MyRequests Activity
+                                                                }
+                                                            });
+
+                                                            btnBottom.setOnClickListener(new View.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View view) {
+                                                                    // Call to scan the book to return/borrow
+                                                                }
+                                                            });
+
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        });
                                     }
-                                    else {
-                                        btnBottom.setText("Scan to Borrow");
-                                    }
-                                    btnTop.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            // Call MyRequests Activity
-                                        }
-                                    });
-
-                                    btnBottom.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            // Call to scan the book to return/borrow
-                                        }
-                                    });
-
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
             });
         }

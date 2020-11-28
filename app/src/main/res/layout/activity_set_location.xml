@@ -118,23 +118,6 @@
             android:textSize="20sp"
             android:textStyle="italic" />
 
-        <TextView
-            android:id="@+id/viewRequestsText"
-            android:layout_width="229dp"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/authorNameText"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="109dp"
-            android:layout_marginTop="85dp"
-            android:layout_marginEnd="-1dp"
-            android:layout_marginRight="0dp"
-            android:layout_marginBottom="109dp"
-            android:gravity="right"
-            android:text="View Requests"
-            android:textSize="20sp"
-            android:textStyle="italic" />
-
     </RelativeLayout>
 
     <TextView
