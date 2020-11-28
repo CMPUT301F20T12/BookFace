@@ -2,8 +2,11 @@ package com.example.bookface;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,6 +60,15 @@ public class ViewRequestActivity extends AppCompatActivity {
                             requestListAdapter = new ViewRequestUserList(ViewRequestActivity.this, requestDocReferences);
                             System.out.println("DOC REFERENCES "+requestDocReferences);
                             requestListView.setAdapter(requestListAdapter);
+
+
+//                            requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                                @Override
+//                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//                                }
+//                            });
+
                         }
 
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
@@ -68,6 +80,7 @@ public class ViewRequestActivity extends AppCompatActivity {
                 }
             }
         });
+
 
 //        requestDataList = (ArrayList<Request>) b.get("REQ_LIST");
 //        requestListAdapter = new ViewRequestUserList(this,requestDataList);
