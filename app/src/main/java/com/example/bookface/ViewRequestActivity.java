@@ -89,6 +89,7 @@ public class ViewRequestActivity extends AppCompatActivity {
                                                                     String requesterContact = requesterData.get("contactNo").toString();
 //
                                                                     Bundle bundle = new Bundle();
+                                                                    bundle.putInt("POSITION",position);
                                                                     bundle.putString("BOOK_ID",bookId);
                                                                     bundle.putString("REQ_NAME", requesterName);
                                                                     bundle.putString("REQ_EMAIL", requesterEmail);

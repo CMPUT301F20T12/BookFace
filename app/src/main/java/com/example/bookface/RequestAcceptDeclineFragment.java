@@ -57,6 +57,8 @@ public class RequestAcceptDeclineFragment extends DialogFragment {
             String email = bundle.getString("REQ_EMAIL");
             String contact = bundle.getString("REQ_CONTACT");
 
+            int position = bundle.getInt("POSITION");
+
             bookId = bundle.getString("BOOK_ID");
             requestId = bookId.concat(requesterName);
             System.out.println(requestId);
@@ -110,7 +112,30 @@ public class RequestAcceptDeclineFragment extends DialogFragment {
                                                                                 Map borrowerData = document.getData();
                                                                                 ArrayList<DocumentReference> sentReq = (ArrayList<DocumentReference>) borrowerData.get("sentrequests");
                                                                                 sentReq.remove(reqRef);
-                                                                                borrower.update("sentrequests",sentReq);
+                                                                                borrower.update("sentrequests",sentReq).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                    @Override
+                                                                                    public void onSuccess(Void aVoid) {
+                                                                                        reqRef.delete()
+                                                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                    @Override
+                                                                                                    public void onSuccess(Void aVoid) {
+                                                                                                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                                                                                                    }
+                                                                                                })
+                                                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                                                    @Override
+                                                                                                    public void onFailure(@NonNull Exception e) {
+                                                                                                        Log.w(TAG, "Error deleting document", e);
+                                                                                                    }
+                                                                                                });
+                                                                                    }
+                                                                                })
+                                                                                        .addOnFailureListener(new OnFailureListener() {
+                                                                                            @Override
+                                                                                            public void onFailure(@NonNull Exception e) {
+                                                                                                Log.w(TAG, "Error deleting document", e);
+                                                                                            }
+                                                                                        });
                                                                             } else {
                                                                                 Log.d(TAG, "No such document");
                                                                             }
@@ -119,19 +144,6 @@ public class RequestAcceptDeclineFragment extends DialogFragment {
                                                                         }
                                                                     }
                                                                 });
-                                                                reqRef.delete()
-                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                            @Override
-                                                                            public void onSuccess(Void aVoid) {
-                                                                                Log.d(TAG, "DocumentSnapshot successfully deleted!");
-                                                                            }
-                                                                        })
-                                                                        .addOnFailureListener(new OnFailureListener() {
-                                                                            @Override
-                                                                            public void onFailure(@NonNull Exception e) {
-                                                                                Log.w(TAG, "Error deleting document", e);
-                                                                            }
-                                                                        });
                                                             }
                                                         } else {
                                                             Log.d(TAG, "No such document");
@@ -174,20 +186,94 @@ public class RequestAcceptDeclineFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
 
-
-                DocumentReference reqRef = db.collection("requests").document(requestId);
-                reqRef.update("requeststatus", "Declined").addOnSuccessListener(new OnSuccessListener<Void>() {
+                bookRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully updated!");
-                    }
-                })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error updating document", e);
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Map bookData = document.getData();
+                                ArrayList<DocumentReference>bookReqList = (ArrayList<DocumentReference>) bookData.get("requestlist");
+                                bookReqList.remove(reqRef);
+                                bookRef.update("requestlist", bookReqList).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        reqRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    DocumentSnapshot document = task.getResult();
+                                                    if (document.exists()) {
+                                                        Map reqData = document.getData();
+                                                        DocumentReference borrower = (DocumentReference) reqData.get("borrowerid");
+                                                        borrower.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    DocumentSnapshot document = task.getResult();
+                                                                    if (document.exists()) {
+                                                                        Map borrowerData = document.getData();
+                                                                        ArrayList<DocumentReference> sentReq = (ArrayList<DocumentReference>) borrowerData.get("sentrequests");
+                                                                        sentReq.remove(reqRef);
+                                                                        borrower.update("sentrequests",sentReq).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                            @Override
+                                                                            public void onSuccess(Void aVoid) {
+                                                                                reqRef.delete()
+                                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                            @Override
+                                                                                            public void onSuccess(Void aVoid) {
+                                                                                                Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                                                                                            }
+                                                                                        })
+                                                                                        .addOnFailureListener(new OnFailureListener() {
+                                                                                            @Override
+                                                                                            public void onFailure(@NonNull Exception e) {
+                                                                                                Log.w(TAG, "Error deleting document", e);
+                                                                                            }
+                                                                                        });
+                                                                            }
+                                                                        })
+                                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                                    @Override
+                                                                                    public void onFailure(@NonNull Exception e) {
+                                                                                        Log.w(TAG, "Error updating document", e);
+                                                                                    }
+                                                                                });
+
+                                                                    } else {
+                                                                        Log.d(TAG, "No such document");
+                                                                    }
+                                                                } else {
+                                                                    Log.d(TAG, "get failed with ", task.getException());
+                                                                }
+                                                            }
+                                                        });
+                                                    } else {
+                                                        Log.d(TAG, "No such document");
+                                                    }
+                                                } else {
+                                                    Log.d(TAG, "get failed with ", task.getException());
+                                                }
+                                            }
+                                        });
+                                    }
+                                })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w(TAG, "Error updating document", e);
+                                            }
+                                        });
+
+                            } else {
+                                Log.d(TAG, "No such document");
                             }
-                        });
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                });
+
             }
         });
         }
