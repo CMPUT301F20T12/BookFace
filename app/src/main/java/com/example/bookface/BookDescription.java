@@ -258,6 +258,9 @@ public class BookDescription extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method is used to open a dialog box in order to send request
+     */
     public void openDialog() {
         SendRequestDialog sendRequestDialog = new SendRequestDialog();
         sendRequestDialog.show(getSupportFragmentManager(), "Send Request");

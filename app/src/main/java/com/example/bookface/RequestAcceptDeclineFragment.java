@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -187,6 +188,10 @@ public class RequestAcceptDeclineFragment extends DialogFragment {
                         updatedReqList.add(reqRef);
                         bookRef.update("requestlist", updatedReqList);
                         Log.d(TAG, "DocumentSnapshot successfully updated!");
+
+                        Intent intent = new Intent(getActivity(), SetLocationActivity.class);
+                        intent.putExtra("REQUEST_ID", requestId);
+                        startActivity(intent);
                     }
                 })
                         .addOnFailureListener(new OnFailureListener() {
