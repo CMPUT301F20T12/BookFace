@@ -37,23 +37,17 @@
 
         </LinearLayout>
 
+        <ListView
+            android:id="@+id/requestList"
+            android:layout_width="match_parent"
+            android:layout_height="575dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp">
+
+        </ListView>
+
     </LinearLayout>
 
-
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycle_view"
-        android:layout_width="match_parent"
-        android:layout_height="542dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="58dp"
-        android:orientation="vertical"></androidx.recyclerview.widget.RecyclerView>
-
-    <FrameLayout
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_bar"

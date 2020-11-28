@@ -9,7 +9,9 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
-    
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,6 +25,7 @@
             android:value="@string/maps_api_key" />
 
         <activity android:name=".BookExchange" />
+        <activity android:name=".ZoomActivity"></activity>
         <activity android:name=".SearchActivity" />
         <activity android:name=".MyRequestsActivity" />
         <activity android:name=".BookDescription" />

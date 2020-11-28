@@ -1,65 +1,57 @@
 package com.example.bookface;
 
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This is a class that keeps track of a list of request objects
  */
-public class RequestList {
-    private List<Request> requests = new ArrayList<>();
+public class RequestList extends ArrayAdapter<Request> {
 
-    // To be implemented
+    private ArrayList<Request> requests;
+    private Context context;
 
-//    /**
-//     * This method checks if the request exists in the request list
-//     * @param request
-//     * @return true if exists in request list
-//     *  false if it doesn't exist in request list
-//     */
-//    public boolean contains(Request request) {
-//        if (requests.contains(request)) {
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
-//
-//    /**
-//     * This method returns the size of the list
-//     * @return size of the list
-//     */
-//    public int size() {
-//        return requests.size();
-//    }
-//
-//    /**
-//     * This adds a request to the list if the request does not exist
-//     * @param request
-//     */
-//    public void addRequest(Request request) {
-//        if (requests.contains(request)) {
-//            throw new IllegalArgumentException();
-//        }
-//        requests.add(request);
-//    }
-//
-//    /**
-//     * This method deletes the book given to it
-//     * @param request
-//     * This is a candidate book to delete
-//     * @return true if the book given was actually in the list and was deleted successfully
-//     * false otherwise
-//     */
-//    public boolean deleteRequest(Request request) {
-//        if (requests.contains(request)) {
-//            requests.remove(request);
-//            return true;
-//        }
-//        else {
-//            return false;
-//        }
-//    }
+    public RequestList(Context context, ArrayList<Request> requests) {
+        super(context, 0, requests);
+        this.requests = requests;
+        this.context = context;
+    }
 
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        View view = convertView;
+
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.request, parent, false);
+        }
+
+        final Request request = requests.get(position);
+        final Book requestedBook = request.getBookRequested();
+
+        TextView bookTitle = view.findViewById(R.id.request_book_title);
+        TextView bookAuthor = view.findViewById(R.id.request_book_author);
+        TextView status = view.findViewById(R.id.request_status);
+
+        bookTitle.setText(requestedBook.getTitle());
+        bookAuthor.setText(requestedBook.getAuthor());
+        status.setText(request.getRequestStatus());
+
+        return view;
+    }
+
+    public int getCount() {
+        return requests.size();
+    }
 }
 

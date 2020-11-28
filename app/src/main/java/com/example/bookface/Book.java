@@ -2,11 +2,16 @@ package com.example.bookface;
 
 import android.os.Parcel;
 
+import com.google.firebase.firestore.DocumentReference;
+
+import java.util.ArrayList;
+
 
 /**
  * This is a class that contains the attributes for a Book
  */
 public class Book {
+    // Declare variables
     private String title;
     private String author;
     private String ISBN;
@@ -15,7 +20,20 @@ public class Book {
     private String ownerUsername;
     private String borrowerUsername;
     private String imageUrl;
+    private ArrayList<DocumentReference> requestlist;
 
+
+    /**
+     * This is the constructor
+     * @param title
+     * @param author
+     * @param ISBN
+     * @param description
+     * @param status
+     * @param ownerUsername
+     * @param borrowerUsername
+     * @param imageUrl
+     */
     public Book(String title, String author, String ISBN, String description,
                 String status, String ownerUsername, String borrowerUsername, String imageUrl) {
 
@@ -27,9 +45,10 @@ public class Book {
         this.ownerUsername = ownerUsername;
         this.borrowerUsername = borrowerUsername;
         this.imageUrl = imageUrl;
+        this.requestlist = new ArrayList<DocumentReference>();
     }
 
-
+    // Getters and Setters
     public String getTitle() {
         return title;
     }
@@ -94,6 +113,14 @@ public class Book {
         this.imageUrl = imageUrl;
     }
 
+    public ArrayList<DocumentReference> getRequestlist() {
+        return requestlist;
+    }
+
+    public void setRequestlist(ArrayList<DocumentReference> requestlist) {
+        this.requestlist = requestlist;
+    }
+
     // for testing
     @Override
     public boolean equals(Object o) {
@@ -105,10 +132,10 @@ public class Book {
                 && description.equals(book.description) && status.equals(book.status)
                 && borrowerUsername.equals(book.borrowerUsername)) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
-
     }
 
 }

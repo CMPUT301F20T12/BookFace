@@ -36,6 +36,9 @@ import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * This class is the activity that displays info of the book selected
+ */
 public class BookDescription extends AppCompatActivity {
 
     private static final String TAG = "BOOK_DESC_MSG";
@@ -43,6 +46,7 @@ public class BookDescription extends AppCompatActivity {
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
 
+    // Declaration of some variables
     String owner;
     String author;
     String borrower;
@@ -61,7 +65,6 @@ public class BookDescription extends AppCompatActivity {
         setContentView(R.layout.activity_bookdescription_updated);
 
         // Retrieve the objects passed into the intent object
-        // TODO
         mFirebaseAuth = FirebaseAuth.getInstance();
         userInstance = mFirebaseAuth.getCurrentUser();
 
@@ -82,6 +85,7 @@ public class BookDescription extends AppCompatActivity {
         if (userInstance != null){
             currentUser = (String) userInstance.getDisplayName();
 
+            // Get the value passed while intenting
             Bundle b = getIntent().getExtras();
             System.out.println(b.get("BOOK_ID"));
             if (b!= null) {
@@ -90,7 +94,9 @@ public class BookDescription extends AppCompatActivity {
             System.out.println("BOOKS ID: "+bookId);
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+            // Firebase document listener
             final DocumentReference docRef = db.collection("books").document(bookId);
+          
             docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -105,7 +111,8 @@ public class BookDescription extends AppCompatActivity {
 
                         if (value.get("borrowerUserName") == null) {
                             borrower = "No current borrower";
-                        } else {
+                        } 
+                        else {
                             borrower = value.get("borrowerUserName").toString();
                         }
 
@@ -116,8 +123,19 @@ public class BookDescription extends AppCompatActivity {
                         textDescription.setText(description);
                         textBorrower.setText(borrower);
                         textOwner.setText("@".concat(owner));
-                        if(imgUrl!="")
+                        if(imgUrl!="") {
                             Picasso.with(getApplicationContext()).load(imgUrl).into(image);
+                      
+                            // Show the enlarged image
+                            image.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent toZoom = new Intent(BookDescription.this, ZoomActivity.class);
+                                    toZoom.putExtra("imgURL", imgUrl);
+                                    startActivity(toZoom);
+                                }
+                            });
+                        }
                     }
 
                     textOwner.setOnClickListener(new View.OnClickListener() {
@@ -149,10 +167,12 @@ public class BookDescription extends AppCompatActivity {
                                                 userProfileFragment.setArguments(bundle);
                                                 userProfileFragment.show(getSupportFragmentManager(),"userProfileFragment");
                                             }
-                                        } else {
+                                        } 
+                                        else {
                                             Log.d(TAG, "No such document");
                                         }
-                                    } else {
+                                    } 
+                                    else {
                                         Log.d(TAG, "get failed with ", task.getException());
                                     }
                                 }
@@ -160,9 +180,9 @@ public class BookDescription extends AppCompatActivity {
                         }
                     });
 
-                    // TODO
+                  
+                    // If the current user is the owner of the book, set the fields and buttons' visibility accordingly
                     if (owner.equals(currentUser)) {
-//                        Toast.makeText(getApplicationContext(), "Entered the area", Toast.LENGTH_SHORT).show();
                         btnEdit.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -188,8 +208,8 @@ public class BookDescription extends AppCompatActivity {
                             }
                         });
                     }
+                    // If the owner is not the current user, set the fields differently
                     else {
-//                        Toast.makeText(getApplicationContext(), "Did not enter the area", Toast.LENGTH_SHORT).show();
                         btnTop.setText("Search");
                         btnEdit.setVisibility(View.INVISIBLE);
                         btnBottom.setText("Send Request");
@@ -214,7 +234,6 @@ public class BookDescription extends AppCompatActivity {
             });
         }
     }
-
 
     public void openDialog() {
         SendRequestDialog sendRequestDialog = new SendRequestDialog();

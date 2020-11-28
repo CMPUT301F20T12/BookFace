@@ -6,12 +6,20 @@ import java.util.ArrayList;
  * This is a class that contains the attributes for a user
  */
 public class User {
+
+    // Declare variables
     private String username;
     private String email;
     private String contactNo;
     private ArrayList<String> booksOwned;
     private ArrayList<String> booksBorrowed;
 
+    /**
+     * This is the constructor
+     * @param username
+     * @param email
+     * @param contactNo
+     */
     public User(String username, String email, String contactNo) {
         this.username = username;
         this.email = email;
@@ -20,6 +28,7 @@ public class User {
         this.booksBorrowed = new ArrayList<String>();
     }
 
+    // Getters and setters
     public String getUsername() {
         return username;
     }
@@ -61,6 +70,11 @@ public class User {
         this.booksBorrowed = booksBorrowed;
     }
 
+    /**
+     * Overriding the equals method to make it compatible with the class
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
