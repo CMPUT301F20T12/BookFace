@@ -2,6 +2,7 @@ package com.example.bookface;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +37,23 @@ import java.util.Map;
 import static android.content.ContentValues.TAG;
 
 public class RequestAcceptDeclineFragment extends DialogFragment {
+
+    private OnFragmentInteractionListener listener;
+
+    public interface OnFragmentInteractionListener {
+        void onDeclineConfirm(DocumentReference reqRef);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener){
+            listener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
 
     @Nullable
     @Override
@@ -165,8 +183,6 @@ public class RequestAcceptDeclineFragment extends DialogFragment {
                                 }
                             }
                         });
-
-
                         ArrayList<DocumentReference> updatedReqList = new ArrayList<>();
                         updatedReqList.add(reqRef);
                         bookRef.update("requestlist", updatedReqList);
@@ -222,6 +238,7 @@ public class RequestAcceptDeclineFragment extends DialogFragment {
                                                                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                                             @Override
                                                                                             public void onSuccess(Void aVoid) {
+                                                                                                listener.onDeclineConfirm(reqRef);
                                                                                                 Log.d(TAG, "DocumentSnapshot successfully deleted!");
                                                                                             }
                                                                                         })

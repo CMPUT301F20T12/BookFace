@@ -20,10 +20,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class ViewRequestActivity extends AppCompatActivity {
+public class ViewRequestActivity extends AppCompatActivity implements RequestAcceptDeclineFragment.OnFragmentInteractionListener {
 
     ListView requestListView;
     ArrayAdapter<DocumentReference> requestListAdapter;
+    ArrayList<DocumentReference> requestDocReferences;
 
 //    ArrayList<Request> requestDataList;
     String bookId;
@@ -52,7 +53,7 @@ public class ViewRequestActivity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     System.out.println("DOCUMENT "+document);
                     if (document.exists()) {
-                        ArrayList<DocumentReference> requestDocReferences = (ArrayList<DocumentReference>) document.get("requestlist");
+                        requestDocReferences = (ArrayList<DocumentReference>) document.get("requestlist");
                         System.out.println("REQ DOC REF IN VIEW "+requestDocReferences);
                         if(requestDocReferences!=null){
 
@@ -134,5 +135,10 @@ public class ViewRequestActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void onDeclineConfirm(DocumentReference reqRef){
+        requestDocReferences.remove(reqRef);
+        requestListAdapter.notifyDataSetChanged();
     }
 }
