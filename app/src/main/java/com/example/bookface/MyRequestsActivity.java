@@ -92,18 +92,18 @@ public class MyRequestsActivity extends AppCompatActivity {
                     Intent toMyBooks = new Intent(MyRequestsActivity.this, MyBooks.class);
                     startActivity(toMyBooks);
                     break;
-                case R.id.requests:
-                    Intent toRequests = new Intent(MyRequestsActivity.this, MyRequestsActivity.class);
-                    startActivity(toRequests);
-                    break;
                 case R.id.profile:
                     Intent toMyProfile = new Intent(MyRequestsActivity.this, UserProfileActivity.class);
                     startActivity(toMyProfile);
                     break;
+                case R.id.search:
+                    Intent toRequests = new Intent(MyRequestsActivity.this, SearchActivity.class);
+                    startActivity(toRequests);
+                    break;
 //                case R.id.notification:
 //                    Intent toNotification = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
 //                    startActivity(toNotification);
-//                   s break;
+//                    break;
             }
             return false;
         }

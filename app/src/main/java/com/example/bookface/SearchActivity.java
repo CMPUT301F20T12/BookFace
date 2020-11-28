@@ -150,6 +150,10 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                     Intent toMyProfile = new Intent(SearchActivity.this, UserProfileActivity.class);
                     startActivity(toMyProfile);
                     break;
+                case R.id.requests:
+                    Intent toMyRequests = new Intent(SearchActivity.this, MyRequestsActivity.class);
+                    startActivity(toMyRequests);
+                    break;
             }
             return false;
         }
