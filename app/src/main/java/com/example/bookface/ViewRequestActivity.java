@@ -18,6 +18,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ViewRequestActivity extends AppCompatActivity {
 
@@ -62,13 +63,78 @@ public class ViewRequestActivity extends AppCompatActivity {
                             requestListView.setAdapter(requestListAdapter);
 
 
-//                            requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                                @Override
-//                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                                    String requesterName = requestDocReferences.get(position);
+                            requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    DocumentReference requestRef = requestDocReferences.get(position);
+                                    requestRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                if (document.exists()) {
+
+                                                    Map requestData = document.getData();
+                                                    DocumentReference requesterRef = (DocumentReference) requestData.get("borrowerid");
+                                                    System.out.println(requesterRef);
+                                                    requesterRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                            if (task.isSuccessful()) {
+                                                                DocumentSnapshot requester = task.getResult();
+                                                                if (requester.exists()) {
+                                                                    Map requesterData = requester.getData();
+                                                                    String requesterName = requesterData.get("username").toString();
+                                                                    String requesterEmail = requesterData.get("email").toString();
+                                                                    String requesterContact = requesterData.get("contactNo").toString();
 //
-//                                }
-//                            });
+                                                                    Bundle bundle = new Bundle();
+                                                                    bundle.putString("REQ_NAME", requesterName);
+                                                                    bundle.putString("REQ_EMAIL", requesterEmail);
+                                                                    bundle.putString("REQ_CONTACT", requesterContact);
+//
+                                                                    System.out.println(bundle);
+
+                                                                    RequestAcceptDeclineFragment requestAcceptDeclineFragment = new RequestAcceptDeclineFragment();
+                                                                    requestAcceptDeclineFragment.setArguments(bundle);
+                                                                    requestAcceptDeclineFragment.show(getSupportFragmentManager(),"userProfileFragment");
+
+                                                                } else {
+                                                                    Log.d(TAG, "No such document");
+                                                                }
+                                                            } else {
+                                                                Log.d(TAG, "get failed with ", task.getException());
+                                                            }
+                                                        }
+                                                    });
+
+//                                                    System.out.println("REQUESTER DATA - "+requesterData);
+//                                                    String requesterName = requesterData.get("username").toString();
+//                                                    String requesterEmail = requesterData.get("email").toString();
+//                                                    String requesterContact = requesterData.get("contact").toString();
+//
+//                                                    Bundle bundle = new Bundle();
+//                                                    bundle.putString("REQ_NAME", requesterName);
+//                                                    bundle.putString("REQ_EMAIL", requesterEmail);
+//                                                    bundle.putString("REQ_CONTACT", requesterContact);
+//
+//                                                    System.out.println(bundle);
+
+//                                                    UserProfileFragment userProfileFragment = new UserProfileFragment();
+//                                                    userProfileFragment.setArguments(bundle);
+//                                                    userProfileFragment.show(getSupportFragmentManager(),"userProfileFragment");
+
+                                                } else {
+                                                    Log.d(TAG, "No such document");
+                                                }
+                                            } else {
+                                                Log.d(TAG, "get failed with ", task.getException());
+                                            }
+                                        }
+                                    });
+
+                                }
+                            });
 
                         }
 
