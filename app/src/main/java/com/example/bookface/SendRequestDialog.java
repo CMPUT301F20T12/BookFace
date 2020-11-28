@@ -76,14 +76,37 @@ public class SendRequestDialog extends AppCompatDialogFragment {
                         DocumentReference requestRef = db.collection("requests").document(requestid);
 
                         // add request docref to sentrequests for the borrower
-                        borrowerRef.update("sentrequests", FieldValue.arrayUnion(requestRef));
+                        borrowerRef.update("sentrequests", FieldValue.arrayUnion(requestRef)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                reqBookRef.update("requestlist", FieldValue.arrayUnion(requestRef)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Intent toMyRequests = new Intent(SendRequestDialog.this.getActivity(), MyRequestsActivity.class);
+                                        startActivity(toMyRequests);
+                                    }
+                                })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w(TAG, "Error updating document", e);
+                                            }
+                                        });
+                            }
+                        })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w(TAG, "Error updating document", e);
+                                    }
+                                });
 
-                        // add request docref to requestlist for the book
-                        reqBookRef.update("requestlist", FieldValue.arrayUnion(requestRef));
-
-                        // redirect to MyRequests
-                        Intent toMyRequests = new Intent(SendRequestDialog.this.getActivity(), MyRequestsActivity.class);
-                        startActivity(toMyRequests);
+//                        // add request docref to requestlist for the book
+//                        reqBookRef.update("requestlist", FieldValue.arrayUnion(requestRef));
+//
+//                        // redirect to MyRequests
+//                        Intent toMyRequests = new Intent(SendRequestDialog.this.getActivity(), MyRequestsActivity.class);
+//                        startActivity(toMyRequests);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

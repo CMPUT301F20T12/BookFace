@@ -89,6 +89,7 @@ public class ViewRequestActivity extends AppCompatActivity {
                                                                     String requesterContact = requesterData.get("contactNo").toString();
 //
                                                                     Bundle bundle = new Bundle();
+                                                                    bundle.putString("BOOK_ID",bookId);
                                                                     bundle.putString("REQ_NAME", requesterName);
                                                                     bundle.putString("REQ_EMAIL", requesterEmail);
                                                                     bundle.putString("REQ_CONTACT", requesterContact);
@@ -107,22 +108,6 @@ public class ViewRequestActivity extends AppCompatActivity {
                                                             }
                                                         }
                                                     });
-
-//                                                    System.out.println("REQUESTER DATA - "+requesterData);
-//                                                    String requesterName = requesterData.get("username").toString();
-//                                                    String requesterEmail = requesterData.get("email").toString();
-//                                                    String requesterContact = requesterData.get("contact").toString();
-//
-//                                                    Bundle bundle = new Bundle();
-//                                                    bundle.putString("REQ_NAME", requesterName);
-//                                                    bundle.putString("REQ_EMAIL", requesterEmail);
-//                                                    bundle.putString("REQ_CONTACT", requesterContact);
-//
-//                                                    System.out.println(bundle);
-
-//                                                    UserProfileFragment userProfileFragment = new UserProfileFragment();
-//                                                    userProfileFragment.setArguments(bundle);
-//                                                    userProfileFragment.show(getSupportFragmentManager(),"userProfileFragment");
 
                                                 } else {
                                                     Log.d(TAG, "No such document");
@@ -148,9 +133,5 @@ public class ViewRequestActivity extends AppCompatActivity {
             }
         });
 
-
-//        requestDataList = (ArrayList<Request>) b.get("REQ_LIST");
-//        requestListAdapter = new ViewRequestUserList(this,requestDataList);
-//        requestListView.setAdapter(requestListAdapter);
     }
 }
