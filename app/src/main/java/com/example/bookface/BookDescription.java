@@ -243,7 +243,12 @@ public class BookDescription extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 // Call Send Request Activity
-                                openDialog();
+                                SendRequestDialog sendRequestDialog = new SendRequestDialog();
+                                Bundle bundle = new Bundle();
+                                bundle.putString("bookid", bookId);
+                                bundle.putString("borrowerid", currentUser);
+                                sendRequestDialog.setArguments(bundle);
+                                sendRequestDialog.show(getSupportFragmentManager(), "Send Request");
                             }
                         });
                         textBorrower.setVisibility(View.INVISIBLE);

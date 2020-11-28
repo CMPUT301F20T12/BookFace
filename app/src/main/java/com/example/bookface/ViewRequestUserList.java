@@ -2,6 +2,7 @@ package com.example.bookface;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,14 +67,6 @@ public class ViewRequestUserList extends ArrayAdapter<DocumentReference>{
                         String requesterName = requestData.get("borrowerid").toString();
                         System.out.println("Requester name: "+requesterName);
                         requesterView.setText(requesterName);
-
-                        requesterView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                // Call Add/Edit Book activity
-                                System.out.println("I HAVE BEEN CLICKED!");
-                            }
-                        });
 
                     } else {
                         Log.d(TAG, "No such document");
