@@ -10,6 +10,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,6 +26,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,9 +44,12 @@ import com.google.zxing.integration.android.IntentResult;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * This activity handles the display of the request once accepted
@@ -235,6 +241,71 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                                         textStatus.setText("Available");
                                         //Delete from user sent requests, delete from requests, book requestlist
                                         bookref.update("status", "Available");
+
+                                        bookref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    DocumentSnapshot document = task.getResult();
+                                                    if (document.exists()) {
+                                                        Map bookData = document.getData();
+                                                        ArrayList<DocumentReference> bookReqList = (ArrayList<DocumentReference>) bookData.get("requestlist");
+                                                        bookReqList.remove(docRefRequest);
+                                                        bookref.update("requestlist", bookReqList).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                docRefRequest.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                        if (task.isSuccessful()) {
+                                                                            DocumentSnapshot document = task.getResult();
+                                                                            if (document.exists()) {
+                                                                                Map reqData = document.getData();
+                                                                                DocumentReference borrower = (DocumentReference) reqData.get("borrowerid");
+                                                                                borrower.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                                    @Override
+                                                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                                        if (task.isSuccessful()) {
+                                                                                            DocumentSnapshot document = task.getResult();
+                                                                                            if (document.exists()) {
+                                                                                                Map borrowerData = document.getData();
+                                                                                                ArrayList<DocumentReference> sentReq = (ArrayList<DocumentReference>) borrowerData.get("sentrequests");
+                                                                                                sentReq.remove(docRefRequest);
+                                                                                                borrower.update("sentrequests",sentReq);
+
+                                                                                            } else {
+                                                                                                Log.d(TAG, "No such document");
+                                                                                            }
+                                                                                        } else {
+                                                                                            Log.d(TAG, "get failed with ", task.getException());
+                                                                                        }
+                                                                                    }
+                                                                                });
+                                                                            } else {
+                                                                                Log.d(TAG, "No such document");
+                                                                            }
+                                                                        } else {
+                                                                            Log.d(TAG, "get failed with ", task.getException());
+                                                                        }
+                                                                    }
+                                                                });
+                                                            }
+                                                        })
+                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+                                                                        Log.w(TAG, "Error updating document", e);
+                                                                    }
+                                                                });
+
+                                                    } else {
+                                                        Log.d(TAG, "No such document");
+                                                    }
+                                                } else {
+                                                    Log.d(TAG, "get failed with ", task.getException());
+                                                }
+                                            }
+                                        });
                                     }
                                 }
                             } else {
