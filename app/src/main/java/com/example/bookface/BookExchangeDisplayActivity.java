@@ -255,12 +255,12 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                                 DocumentReference bookref = (DocumentReference) requestData.get("bookid");
 
                                 if (requestData.get("exchangeowner").toString().equals(requestData.get("exchangeborrower").toString())) {
-                                    if (status.toLowerCase().equals("accepted")) {
+                                    if ((owner.equals(currentUser) == false) && status.toLowerCase().equals("accepted")) {
                                         Toast.makeText(BookExchangeDisplayActivity.this, "Book Borrowed!", Toast.LENGTH_SHORT).show();
                                         textStatus.setText("Borrowed");
                                         bookref.update("status", "Borrowed");
                                         docRefRequest.update("requeststatus", "Borrowed");
-
+                                        bookref.update("borrowerUsername", currentUser);
                                         docRefRequest.update("exchangeowner", 0);
                                         docRefRequest.update("exchangeborrower", 0);
                                     } else if (status.toLowerCase().equals("borrowed")) {
@@ -268,7 +268,7 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                                         textStatus.setText("Available");
                                         //Delete from user sent requests, delete from requests, book requestlist
                                         bookref.update("status", "Available");
-
+                                        bookref.update("borrowerUsername", "Null");
                                         bookref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -335,6 +335,9 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                                                 }
                                             }
                                         });
+                                    }
+                                    else{
+                                        Toast.makeText(BookExchangeDisplayActivity.this, "Owner must handover first!", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             } else {
