@@ -66,7 +66,7 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser userInstance;
     private String owner, author, borrower, title, status, isbn, imgUrl;
-    private String requestId;
+    private String requestId, bookId;
     private String currentUser = null;
 //    private DocumentReference docRefRequest;
     FirebaseFirestore db;
@@ -136,6 +136,7 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
                                                         status = value.get("status").toString();
                                                         title = value.get("title").toString();
                                                         imgUrl = value.get("imageUrl").toString();
+                                                        bookId = isbn.concat(owner);
                                                         System.out.println("Owner: "+owner+" ++++++++++++++++");
                                                         System.out.println("ISBN: "+isbn+" ++++++++++++++++");
 
@@ -197,10 +198,10 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
                                                                         });
 
                                                                 // Call the functionality to intent to display the book exchange
-                                                                Intent toBookExchangeDisplay = new Intent(SetLocationActivity.this,
-                                                                        BookExchangeDisplayActivity.class);
-                                                                toBookExchangeDisplay.putExtra("REQUEST_ID", requestId);
-                                                                startActivity(toBookExchangeDisplay);
+                                                                Intent toBookDescription = new Intent(SetLocationActivity.this,
+                                                                        BookDescription.class);
+                                                                toBookDescription.putExtra("BOOK_ID", bookId);
+                                                                startActivity(toBookDescription);
                                                             }
                                                         });
                                                     }
@@ -273,6 +274,7 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
         try {
             addresses = geoStartUp.getFromLocation(latLng.latitude, latLng.longitude, 1);
             // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            System.out.println(addresses);
             String address = addresses.get(0).getAddressLine(0);
             textAddress.setText(address);
         }

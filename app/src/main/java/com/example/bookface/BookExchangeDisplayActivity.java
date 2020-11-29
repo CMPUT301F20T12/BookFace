@@ -327,7 +327,12 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                                                                     }
                                                                 });
 
-                                                    } else {
+                                                    }
+                                                    else if(status.toLowerCase().equals("available")){
+                                                        Intent toSearch = new Intent(BookExchangeDisplayActivity.this, SearchActivity.class);
+                                                        startActivity(toSearch);
+                                                    }
+                                                    else {
                                                         Log.d(TAG, "No such document");
                                                     }
                                                 } else {

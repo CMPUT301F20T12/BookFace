@@ -109,12 +109,7 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
                         title = value.getString("title");
                         imgUrl = value.getString("imageUrl");
 
-                        if (value.get("borrowerUserName") == null) {
-                            borrower = "No current borrower";
-                        } 
-                        else {
-                            borrower = value.get("borrowerUserName").toString();
-                        }
+                        borrower = value.get("borrowerUsername").toString();
 
                         textAuthor.setText(author);
                         textIsbn.setText(isbn);
@@ -122,8 +117,8 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
                         textTitle.setText(Html.fromHtml("<b>" + title + "</b>"));
                         textDescription.setText(description);
                         textBorrower.setText(borrower);
-                        textOwner.setText("@".concat(owner));
-                        if(imgUrl!="") {
+                        textOwner.setText(owner);
+                        if(imgUrl.equals("") == false) {
                             Picasso.with(getApplicationContext()).load(imgUrl).into(image);
                       
                             // Show the enlarged image
@@ -180,6 +175,49 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
                         }
                     });
 
+                    if(borrower.toLowerCase().equals("null") == false){
+                        textBorrower.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // Call MyBooks Activity
+
+//                                String ownerName = textOwner.getText().toString();
+
+                                String docPath = "users/"+borrower;
+                                DocumentReference docRef = db.document(docPath);
+                                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+                                                Map userData = document.getData();
+                                                if(userData != null){
+                                                    String email = userData.get("email").toString();
+                                                    String contact = userData.get("contactNo").toString();
+
+                                                    Bundle bundle = new Bundle();
+                                                    bundle.putString("USERNAME", borrower);
+                                                    bundle.putString("USER_EMAIL", email);
+                                                    bundle.putString("USER_CONTACT", contact);
+
+                                                    UserProfileFragment userProfileFragment = new UserProfileFragment();
+                                                    userProfileFragment.setArguments(bundle);
+                                                    userProfileFragment.show(getSupportFragmentManager(),"userProfileFragment");
+                                                }
+                                            }
+                                            else {
+                                                Log.d(TAG, "No such document");
+                                            }
+                                        }
+                                        else {
+                                            Log.d(TAG, "get failed with ", task.getException());
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
                   
                     // If the current user is the owner of the book, set the fields and buttons' visibility accordingly
                     if (owner.equals(currentUser)) {
