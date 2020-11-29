@@ -81,8 +81,11 @@ dependencies {
     // For Google Maps
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.1.0'
-    implementation 'com.google.android.gms:play-services-maps:+'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
     // For Geofire
-    implementation 'com.firebase:geofire-android:3.0.0'
+    implementation 'com.github.imperiumlabs:GeoFirestore-Android:v1.5.0'
+    implementation 'com.google.firebase:firebase-core:18.0.0'
+    implementation 'com.firebase:geofire-java:3.0.0'
+    implementation 'com.google.firebase:firebase-database:19.5.1'
 }

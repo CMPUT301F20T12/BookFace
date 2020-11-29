@@ -31,6 +31,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,12 +39,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.squareup.picasso.Picasso;
+
+import org.imperiumlabs.geofirestore.GeoFirestore;
 
 import java.io.IOException;
 import java.util.List;
@@ -54,7 +58,7 @@ import java.util.Map;
  * This class handles the activity for Book exchange
  */
 public class SetLocationActivity extends AppCompatActivity implements OnMapReadyCallback {
-            // Declare variables
+    // Declare variables
     private Location currentLocation;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Geocoder geo, geoStartUp;
@@ -62,9 +66,10 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser userInstance;
     private String owner, author, borrower, title, status, isbn, imgUrl;
-    private String requestId, rStatus, borrowerId, bookId;
+    private String requestId;
     private String currentUser = null;
 //    private DocumentReference docRefRequest;
+    FirebaseFirestore db;
 
     // Initialize the constants
     private static final int REQUEST_CODE = 101;
@@ -100,7 +105,7 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
                 requestId = (String) b.get("REQUEST_ID");
                 System.out.println("REQ ID: "+ requestId);
             }
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db = FirebaseFirestore.getInstance();
 
             // Retrieve the book from firebase
             DocumentReference docRefRequest = db.collection("requests").document(requestId);
@@ -171,20 +176,25 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
                                                             @Override
                                                             public void onClick(View view) {
                                                                 // Set the location
-                                                                // Code built upon: https://firebaseopensource.com/projects/firebase/geofire-android/
-                                                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("path/to/geofire");
-                                                                GeoFire geoFire = new GeoFire(ref);
-                                                                geoFire.setLocation(requestId, new GeoLocation(currentLocation.getLatitude(),
-                                                                        currentLocation.getLongitude()), new GeoFire.CompletionListener() {
-                                                                    @Override
-                                                                    public void onComplete(String key, DatabaseError error) {
-                                                                        if (error != null) {
-                                                                            System.err.println("There was an error saving the location to GeoFire: " + error);
-                                                                        } else {
-                                                                            System.out.println("Location saved on server successfully!");
-                                                                        }
-                                                                    }
-                                                                });
+                                                                LocationHelper location = new LocationHelper(
+                                                                        currentLocation.getLatitude(), currentLocation.getLongitude());
+
+                                                                DocumentReference requestRef = db.collection("requests").document(requestId);
+
+                                                                requestRef
+                                                                        .update("location", location)
+                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                            @Override
+                                                                            public void onSuccess(Void aVoid) {
+                                                                                Toast.makeText(SetLocationActivity.this, "Location saved.", Toast.LENGTH_SHORT).show();
+                                                                            }
+                                                                        })
+                                                                        .addOnFailureListener(new OnFailureListener() {
+                                                                            @Override
+                                                                            public void onFailure(@NonNull Exception e) {
+                                                                                Toast.makeText(SetLocationActivity.this, "Location was not saved.", Toast.LENGTH_SHORT).show();
+                                                                            }
+                                                                        });
 
                                                                 // Call the functionality to intent to display the book exchange
                                                                 Intent toBookExchangeDisplay = new Intent(SetLocationActivity.this,

@@ -18,6 +18,9 @@ allprojects {
     repositories {
         google()
         jcenter()
+
+        // For storing location in the firebase enable jitpack
+        maven { url 'https://jitpack.io' }
     }
 }
 
