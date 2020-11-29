@@ -39,7 +39,7 @@ import java.util.Map;
 /**
  * This class is the activity that displays info of the book selected
  */
-public class BookDescription extends AppCompatActivity {
+public class BookDescription extends AppCompatActivity implements SendRequestDialog.OnFragmentInteractionListener{
 
     private static final String TAG = "BOOK_DESC_MSG";
     // Declare the fireAuth variable to get the currentUser()
@@ -264,5 +264,11 @@ public class BookDescription extends AppCompatActivity {
     public void openDialog() {
         SendRequestDialog sendRequestDialog = new SendRequestDialog();
         sendRequestDialog.show(getSupportFragmentManager(), "Send Request");
+    }
+
+    @Override
+    public void onSendRequestConfirm() {
+                                Intent toMyRequests = new Intent(BookDescription.this, MyRequestsActivity.class);
+                                startActivity(toMyRequests);
     }
 }

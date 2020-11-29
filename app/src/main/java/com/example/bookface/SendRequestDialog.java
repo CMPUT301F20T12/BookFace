@@ -2,6 +2,7 @@ package com.example.bookface;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,6 +28,29 @@ import static android.content.ContentValues.TAG;
 public class SendRequestDialog extends AppCompatDialogFragment {
 
     FirebaseAuth mFirebaseAuth;
+    private OnFragmentInteractionListener listener;
+
+    /**
+     * Implement the interface method
+     */
+    public interface OnFragmentInteractionListener {
+        void onSendRequestConfirm();
+    }
+
+    /**
+     * Override the onAttach method
+     * @param context
+     */
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof SendRequestDialog.OnFragmentInteractionListener){
+            listener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -82,8 +106,7 @@ public class SendRequestDialog extends AppCompatDialogFragment {
                                 reqBookRef.update("requestlist", FieldValue.arrayUnion(requestRef)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        Intent toMyRequests = new Intent(SendRequestDialog.this.getActivity(), MyRequestsActivity.class);
-                                        startActivity(toMyRequests);
+                                        listener.onSendRequestConfirm();
                                     }
                                 })
                                         .addOnFailureListener(new OnFailureListener() {
@@ -100,6 +123,8 @@ public class SendRequestDialog extends AppCompatDialogFragment {
                                         Log.w(TAG, "Error updating document", e);
                                     }
                                 });
+
+
 
 //                        // add request docref to requestlist for the book
 //                        reqBookRef.update("requestlist", FieldValue.arrayUnion(requestRef));
