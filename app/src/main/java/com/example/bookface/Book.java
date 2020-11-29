@@ -22,7 +22,6 @@ public class Book {
     private String imageUrl;
     private ArrayList<DocumentReference> requestlist;
 
-
     /**
      * This is the constructor
      * @param title
@@ -120,6 +119,7 @@ public class Book {
     public void setRequestlist(ArrayList<DocumentReference> requestlist) {
         this.requestlist = requestlist;
     }
+    
 
     // for testing
     @Override

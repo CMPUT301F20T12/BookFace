@@ -78,6 +78,8 @@ public class SendRequestDialog extends AppCompatDialogFragment {
                         request.put("bookid", reqBookRef);
                         request.put("borrowerid", borrowerRef);
                         request.put("requeststatus", "pending");
+                        request.put("exchangeowner", 0);
+                        request.put("exchangeborrower", 0);
 
                         System.out.println("REQ OBJ: "+request);
 

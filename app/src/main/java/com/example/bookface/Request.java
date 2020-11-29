@@ -8,17 +8,20 @@ public class Request {
     private Book bookRequested;
     private User borrower;
     private String requestStatus;
+    private LocationHelper location;
 
     /**
      * This is the constructor
      * @param bookRequested
      * @param borrower
      * @param requestStatus
+     * @param location
      */
-    public Request(Book bookRequested, User borrower, String requestStatus) {
+    public Request(Book bookRequested, User borrower, String requestStatus, LocationHelper location) {
         this.bookRequested = bookRequested;
         this.borrower = borrower;
         this.requestStatus = requestStatus;
+        this.location = location;
     };
 
     //TODO: Location Object
@@ -49,10 +52,10 @@ public class Request {
     }
 
     // Getters and setters
+
     public void setBookRequested(Book bookRequested) {
         this.bookRequested = bookRequested;
     }
-
     public User getBorrower() {
         return borrower;
     }
@@ -67,5 +70,13 @@ public class Request {
 
     public void setRequestStatus(String requestStatus) {
         this.requestStatus = requestStatus;
+    }
+
+    public LocationHelper getLocation() {
+        return location;
+    }
+
+    public void setLocation(LocationHelper location) {
+        this.location = location;
     }
 }
