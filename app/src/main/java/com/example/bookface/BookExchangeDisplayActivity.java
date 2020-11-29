@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -54,6 +55,7 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
     GoogleMap gMap;
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
+    TextView textStatus;
     String owner, author, borrower, title, status, isbn, imgUrl;
     String requestId, rStatus, borrowerId, bookId;
     String currentUser = null;
@@ -72,7 +74,7 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
         TextView textAuthor = (TextView) findViewById(R.id.authorNameText);
         TextView textTitle = (TextView) findViewById(R.id.titleText);
         TextView textIsbn = (TextView) findViewById(R.id.isbnText);
-        TextView textStatus = (TextView) findViewById(R.id.statusText);
+        textStatus = (TextView) findViewById(R.id.statusText);
         ImageView image = (ImageView) findViewById(R.id.imageView);
 
         if (userInstance != null){
@@ -214,11 +216,22 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                             if (document != null) {
                                 Map requestData = document.getData();
                                 DocumentReference bookref = (DocumentReference) requestData.get("bookid");
-                                if(requestData.get("exchangeowner") == requestData.get("exchangeborrower")){
-                                    if(status.toLowerCase() == "accepted"){
+                                System.out.println("exchage owner: "+requestData.get("exchangeowner"));
+                                System.out.println("status: "+status);
+
+                                if(requestData.get("exchangeowner").toString().equals(requestData.get("exchangeborrower").toString())){
+                                    System.out.println("Equal Successful!!");
+                                    if(status.toLowerCase().equals("accepted")){
+                                        System.out.println("Equal Accepted Successful!!");
+                                        Toast.makeText(BookExchangeDisplayActivity.this, "Book Borrowed!", Toast.LENGTH_SHORT).show();
+                                        textStatus.setText("Borrowed");
                                         bookref.update("status", "Borrowed");
+                                        docRefRequest.update("requeststatus", "Borrowed");
                                     }
-                                    else if(status.toLowerCase() == "borrowed"){
+                                    else if(status.toLowerCase().equals("borrowed")){
+                                        Toast.makeText(BookExchangeDisplayActivity.this, "Book Returned!", Toast.LENGTH_SHORT).show();
+                                        textStatus.setText("Available");
+                                        //Delete from user sent requests, delete from requests, book requestlist
                                         bookref.update("status", "Available");
                                     }
                                 }
