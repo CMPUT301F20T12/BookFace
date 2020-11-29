@@ -235,6 +235,9 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                                         textStatus.setText("Borrowed");
                                         bookref.update("status", "Borrowed");
                                         docRefRequest.update("requeststatus", "Borrowed");
+
+                                        docRefRequest.update("exchangeowner", 0);
+                                        docRefRequest.update("exchangeborrower", 0);
                                     }
                                     else if(status.toLowerCase().equals("borrowed")){
                                         Toast.makeText(BookExchangeDisplayActivity.this, "Book Returned!", Toast.LENGTH_SHORT).show();
