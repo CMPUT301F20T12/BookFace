@@ -39,7 +39,7 @@ import java.util.Map;
 /**
  * This class is the activity that displays info of the book selected
  */
-public class BookDescription extends AppCompatActivity {
+public class BookDescription extends AppCompatActivity implements SendRequestDialog.OnFragmentInteractionListener{
 
     private static final String TAG = "BOOK_DESC_MSG";
     // Declare the fireAuth variable to get the currentUser()
@@ -183,6 +183,24 @@ public class BookDescription extends AppCompatActivity {
                   
                     // If the current user is the owner of the book, set the fields and buttons' visibility accordingly
                     if (owner.equals(currentUser)) {
+                        if(status.equals("Available")){
+                            btnBottom.setText("View Requests");
+                            btnBottom.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent intent = new Intent(BookDescription.this, ViewRequestActivity.class);
+                                    intent.putExtra("BOOK_ID",isbn.concat(owner));
+                                    System.out.println("ISBN  "+isbn);
+                                    startActivity(intent);
+                                }
+                            });
+                        }
+                        else if(status.equals("Accepted")){
+                            btnBottom.setText("Handover");
+                        }
+                        else if(status.equals("Borrowed")){
+                            btnBottom.setText("Collect");
+                        }
                         btnEdit.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -201,12 +219,12 @@ public class BookDescription extends AppCompatActivity {
                             }
                         });
 
-                        btnBottom.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                // Call the functionality to collect the book
-                            }
-                        });
+//                        btnBottom.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                // Call the functionality to collect the book
+//                            }
+//                        });
                     }
                     // If the owner is not the current user, set the fields differently
                     else {
@@ -225,7 +243,12 @@ public class BookDescription extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 // Call Send Request Activity
-                                openDialog();
+                                SendRequestDialog sendRequestDialog = new SendRequestDialog();
+                                Bundle bundle = new Bundle();
+                                bundle.putString("bookid", bookId);
+                                bundle.putString("borrowerid", currentUser);
+                                sendRequestDialog.setArguments(bundle);
+                                sendRequestDialog.show(getSupportFragmentManager(), "Send Request");
                             }
                         });
                         textBorrower.setVisibility(View.INVISIBLE);
@@ -235,8 +258,17 @@ public class BookDescription extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method is used to open a dialog box in order to send request
+     */
     public void openDialog() {
         SendRequestDialog sendRequestDialog = new SendRequestDialog();
         sendRequestDialog.show(getSupportFragmentManager(), "Send Request");
+    }
+
+    @Override
+    public void onSendRequestConfirm() {
+                                Intent toMyRequests = new Intent(BookDescription.this, MyRequestsActivity.class);
+                                startActivity(toMyRequests);
     }
 }

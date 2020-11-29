@@ -110,6 +110,10 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
                     Intent toSearch = new Intent(MyBooks.this, SearchActivity.class);
                     startActivity(toSearch);
                     break;
+                case R.id.requests:
+                    Intent toMyRequests = new Intent(MyBooks.this, MyRequestsActivity.class);
+                    startActivity(toMyRequests);
+                    break;
             }
             return false;
         }

@@ -16,4 +16,5 @@
     <string name="borrowed">Borrowed</string>
 
     <string name="myrequests">My Requests</string>
+    <string name="title_activity_book_exchange">Map</string>
 </resources>
