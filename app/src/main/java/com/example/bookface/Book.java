@@ -20,9 +20,7 @@ public class Book {
     private String ownerUsername;
     private String borrowerUsername;
     private String imageUrl;
-    private int exchange;
     private ArrayList<DocumentReference> requestlist;
-
 
     /**
      * This is the constructor
@@ -47,7 +45,6 @@ public class Book {
         this.borrowerUsername = borrowerUsername;
         this.imageUrl = imageUrl;
         this.requestlist = new ArrayList<DocumentReference>();
-        this.exchange = 0;
     }
 
     // Getters and Setters
@@ -122,14 +119,7 @@ public class Book {
     public void setRequestlist(ArrayList<DocumentReference> requestlist) {
         this.requestlist = requestlist;
     }
-
-    public int getExchange() {
-        return exchange;
-    }
-
-    public void setExchange(int exchange) {
-        this.exchange = exchange;
-    }
+    
 
     // for testing
     @Override

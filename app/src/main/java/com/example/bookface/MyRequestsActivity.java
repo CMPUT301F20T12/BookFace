@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -76,6 +78,17 @@ public class MyRequestsActivity extends AppCompatActivity {
                         navBar.setOnNavigationItemSelectedListener(navBarMethod);
                     }
                 }
+            }
+        });
+
+        requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+
+                String reqRef = requests.get(position).getId();
+                Intent intent = new Intent(MyRequestsActivity.this, BookExchangeDisplayActivity.class);
+                intent.putExtra("REQUEST_ID", reqRef);
+                startActivity(intent);
             }
         });
     }

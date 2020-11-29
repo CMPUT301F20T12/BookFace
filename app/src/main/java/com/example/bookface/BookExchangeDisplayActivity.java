@@ -170,7 +170,8 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                                                             btnBottom.setOnClickListener(new View.OnClickListener() {
                                                                 @Override
                                                                 public void onClick(View view) {
-                                                                    // Call to scan the book to return/borrow
+                                                                    Scan scanObj = new Scan(BookExchangeDisplayActivity.this);
+                                                                    scanObj.scanCode();
                                                                 }
                                                             });
 
@@ -197,8 +198,37 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
         if (result != null) {
             String code = result.getContents();
             if (code != null) {
-                System.out.println("ISBN1 --> "+isbn);
-                System.out.println("ISBN2 --> "+code);
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                DocumentReference docRefRequest = db.collection("requests").document(requestId);
+                if (owner.equals(currentUser)){
+                    docRefRequest.update("exchangeowner", isbn);
+                }
+                else{
+                    docRefRequest.update("exchangeborrower", isbn);
+                }
+                docRefRequest.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document != null) {
+                                Map requestData = document.getData();
+                                DocumentReference bookref = (DocumentReference) requestData.get("bookid");
+                                if(requestData.get("exchangeowner") == requestData.get("exchangeborrower")){
+                                    if(status.toLowerCase() == "accepted"){
+                                        bookref.update("status", "Borrowed");
+                                    }
+                                    else if(status.toLowerCase() == "borrowed"){
+                                        bookref.update("status", "Available");
+                                    }
+                                }
+                            } else {
+
+                            }
+                        } else {
+                        }
+                    }
+                });
             }
         }
     }
