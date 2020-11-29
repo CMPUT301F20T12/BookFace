@@ -178,6 +178,9 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                                                                 @Override
                                                                 public void onClick(View view) {
                                                                     // Call MyRequests Activity
+
+                                                                    Intent toMyRequests = new Intent(BookExchangeDisplayActivity.this, MyRequestsActivity.class);
+                                                                    startActivity(toMyRequests);
                                                                 }
                                                             });
 
