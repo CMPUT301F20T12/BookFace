@@ -276,6 +276,8 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                                                                                                 sentReq.remove(docRefRequest);
                                                                                                 borrower.update("sentrequests",sentReq);
 
+                                                                                                docRefRequest.delete();
+
                                                                                             } else {
                                                                                                 Log.d(TAG, "No such document");
                                                                                             }
