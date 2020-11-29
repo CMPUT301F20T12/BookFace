@@ -35,6 +35,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -145,6 +147,8 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                                                                 @Override
                                                                 public void onClick(View view) {
                                                                     // Handle the book scan to handover
+                                                                    Scan scanObj = new Scan(BookExchangeDisplayActivity.this);
+                                                                    scanObj.scanCode();
                                                                 }
                                                             });
                                                         }
@@ -182,6 +186,20 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                     }
                 }
             });
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            String code = result.getContents();
+            if (code != null) {
+                System.out.println("ISBN1 --> "+isbn);
+                System.out.println("ISBN2 --> "+code);
+            }
         }
     }
 
