@@ -136,6 +136,12 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
 
                                                         // TODO
                                                         if (owner.equals(currentUser)) {
+                                                            if (status.toLowerCase().equals("borrowed")) {
+                                                                btnBottom.setText("Scan to Receive Back");
+                                                            }
+                                                            else {
+                                                                btnBottom.setText("Scan to Handover");
+                                                            }
                                                             btnTop.setOnClickListener(new View.OnClickListener() {
                                                                 @Override
                                                                 public void onClick(View view) {
@@ -156,7 +162,7 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                                                         }
                                                         else {
                                                             btnTop.setText("My Requests");
-                                                            if (status.equals("borrowed".toLowerCase())) {
+                                                            if (status.toLowerCase().equals("borrowed")) {
                                                                 btnBottom.setText("Scan to Return");
                                                             }
                                                             else {
@@ -216,13 +222,9 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                             if (document != null) {
                                 Map requestData = document.getData();
                                 DocumentReference bookref = (DocumentReference) requestData.get("bookid");
-                                System.out.println("exchage owner: "+requestData.get("exchangeowner"));
-                                System.out.println("status: "+status);
 
                                 if(requestData.get("exchangeowner").toString().equals(requestData.get("exchangeborrower").toString())){
-                                    System.out.println("Equal Successful!!");
                                     if(status.toLowerCase().equals("accepted")){
-                                        System.out.println("Equal Accepted Successful!!");
                                         Toast.makeText(BookExchangeDisplayActivity.this, "Book Borrowed!", Toast.LENGTH_SHORT).show();
                                         textStatus.setText("Borrowed");
                                         bookref.update("status", "Borrowed");

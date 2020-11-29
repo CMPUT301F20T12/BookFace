@@ -195,11 +195,36 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
                                 }
                             });
                         }
-                        else if(status.equals("Accepted")){
-                            btnBottom.setText("Handover");
-                        }
-                        else if(status.equals("Borrowed")){
-                            btnBottom.setText("Collect");
+                        else{
+                            if(status.equals("Accepted")){
+                                btnBottom.setText("Handover");
+                            }
+                            else if(status.equals("Borrowed")){
+                                btnBottom.setText("Receive Back");
+                            }
+                            btnBottom.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    final DocumentReference docRef = db.collection("books").document(bookId);
+                                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                           @Override
+                                                                           public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                               if (task.isSuccessful()) {
+                                                                                   DocumentSnapshot document = task.getResult();
+                                                                                   if (document.exists()) {
+                                                                                       Map bookData = document.getData();
+                                                                                       if (bookData != null) {
+                                                                                           ArrayList<DocumentReference> requestList = (ArrayList<DocumentReference>) bookData.get("requestlist");
+                                                                                           Intent intent = new Intent(BookDescription.this, BookExchangeDisplayActivity.class);
+                                                                                           intent.putExtra("REQUEST_ID", requestList.get(0).getId());
+                                                                                           startActivity(intent);
+                                                                                       }
+                                                                                   }
+                                                                               }
+                                                                           }
+                                                                       });
+                                }
+                            });
                         }
                         btnEdit.setOnClickListener(new View.OnClickListener() {
                             @Override
