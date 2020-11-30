@@ -42,6 +42,7 @@ public class UserProfileFragment extends DialogFragment {
             userEmail.setText(email);
             userContact.setText(contact);
 
+
         }
         return  view;
     }

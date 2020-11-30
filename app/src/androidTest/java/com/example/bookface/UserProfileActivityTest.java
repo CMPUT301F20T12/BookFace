@@ -5,11 +5,6 @@ import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
-
-import android.util.Log;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,7 +21,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Map;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 /**
@@ -41,8 +36,6 @@ public class UserProfileActivityTest{
     @Rule
     public ActivityTestRule<UserProfileActivity> rule =
             new ActivityTestRule<>(UserProfileActivity.class, true, true);
-
-
     /**
      * Runs before all tests and creates solo instance.
      * @throws Exception
@@ -100,6 +93,16 @@ public class UserProfileActivityTest{
                 }
             }
         });
+    }
+
+    @Test
+    public void checkEditButtonRedirect(){
+        solo.sleep(1000);
+        solo.assertCurrentActivity("Wrong activity", UserProfileActivity.class);
+
+        TextView editButton = (TextView) solo.getView("edit_profile");
+        solo.clickOnView(editButton);
+        assertTrue(solo.waitForFragmentByTag("Edit_Profile"));
     }
 
     /**
