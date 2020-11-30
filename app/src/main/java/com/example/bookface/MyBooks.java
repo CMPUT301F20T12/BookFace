@@ -255,8 +255,6 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
 
                                         if (status == "Available" && book.getStatus() == "Available") {
                                             filteredList.add(bookId);
-                                        } else if (status == "Requested" && book.getStatus() == "Requested") {
-                                            filteredList.add(bookId);
                                         } else if (status == "Accepted" && book.getStatus() == "Accepted") {
                                             filteredList.add(bookId);
                                         } else if (status == "Borrowed" && book.getStatus() == "Borrowed") {
@@ -264,6 +262,7 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
                                         }
                                         filteredBookList = filteredList;
                                     }
+                                    adapter.notifyDataSetChanged();
                                 }
                             }
                         });

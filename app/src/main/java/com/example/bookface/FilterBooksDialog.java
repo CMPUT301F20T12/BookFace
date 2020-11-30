@@ -63,7 +63,7 @@ public class FilterBooksDialog extends AppCompatDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        String[] statuses = new String[]{"All", "Available", "Requested", "Accepted", "Borrowed"};
+        String[] statuses = new String[]{"All", "Available", "Accepted", "Borrowed"};
 
         builder.setTitle("Show me")
                 .setItems(statuses, new DialogInterface.OnClickListener() {
@@ -77,12 +77,9 @@ public class FilterBooksDialog extends AppCompatDialogFragment {
                                 listener.onStatusSelected("Available");
                                 break;
                             case 2:
-                                listener.onStatusSelected("Requested");
-                                break;
-                            case 3:
                                 listener.onStatusSelected("Accepted");
                                 break;
-                            case 4:
+                            case 3:
                                 listener.onStatusSelected("Borrowed");
                                 break;
                         }
