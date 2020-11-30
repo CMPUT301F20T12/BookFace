@@ -3,7 +3,10 @@ package com.example.bookface;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +26,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
  */
 public class MainActivity extends AppCompatActivity {
 
+    public static final String CHANNEL_ID = "High priority channel";
+
     // Declare variables
     EditText emailID, password;
     Button buttonLogin;
@@ -30,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth mFirebaseAuth;
 
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+
+
 
     /**
      * onCreate method is overwritten
@@ -127,9 +134,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void createNotificationChannel() {
+
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            String CHANNEL_ID = "High priority channel";
+            CharSequence name = "Book notifications";
+            String description = "High priority channel";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
     @Override
     protected void onStart() {
         super.onStart();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+
+        createNotificationChannel();
     }
 }
