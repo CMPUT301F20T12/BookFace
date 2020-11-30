@@ -60,6 +60,8 @@ import java.util.Map;
 public class SetLocationActivity extends AppCompatActivity implements OnMapReadyCallback {
     // Declare variables
     private Location currentLocation;
+    private double latitude;
+    private double longitude;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Geocoder geo, geoStartUp;
     private GoogleMap gMap;
@@ -178,7 +180,7 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
                                                             public void onClick(View view) {
                                                                 // Set the location
                                                                 LocationHelper location = new LocationHelper(
-                                                                        currentLocation.getLatitude(), currentLocation.getLongitude());
+                                                                        latitude, longitude);
 
                                                                 DocumentReference requestRef = db.collection("requests").document(requestId);
 
@@ -188,6 +190,11 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
                                                                             @Override
                                                                             public void onSuccess(Void aVoid) {
                                                                                 Toast.makeText(SetLocationActivity.this, "Location saved.", Toast.LENGTH_SHORT).show();
+                                                                                // Call the functionality to intent to display the book exchange
+                                                                                Intent toBookExchangeDisplayActivity = new Intent(SetLocationActivity.this,
+                                                                                        BookExchangeDisplayActivity.class);
+                                                                                toBookExchangeDisplayActivity.putExtra("REQUEST_ID", requestId);
+                                                                                startActivity(toBookExchangeDisplayActivity);
                                                                             }
                                                                         })
                                                                         .addOnFailureListener(new OnFailureListener() {
@@ -196,12 +203,6 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
                                                                                 Toast.makeText(SetLocationActivity.this, "Location was not saved.", Toast.LENGTH_SHORT).show();
                                                                             }
                                                                         });
-
-                                                                // Call the functionality to intent to display the book exchange
-                                                                Intent toBookDescription = new Intent(SetLocationActivity.this,
-                                                                        BookDescription.class);
-                                                                toBookDescription.putExtra("BOOK_ID", bookId);
-                                                                startActivity(toBookDescription);
                                                             }
                                                         });
                                                     }
@@ -248,6 +249,8 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
             public void onSuccess(Location location) {
                 if (location != null) {
                     currentLocation = location;
+                    latitude = currentLocation.getLatitude();
+                    longitude = currentLocation.getLongitude();
                     Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + " " + currentLocation.getLongitude(),
                             Toast.LENGTH_SHORT).show();
                     SupportMapFragment supportMapFragment = (SupportMapFragment)
@@ -272,11 +275,17 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
         geoStartUp = new Geocoder(this, Locale.getDefault());
 
         try {
+            latitude  = latLng.latitude;
+            String address;
             addresses = geoStartUp.getFromLocation(latLng.latitude, latLng.longitude, 1);
             // Here 1 represent max location result to returned, by documents it recommended 1 to 5
             System.out.println(addresses);
-            String address = addresses.get(0).getAddressLine(0);
-            textAddress.setText(address);
+            if(addresses.size() != 0){
+                System.out.println("Hello address!");
+                address = addresses.get(0).getAddressLine(0);
+                textAddress.setText(address);
+            }
+
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -297,6 +306,8 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
                         if (geo == null) {
                             geo = new Geocoder(SetLocationActivity.this, Locale.getDefault());
                         }
+                        latitude = latLng.latitude;
+                        longitude = latLng.longitude;
                         List<Address> address = geo.getFromLocation(latLng.latitude, latLng.longitude, 1);
                         if (address.size() > 0) {
                             gMap.addMarker(new MarkerOptions().position(latLng));

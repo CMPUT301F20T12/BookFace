@@ -328,10 +328,6 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                                                                 });
 
                                                     }
-                                                    else if(status.toLowerCase().equals("available")){
-                                                        Intent toSearch = new Intent(BookExchangeDisplayActivity.this, SearchActivity.class);
-                                                        startActivity(toSearch);
-                                                    }
                                                     else {
                                                         Log.d(TAG, "No such document");
                                                     }
@@ -345,10 +341,7 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                                         Toast.makeText(BookExchangeDisplayActivity.this, "Owner must handover first!", Toast.LENGTH_SHORT).show();
                                     }
                                 }
-                            } else {
-
                             }
-                        } else {
                         }
                     }
                 });
