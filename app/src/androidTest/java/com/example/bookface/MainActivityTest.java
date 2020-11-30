@@ -95,7 +95,7 @@ public class MainActivityTest {
         assertTrue(solo.waitForText("Login Successful", 1, 2000));
 
         // Sign out after test
-        Button CTButton2 = (Button) solo.getView("signOut");
+        Button CTButton2 = (Button) solo.getView("logout");
         solo.clickOnView(CTButton2);
     }
 
