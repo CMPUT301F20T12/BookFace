@@ -36,7 +36,7 @@ public class BookDescriptionTest {
     @Test
     public void checkTopButton() {
         solo.clickOnButton("My Books");
-        // solo.assertCurrentActivity("Wrong Activity", MyBooks.class);
+//         solo.assertCurrentActivity("Wrong Activity", MyBooks.class);
 
         // TODO
         // get current user and check if that user is owner or not and change the button display accordingly
