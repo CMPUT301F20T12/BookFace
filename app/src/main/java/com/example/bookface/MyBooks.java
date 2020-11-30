@@ -28,6 +28,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ import java.util.Map;
 /**
  * This class displays the list of the books owned by the user
  */
-public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.OnBookClickListener, FilterBooksDialog.OnFragmentInteractionListener, Filterable {
+public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.OnBookClickListener, FilterBooksDialog.OnFragmentInteractionListener{
 
     // Variable declarations
     RecyclerView recycleView;
@@ -224,68 +225,68 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
 
     @Override
     public void onStatusSelected(String status) {
-        getFilter().filter(status);
-    }
+        ArrayList<String> filteredList = new ArrayList<>();
+        for (String bookId : myBookList) {
+            String docPath = "books/"+bookId;
+            DocumentReference bookRef = db.document(docPath);
+            bookRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()){
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        if(documentSnapshot !=null){
+                            Book book = documentSnapshot.toObject(Book.class);
 
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence status) {
-                final FilterResults filterResults = new FilterResults();
-
-                if (originalBooks == null) {
-                    originalBooks = new ArrayList<>(myBookList);
-                }
-
-                if (status == "All") {
-                    filterResults.count = originalBooks.size();
-                    filterResults.values = originalBooks;
-                } else {
-                    ArrayList<String> filteredList = new ArrayList<>();
-                    for (String bookId : myBookList) {
-                        String docPath = "books/"+bookId;
-                        DocumentReference bookRef = db.document(docPath);
-                        bookRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if(task.isSuccessful()){
-                                    DocumentSnapshot documentSnapshot = task.getResult();
-                                    if(documentSnapshot !=null){
-                                        Book book = documentSnapshot.toObject(Book.class);
-
-                                        if (status.equals("Available") && book.getStatus().equals("Available")) {
-                                            filteredList.add(bookId);
-                                        } else if (status == "Accepted" && book.getStatus() == "Accepted") {
-                                            filteredList.add(bookId);
-                                        } else if (status == "Borrowed" && book.getStatus() == "Borrowed") {
-                                            filteredList.add(bookId);
-                                        }
-                                        //filteredBookList = filteredList;
-
-                                    }
-                                }
+                            if (status.equals("Available") && book.getStatus().equals("Available")) {
+                                filteredList.add(bookId);
+                            } else if (status.equals("Accepted") && book.getStatus().equals("Accepted")) {
+                                filteredList.add(bookId);
+                            } else if (status.equals("Borrowed") && book.getStatus().equals("Borrowed")) {
+                                filteredList.add(bookId);
                             }
-                        });
-
+                        }
                     }
-                    filterResults.values = filteredList;
-                    filterResults.count = filteredList.size();
                 }
+            });
 
-                return filterResults;
-            }
+        }
+        myBookList = filteredList;
 
-            @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                ArrayList<String> filteredBookList = (ArrayList<String>) filterResults.values;
-                myBookList = filteredBookList;
+        adapter = new RecyclerViewAdapter(context, myBookList, onBookClickListener);
+        recycleView.setAdapter(adapter);
+        // refresh the list with filtered data
+        adapter.notifyDataSetChanged();
 
-                adapter = new RecyclerViewAdapter(context, myBookList, onBookClickListener);
-                recycleView.setAdapter(adapter);
-                // refresh the list with filtered data
-                adapter.notifyDataSetChanged();
-            }
-        };
+//        getFilter().filter(filteredList);
     }
+
+//    @Override
+//    public Filter getFilter() {
+//        return new Filter() {
+//            @Override
+//            protected FilterResults performFiltering(ArrayList<String> filteredList) {
+//                final FilterResults filterResults = new FilterResults();
+//
+//                if (originalBooks == null) {
+//                    originalBooks = new ArrayList<>(myBookList);
+//                }
+//
+//                if (status == "All") {
+//                    filterResults.count = originalBooks.size();
+//                    filterResults.values = originalBooks;
+//                } else {
+//                    filterResults.values = filteredList;
+//                    filterResults.count = filteredList.size();
+//                }
+//
+//                return filterResults;
+//            }
+//
+//            @Override
+//            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+//                ArrayList<String> filteredBookList = (ArrayList<String>) filterResults.values;
+//
+//            }
+//        };
+//    }
 }
