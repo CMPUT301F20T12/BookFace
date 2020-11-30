@@ -85,6 +85,16 @@ public class BookList extends ArrayAdapter<Book> implements Filterable {
     }
 
     /**
+     * Override the getItem method to return book at proper position when filtered
+     * @param position
+     * @return
+     */
+    @Override
+    public Book getItem(int position) {
+        return books.get(position);
+    }
+
+    /**
      * Override the getFilter method
      * @return
      * The filter
@@ -97,7 +107,7 @@ public class BookList extends ArrayAdapter<Book> implements Filterable {
     }
 
     /**
-     * This class ....
+     * This class provides a filter for the book list adapter -- used in search
      */
     public class BookFilter extends Filter {
         @SuppressWarnings("unchecked")
