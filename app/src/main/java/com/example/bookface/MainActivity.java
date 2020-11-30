@@ -1,8 +1,5 @@
 package com.example.bookface;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
@@ -15,11 +12,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -122,6 +125,26 @@ public class MainActivity extends AppCompatActivity {
 
                                                 // Get new FCM registration token
                                                 String token = task.getResult();
+
+                                                String username = mFirebaseAuth.getCurrentUser().getDisplayName();
+                                                DocumentReference userRef = db.collection("users").document(username);
+                                                final String TAG = "TOKEN_MSG";
+                                                userRef
+                                                        .update("token", token)
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                Log.d(TAG, "Token Set in user");
+                                                            }
+                                                        })
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Log.w(TAG, "Error updating document", e);
+                                                            }
+                                                        });
+
 
                                                 // Log and toast
 //                                                String msg = getString(R.string.msg_token_fmt, token);
