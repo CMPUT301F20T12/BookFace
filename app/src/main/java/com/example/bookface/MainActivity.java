@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
                                                             @Override
                                                             public void onSuccess(Void aVoid) {
-                                                                Log.d(TAG, "Token Set in user");
+                                                                Log.d(TAG, "Main: Token Set in user");
                                                             }
                                                         })
                                                         .addOnFailureListener(new OnFailureListener() {

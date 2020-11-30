@@ -75,6 +75,9 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-messaging:20.1.2'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     // For showing images
     implementation 'com.squareup.picasso:picasso:2.5.2'
 
