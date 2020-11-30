@@ -45,6 +45,7 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
     // Declare the fireAuth variable to get the currentUser()
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
+    FirestoreController mFirestoreController;
 
     // Declaration of some variables
     String owner;
@@ -92,10 +93,10 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
                 bookId = (String) b.get("BOOK_ID");
             }
             System.out.println("BOOKS ID: "+bookId);
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            mFirestoreController = new FirestoreController();
 
             // Firebase document listener
-            final DocumentReference docRef = db.collection("books").document(bookId);
+            final DocumentReference docRef = mFirestoreController.getDocRef("books", bookId);
           
             docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
@@ -136,12 +137,7 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
                     textOwner.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            // Call MyBooks Activity
-
-//                                String ownerName = textOwner.getText().toString();
-
-                            String docPath = "users/"+owner;
-                            DocumentReference docRef = db.document(docPath);
+                            DocumentReference docRef = mFirestoreController.getDocRef("users", owner);
                             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -179,12 +175,7 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
                         textBorrower.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                // Call MyBooks Activity
-
-//                                String ownerName = textOwner.getText().toString();
-
-                                String docPath = "users/"+borrower;
-                                DocumentReference docRef = db.document(docPath);
+                                DocumentReference docRef = mFirestoreController.getDocRef("users", borrower);
                                 docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -243,24 +234,24 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
                             btnBottom.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    final DocumentReference docRef = db.collection("books").document(bookId);
+                                    final DocumentReference docRef = mFirestoreController.getDocRef("books", bookId);
                                     docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                                           @Override
-                                                                           public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                                               if (task.isSuccessful()) {
-                                                                                   DocumentSnapshot document = task.getResult();
-                                                                                   if (document.exists()) {
-                                                                                       Map bookData = document.getData();
-                                                                                       if (bookData != null) {
-                                                                                           ArrayList<DocumentReference> requestList = (ArrayList<DocumentReference>) bookData.get("requestlist");
-                                                                                           Intent intent = new Intent(BookDescription.this, BookExchangeDisplayActivity.class);
-                                                                                           intent.putExtra("REQUEST_ID", requestList.get(0).getId());
-                                                                                           startActivity(intent);
-                                                                                       }
-                                                                                   }
-                                                                               }
-                                                                           }
-                                                                       });
+                                        @Override
+                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                  if (task.isSuccessful()) {
+                                                       DocumentSnapshot document = task.getResult();
+                                                            if (document.exists()) {
+                                                                 Map bookData = document.getData();
+                                                                 if (bookData != null) {
+                                                                       ArrayList<DocumentReference> requestList = (ArrayList<DocumentReference>) bookData.get("requestlist");
+                                                                       Intent intent = new Intent(BookDescription.this, BookExchangeDisplayActivity.class);
+                                                                       intent.putExtra("REQUEST_ID", requestList.get(0).getId());
+                                                                       startActivity(intent);
+                                                                 }
+                                                            }
+                                                       }
+                                        }
+                                    });
                                 }
                             });
                         }

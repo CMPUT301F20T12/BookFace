@@ -112,7 +112,7 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
             int index = viewHolder.getAdapterPosition();
             String bookId = myBookList.get(index);
 
-            final DocumentReference docRef = db.collection("books").document(bookId);
+            final DocumentReference docRef = mFirestoreController.getDocRef("books", bookId);
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -133,7 +133,7 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
                                 else{
                                     myBookList.remove(bookId);
                                     docRef.delete();
-                                    final DocumentReference docRefUser = db.collection("users").document(owner);
+                                    final DocumentReference docRefUser = mFirestoreController.getDocRef("users", owner);
                                     docRefUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {

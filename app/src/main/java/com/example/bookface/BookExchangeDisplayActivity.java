@@ -62,6 +62,7 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
     GoogleMap gMap;
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
+    FirestoreController mFirestoreController;
     TextView textStatus;
     String owner, author, borrower, title, status, isbn, imgUrl;
     String requestId, rStatus, borrowerId, bookId;
@@ -94,10 +95,10 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
             if (b != null) {
                 requestId = (String) b.get("REQUEST_ID");
             }
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            mFirestoreController = new FirestoreController();
 
 
-            docRefRequest = db.collection("requests").document(requestId);
+            docRefRequest = mFirestoreController.getDocRef("requests", requestId);
             docRefRequest.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -117,21 +118,20 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                                                 if (task.isSuccessful()) {
                                                     DocumentSnapshot value = task.getResult();
                                                     if (value.exists()) {
-//
-                                                        Map bookData = value.getData();
-                                                        owner = bookData.get("ownerUsername").toString();
-                                                        author = bookData.get("author").toString();
-                                                        isbn = value.get("isbn").toString();
-                                                        status = value.get("status").toString();
-                                                        title = value.get("title").toString();
-                                                        imgUrl = value.get("imageUrl").toString();
+                                                        Book book = value.toObject(Book.class);
+                                                        owner = book.getOwnerUsername();
+                                                        author = book.getAuthor();
+                                                        isbn = book.getISBN();
+                                                        status = book.getStatus();
+                                                        title = book.getTitle();
+                                                        imgUrl = book.getImageUrl();
                                                         System.out.println("Owner: " + owner + " ++++++++++++++++");
                                                         System.out.println("ISBN: " + isbn + " ++++++++++++++++");
 
-                                                        if (value.get("borrowerUserName") == null) {
+                                                        if (book.getBorrowerUsername() == null) {
                                                             borrower = "No current borrower";
                                                         } else {
-                                                            borrower = value.get("borrowerUserName").toString();
+                                                            borrower = book.getBorrowerUsername();
                                                         }
 
                                                         textAuthor.setText(author);
@@ -238,8 +238,7 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
         if (result != null) {
             String code = result.getContents();
             if (code != null) {
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                DocumentReference docRefRequest = db.collection("requests").document(requestId);
+                DocumentReference docRefRequest = mFirestoreController.getDocRef("requests", requestId);
                 if (owner.equals(currentUser)) {
                     docRefRequest.update("exchangeowner", isbn);
                 } else {
