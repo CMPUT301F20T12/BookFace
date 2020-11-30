@@ -6,10 +6,13 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,18 +29,22 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
  * This class displays the list of the books owned by the user
  */
-public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.OnBookClickListener {
+public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.OnBookClickListener, FilterBooksDialog.OnFragmentInteractionListener, Filterable {
 
     // Variable declarations
     RecyclerView recycleView;
     ArrayList<String> myBookList;
+    ArrayList<String> filteredBookList;
+    ArrayList<String> originalBooks;
     RecyclerViewAdapter adapter;
     Button addBookButton;
+    Button FilterBooksButton;
 
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
@@ -96,6 +103,14 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
             public void onClick(View view) {
                 Intent toAddEditBooks = new Intent(MyBooks.this, AddEditBookActivity.class);
                 startActivity(toAddEditBooks);
+            }
+        });
+        FilterBooksButton = findViewById(R.id.button_filter);
+        FilterBooksButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogFragment filterBooksDialog = new FilterBooksDialog();
+                filterBooksDialog.show(getSupportFragmentManager(), "missiles");
             }
         });
     }
@@ -204,5 +219,76 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
         Intent intent = new Intent(MyBooks.this, BookDescription.class);
         intent.putExtra("BOOK_ID", bookId);
         startActivity(intent);
+    }
+
+    @Override
+    public void onStatusSelected(String status) {
+        getFilter().filter(status);
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence status) {
+                FilterResults filterResults = new FilterResults();
+
+                if (originalBooks == null) {
+                    originalBooks = new ArrayList<>(myBookList);
+                }
+
+                if (status == "All") {
+                    filterResults.count = originalBooks.size();
+                    filterResults.values = originalBooks;
+                } else {
+                    ArrayList<String> filteredList = new ArrayList<>();
+                    for (String bookId : myBookList) {
+                        String docPath = "books/"+bookId;
+                        DocumentReference bookRef = db.document(docPath);
+                        bookRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if(task.isSuccessful()){
+                                    DocumentSnapshot documentSnapshot = task.getResult();
+                                    if(documentSnapshot !=null){
+                                        Book book = documentSnapshot.toObject(Book.class);
+
+                                        if (status == "Available" && book.getStatus() == "Available") {
+                                            filteredList.add(bookId);
+                                        } else if (status == "Requested" && book.getStatus() == "Requested") {
+                                            filteredList.add(bookId);
+                                        } else if (status == "Accepted" && book.getStatus() == "Accepted") {
+                                            filteredList.add(bookId);
+                                        } else if (status == "Borrowed" && book.getStatus() == "Borrowed") {
+                                            filteredList.add(bookId);
+                                        }
+                                        filteredBookList = filteredList;
+                                    }
+                                }
+                            }
+                        });
+
+                    }
+
+                }
+
+                filterResults.values = filteredBookList;
+                return filterResults;
+            }
+//
+//            @Override
+//            protected FilterResults performFiltering(CharSequence constraint) {
+//                return null;
+//            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                filteredBookList = (ArrayList<String>) filterResults.values;
+                myBookList = filteredBookList;
+
+                // refresh the list with filtered data
+                adapter.notifyDataSetChanged();
+            }
+        };
     }
 }
