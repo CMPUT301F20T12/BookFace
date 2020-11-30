@@ -3,6 +3,7 @@ package com.example.bookface;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -24,9 +25,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +44,8 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
     // Variable declarations
     RecyclerView recycleView;
     ArrayList<String> myBookList;
-    ArrayList<String> originalBooks;
+    ArrayList<Book> originalBooks;
+    ArrayList<Book> bookList;
     RecyclerViewAdapter adapter;
     Button addBookButton;
     Button FilterBooksButton;
@@ -62,12 +67,15 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
         userInstance = mFirebaseAuth.getCurrentUser();
         recycleView = findViewById(R.id.recycle_view);
         myBookList = new ArrayList<>();
+        bookList = new ArrayList<>();
 
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recycleView);
 
         context = this;
         onBookClickListener = this;
         if (userInstance != null){
+            fetchBooks();
+
             String userName = userInstance.getDisplayName();
 
             // Find the user document from the firebase
@@ -211,6 +219,33 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
     };
 
     /**
+     * This method is used to fetch the books from the firebase
+     */
+    private void fetchBooks() {
+        db = FirebaseFirestore.getInstance();
+
+        final CollectionReference bookReference = db.collection("books");
+        bookReference
+            .get()
+            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            String userName = userInstance.getDisplayName();
+                            Book book = doc.toObject(Book.class);
+                            if (book.getOwnerUsername().equals(userName)) {
+                                bookList.add(book);
+                            }
+                        }
+                    }
+                    else {
+                    }
+                }
+            });
+    }
+
+    /**
      * This is basically the onItemClick listener
      * @param position
      */
@@ -235,39 +270,22 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
                 final FilterResults filterResults = new FilterResults();
 
                 if (originalBooks == null) {
-                    originalBooks = new ArrayList<>(myBookList);
+                    originalBooks = new ArrayList<>(bookList);
                 }
 
                 if (status == "All") {
                     filterResults.count = originalBooks.size();
                     filterResults.values = originalBooks;
                 } else {
-                    ArrayList<String> filteredList = new ArrayList<>();
-                    for (String bookId : myBookList) {
-                        String docPath = "books/"+bookId;
-                        DocumentReference bookRef = db.document(docPath);
-                        bookRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if(task.isSuccessful()){
-                                    DocumentSnapshot documentSnapshot = task.getResult();
-                                    if(documentSnapshot !=null){
-                                        Book book = documentSnapshot.toObject(Book.class);
-
-                                        if (status.equals("Available") && book.getStatus().equals("Available")) {
-                                            filteredList.add(bookId);
-                                        } else if (status == "Accepted" && book.getStatus() == "Accepted") {
-                                            filteredList.add(bookId);
-                                        } else if (status == "Borrowed" && book.getStatus() == "Borrowed") {
-                                            filteredList.add(bookId);
-                                        }
-                                        //filteredBookList = filteredList;
-
-                                    }
-                                }
-                            }
-                        });
-
+                    ArrayList<Book> filteredList = new ArrayList<>();
+                    for (Book book : bookList) {
+                        if (status.equals("Available") && book.getStatus().equals("Available")) {
+                            filteredList.add(book);
+                        } else if (status.equals("Accepted") && book.getStatus().equals("Accepted")) {
+                            filteredList.add(book);
+                        } else if (status.equals("Borrowed") && book.getStatus().equals("Borrowed")) {
+                            filteredList.add(book);
+                        }
                     }
                     filterResults.values = filteredList;
                     filterResults.count = filteredList.size();
@@ -278,9 +296,14 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                ArrayList<String> filteredBookList = (ArrayList<String>) filterResults.values;
-                myBookList = filteredBookList;
+                ArrayList<Book> filteredBookList = (ArrayList<Book>) filterResults.values;
+                ArrayList<String> filteredBookIds = new ArrayList<>();
 
+                for (Book book : filteredBookList) {
+                    filteredBookIds.add(book.getISBN()+book.getOwnerUsername());
+                }
+
+                myBookList = filteredBookIds;
                 adapter = new RecyclerViewAdapter(context, myBookList, onBookClickListener);
                 recycleView.setAdapter(adapter);
                 // refresh the list with filtered data
