@@ -165,6 +165,10 @@ public class UserProfileActivity extends AppCompatActivity implements EditProfil
                     Intent toSearch = new Intent(UserProfileActivity.this, SearchActivity.class);
                     startActivity(toSearch);
                     break;
+                case R.id.requests:
+                    Intent toMyRequests = new Intent(UserProfileActivity.this, MyRequestsActivity.class);
+                    startActivity(toMyRequests);
+                    break;
             }
             return false;
         }

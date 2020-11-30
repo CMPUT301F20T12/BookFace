@@ -10,8 +10,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class RequestTest {
 
+    private LocationHelper mockLocation() {
+        return new LocationHelper(0, 0);
+    }
+
     private Request mockRequest() {
-        return new Request(mockBookRequested(), mockBorrower(), "pending");
+        return new Request(mockBookRequested(), mockBorrower(), "pending", mockLocation());
     }
 
     private Book mockBookRequested() {

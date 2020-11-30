@@ -24,7 +24,7 @@ public class BookDescriptionTest {
             new ActivityTestRule<>(BookDescription.class, true, true);
 
     @Before
-    public void setUp(){
+    public void setUp() {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
     }
 
@@ -63,12 +63,4 @@ public class BookDescriptionTest {
         // Test if the request was received
 
     }
-
-//    @Test
-//    public void checkImage() {
-//        View view = solo.getView("imageView");
-//        solo.assertCurrentActivity("Wrong Activity", BookDescription.class);
-//        solo.clickOnView(view);
-//        solo.assertCurrentActivity("Wrong Activity", AddImage.class);
-//    }
 }

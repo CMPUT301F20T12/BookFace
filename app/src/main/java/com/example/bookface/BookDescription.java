@@ -39,13 +39,12 @@ import java.util.Map;
 /**
  * This class is the activity that displays info of the book selected
  */
-public class BookDescription extends AppCompatActivity {
+public class BookDescription extends AppCompatActivity implements SendRequestDialog.OnFragmentInteractionListener{
 
     private static final String TAG = "BOOK_DESC_MSG";
     // Declare the fireAuth variable to get the currentUser()
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
-    FirestoreController mFirestoreController;
 
     // Declaration of some variables
     String owner;
@@ -92,31 +91,25 @@ public class BookDescription extends AppCompatActivity {
             if (b!= null) {
                 bookId = (String) b.get("BOOK_ID");
             }
-            mFirestoreController = new FirestoreController();
+            System.out.println("BOOKS ID: "+bookId);
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
 
             // Firebase document listener
-            final DocumentReference docRef = mFirestoreController.getDocRef("books", bookId);
+            final DocumentReference docRef = db.collection("books").document(bookId);
           
             docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                     if (error == null && value.exists() && value != null) {
-                        Book book = value.toObject(Book.class);
-                        owner = book.getOwnerUsername();
-                        author = book.getAuthor();
-                        isbn = book.getISBN();
-                        description = book.getDescription();
-                        status = book.getStatus();
-                        title = book.getTitle();
-                        imgUrl = book.getImageUrl();
-                        String borrowerUsername = book.getBorrowerUsername();
+                        owner = value.getString("ownerUsername");
+                        author = value.getString("author");
+                        isbn = value.getString("isbn");
+                        description = value.getString("description");
+                        status = value.getString("status");
+                        title = value.getString("title");
+                        imgUrl = value.getString("imageUrl");
 
-                        if (borrowerUsername == null) {
-                            borrower = "No current borrower";
-                        } 
-                        else {
-                            borrower = borrowerUsername;
-                        }
+                        borrower = value.get("borrowerUsername").toString();
 
                         textAuthor.setText(author);
                         textIsbn.setText(isbn);
@@ -124,8 +117,8 @@ public class BookDescription extends AppCompatActivity {
                         textTitle.setText(Html.fromHtml("<b>" + title + "</b>"));
                         textDescription.setText(description);
                         textBorrower.setText(borrower);
-                        textOwner.setText("@".concat(owner));
-                        if(imgUrl!="") {
+                        textOwner.setText(owner);
+                        if(imgUrl.equals("") == false) {
                             Picasso.with(getApplicationContext()).load(imgUrl).into(image);
                       
                             // Show the enlarged image
@@ -144,17 +137,21 @@ public class BookDescription extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             // Call MyBooks Activity
-                            DocumentReference docRef = mFirestoreController.getDocRef("users", owner);
+
+//                                String ownerName = textOwner.getText().toString();
+
+                            String docPath = "users/"+owner;
+                            DocumentReference docRef = db.document(docPath);
                             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                     if (task.isSuccessful()) {
                                         DocumentSnapshot document = task.getResult();
                                         if (document.exists()) {
-                                            User user = document.toObject(User.class);
-                                            if(user != null){
-                                                String email = user.getEmail();
-                                                String contact = user.getContactNo();
+                                            Map userData = document.getData();
+                                            if(userData != null){
+                                                String email = userData.get("email").toString();
+                                                String contact = userData.get("contactNo").toString();
 
                                                 Bundle bundle = new Bundle();
                                                 bundle.putString("USERNAME", owner);
@@ -178,9 +175,95 @@ public class BookDescription extends AppCompatActivity {
                         }
                     });
 
+                    if(borrower.toLowerCase().equals("null") == false){
+                        textBorrower.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // Call MyBooks Activity
+
+//                                String ownerName = textOwner.getText().toString();
+
+                                String docPath = "users/"+borrower;
+                                DocumentReference docRef = db.document(docPath);
+                                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+                                                Map userData = document.getData();
+                                                if(userData != null){
+                                                    String email = userData.get("email").toString();
+                                                    String contact = userData.get("contactNo").toString();
+
+                                                    Bundle bundle = new Bundle();
+                                                    bundle.putString("USERNAME", borrower);
+                                                    bundle.putString("USER_EMAIL", email);
+                                                    bundle.putString("USER_CONTACT", contact);
+
+                                                    UserProfileFragment userProfileFragment = new UserProfileFragment();
+                                                    userProfileFragment.setArguments(bundle);
+                                                    userProfileFragment.show(getSupportFragmentManager(),"userProfileFragment");
+                                                }
+                                            }
+                                            else {
+                                                Log.d(TAG, "No such document");
+                                            }
+                                        }
+                                        else {
+                                            Log.d(TAG, "get failed with ", task.getException());
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
                   
                     // If the current user is the owner of the book, set the fields and buttons' visibility accordingly
                     if (owner.equals(currentUser)) {
+                        if(status.equals("Available")){
+                            btnBottom.setText("View Requests");
+                            btnBottom.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent intent = new Intent(BookDescription.this, ViewRequestActivity.class);
+                                    intent.putExtra("BOOK_ID",isbn.concat(owner));
+                                    System.out.println("ISBN  "+isbn);
+                                    startActivity(intent);
+                                }
+                            });
+                        }
+                        else{
+                            if(status.equals("Accepted")){
+                                btnBottom.setText("Handover");
+                            }
+                            else if(status.equals("Borrowed")){
+                                btnBottom.setText("Receive Back");
+                            }
+                            btnBottom.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    final DocumentReference docRef = db.collection("books").document(bookId);
+                                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                           @Override
+                                                                           public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                               if (task.isSuccessful()) {
+                                                                                   DocumentSnapshot document = task.getResult();
+                                                                                   if (document.exists()) {
+                                                                                       Map bookData = document.getData();
+                                                                                       if (bookData != null) {
+                                                                                           ArrayList<DocumentReference> requestList = (ArrayList<DocumentReference>) bookData.get("requestlist");
+                                                                                           Intent intent = new Intent(BookDescription.this, BookExchangeDisplayActivity.class);
+                                                                                           intent.putExtra("REQUEST_ID", requestList.get(0).getId());
+                                                                                           startActivity(intent);
+                                                                                       }
+                                                                                   }
+                                                                               }
+                                                                           }
+                                                                       });
+                                }
+                            });
+                        }
                         btnEdit.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -199,12 +282,12 @@ public class BookDescription extends AppCompatActivity {
                             }
                         });
 
-                        btnBottom.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                // Call the functionality to collect the book
-                            }
-                        });
+//                        btnBottom.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                // Call the functionality to collect the book
+//                            }
+//                        });
                     }
                     // If the owner is not the current user, set the fields differently
                     else {
@@ -223,7 +306,12 @@ public class BookDescription extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 // Call Send Request Activity
-                                openDialog();
+                                SendRequestDialog sendRequestDialog = new SendRequestDialog();
+                                Bundle bundle = new Bundle();
+                                bundle.putString("bookid", bookId);
+                                bundle.putString("borrowerid", currentUser);
+                                sendRequestDialog.setArguments(bundle);
+                                sendRequestDialog.show(getSupportFragmentManager(), "Send Request");
                             }
                         });
                         textBorrower.setVisibility(View.INVISIBLE);
@@ -233,8 +321,17 @@ public class BookDescription extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method is used to open a dialog box in order to send request
+     */
     public void openDialog() {
         SendRequestDialog sendRequestDialog = new SendRequestDialog();
         sendRequestDialog.show(getSupportFragmentManager(), "Send Request");
+    }
+
+    @Override
+    public void onSendRequestConfirm() {
+                                Intent toMyRequests = new Intent(BookDescription.this, MyRequestsActivity.class);
+                                startActivity(toMyRequests);
     }
 }

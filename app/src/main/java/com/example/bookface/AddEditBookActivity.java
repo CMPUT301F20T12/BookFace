@@ -213,8 +213,6 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                     author.setError("FIELD CANNOT BE EMPTY");
                 else if(title.getText().toString().length()==0)
                     title.setError("FIELD CANNOT BE EMPTY");
-                else if(imageView.getDrawable() == null)
-                    Toast.makeText(AddEditBookActivity.this, "Image not attached!", Toast.LENGTH_SHORT).show();
                 else{
                     localIsbn  =isbn.getText().toString();
                     localAuthors = author.getText().toString();
@@ -267,52 +265,58 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                     // Make the instance of the book
                                     book = new Book(localTitle, localAuthors, localIsbn, localDescription,
                                             "Available", localUsername, "Null", localImage);
-                                    CollectionReference collRef = mFirestoreController.getCollRef("books");
-                                    collRef.document(book.getISBN()+localUsername).set(book).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                    DocumentReference docRef = mFirestoreController.getDocRef("books", book.getISBN()+localUserName);
+                                    docRef.set(book).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            DocumentReference docRef = mFirestoreController.getDocRef("users", localUsername);
-                                            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                    if (task.isSuccessful()) {
-                                                        DocumentSnapshot document = task.getResult();
-                                                        if (document.exists()) {
-                                                            Map userData = document.getData();
-                                                            System.out.println("DOCUMENT EXISTS!");
-                                                            if(userData != null){
+                                            DocumentReference docRef = mFirestoreController.getDocRef("users", localUserName);
+                                            if (b == null) {
+                                                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                        if (task.isSuccessful()) {
+                                                            DocumentSnapshot document = task.getResult();
+                                                            if (document.exists()) {
+                                                                Map userData = document.getData();
+                                                                System.out.println("DOCUMENT EXISTS!");
+                                                                if (userData != null) {
 
-                                                                final String TAG = "Completion Message" ;
-                                                                ArrayList<String> myBookList = (ArrayList<String>)document.get("booksOwned");
-                                                                myBookList.add(localIsbn);
-                                                                System.out.println(myBookList);
+                                                                    final String TAG = "Completeion Message";
+                                                                    ArrayList<String> myBookList = (ArrayList<String>) document.get("booksOwned");
+                                                                    myBookList.add(book.getISBN() + localUsername);
+                                                                    System.out.println(myBookList);
 
-                                                                docRef.update("booksOwned", myBookList)
-                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                            @Override
-                                                                            public void onSuccess(Void aVoid) {
-                                                                                Log.d(TAG, "DocumentSnapshot successfully updated!");
-                                                                                Toast.makeText(AddEditBookActivity.this,
-                                                                                        "Book Added", Toast.LENGTH_SHORT).show();
-                                                                                Intent toMyBooks = new Intent(
-                                                                                        AddEditBookActivity.this, MyBooks.class);
-                                                                                startActivity(toMyBooks);
-                                                                            }
-                                                                        })
-                                                                        .addOnFailureListener(new OnFailureListener() {
-                                                                            @Override
-                                                                            public void onFailure(@NonNull Exception e) {
-                                                                                Log.w(TAG, "Error updating document", e);
-                                                                            }
-                                                                        });
+                                                                    docRef.update("booksOwned", myBookList)
+                                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                @Override
+                                                                                public void onSuccess(Void aVoid) {
+                                                                                    Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                                                                    Toast.makeText(AddEditBookActivity.this,
+                                                                                            "Book Added", Toast.LENGTH_SHORT).show();
+                                                                                    Intent toMyBooks = new Intent(
+                                                                                            AddEditBookActivity.this, MyBooks.class);
+                                                                                    startActivity(toMyBooks);
+                                                                                }
+                                                                            })
+                                                                            .addOnFailureListener(new OnFailureListener() {
+                                                                                @Override
+                                                                                public void onFailure(@NonNull Exception e) {
+                                                                                    Log.w(TAG, "Error updating document", e);
+                                                                                }
+                                                                            });
+                                                                }
+                                                            } else {
+                                                                System.out.println("DOC does not exist");
                                                             }
                                                         }
-                                                        else {
-                                                            System.out.println("DOC does not exist");
-                                                        }
                                                     }
-                                                }
-                                            });
+                                                });
+                                            }
+                                            else{
+                                                Intent toMyBooks = new Intent(AddEditBookActivity.this, MyBooks.class);
+                                                startActivity(toMyBooks);
+                                            }
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {

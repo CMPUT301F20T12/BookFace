@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFF"
-    tools:context=".BookDescription">
+    tools:context=".SetLocationActivity">
 
     <RelativeLayout
         android:id="@+id/linearLayout2"
@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
-            android:id="@+id/myBooksOrSearchButton"
+            android:id="@+id/myBooksOrMyRequestsButton"
             android:layout_width="147dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -48,7 +48,7 @@
         android:layout_width="355dp"
         android:layout_height="114dp"
         android:layout_marginTop="272dp"
-        app:layout_constraintBottom_toTopOf="@+id/editButton"
+        app:layout_constraintBottom_toTopOf="@+id/locationHeadingText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -69,17 +69,6 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-<!--        <ImageView-->
-<!--            android:id="@+id/viewRequestHead"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_alignParentEnd="true"-->
-<!--            android:layout_alignParentBottom="true"-->
-<!--            android:layout_marginEnd="10dp"-->
-<!--            android:layout_marginBottom="89dp"-->
-<!--            app:srcCompat="@drawable/ic_baseline_call_received_24" />-->
-
-
         <TextView
             android:id="@+id/authorNameText"
             android:layout_width="355dp"
@@ -99,7 +88,7 @@
 
         <TextView
             android:id="@+id/isbnText"
-            android:layout_width="229dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/authorNameText"
             android:layout_alignLeft="@+id/authorNameText"
@@ -115,15 +104,15 @@
 
         <TextView
             android:id="@+id/statusText"
-            android:layout_width="229dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/authorNameText"
             android:layout_alignLeft="@+id/authorNameText"
-            android:layout_alignParentTop="true"
+            android:layout_alignTop="@+id/authorNameText"
+            android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="0dp"
+            android:layout_marginStart="2dp"
             android:layout_marginLeft="0dp"
-            android:layout_marginTop="90dp"
+            android:layout_marginTop="54dp"
             android:layout_marginEnd="108dp"
             android:text="Status"
             android:textSize="20sp"
@@ -132,38 +121,25 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/descriptionHeadingText"
+        android:id="@+id/locationHeadingText"
         android:layout_width="135dp"
         android:layout_height="31dp"
         android:layout_marginBottom="16dp"
-        android:text="Description:"
+        android:text="Location:"
+        android:textStyle="bold"
         android:textSize="25sp"
-        app:layout_constraintBottom_toTopOf="@+id/bookDescriptionText"
-        app:layout_constraintEnd_toStartOf="@+id/editButton"
+        app:layout_constraintBottom_toTopOf="@+id/map"
+        app:layout_constraintEnd_toStartOf="@+id/map"
         app:layout_constraintHorizontal_bias="0.169"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/bookDescriptionText"
-        android:layout_width="354dp"
-        android:layout_height="153dp"
-        android:text="Book Description"
-        android:textSize="18sp"
-        android:textStyle="italic"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.508"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.756"/>
-
+        app:layout_constraintStart_toStartOf="@+id/relativeLayout"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/bookDescriptionText"
+        app:layout_constraintTop_toBottomOf="@+id/map"
         android:weightSum="2"
         android:layout_marginEnd="28dp"
         android:layout_marginStart="28dp">
@@ -171,81 +147,45 @@
         <LinearLayout
             android:id="@+id/ownerLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:orientation="horizontal"
             android:weightSum="2">
 
             <TextView
-                android:id="@+id/ownerText"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
+                android:id="@+id/addressText"
+                android:layout_width="235dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Owner Details:  "
-                android:textSize="18sp"
+                android:text="Address"
+                android:textSize="10sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/ownerNameText"
+            <Button
+                android:id="@+id/confirmButton"
                 android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Owner"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:layout_height="42dp"
+                android:layout_marginEnd="28dp"
+                android:layout_marginBottom="8dp"
+                android:text="Confirm"
+                android:background="@drawable/secondary_buttons"
+                app:layout_constraintBottom_toTopOf="@+id/bookDescriptionText"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            android:layout_weight="1">
-
-
-            <TextView
-                android:id="@+id/borrowerText"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Current Borrower:  "
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/borrowerNameText"
-                android:layout_width="180dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Borrower"
-                android:textSize="18sp"
-                android:textStyle="bold" />
         </LinearLayout>
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/collectOrSendRequestButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:color="#4CAF50"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="318dp"
+        android:layout_height="249dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/editButton"
-        android:layout_width="77dp"
-        android:layout_height="42dp"
-        android:layout_marginEnd="28dp"
-        android:layout_marginBottom="8dp"
-        android:color="#4CAF50"
-        android:text="Edit"
-        app:layout_constraintBottom_toTopOf="@+id/bookDescriptionText"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+        tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
