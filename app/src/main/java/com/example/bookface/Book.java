@@ -47,6 +47,10 @@ public class Book {
         this.requestlist = new ArrayList<DocumentReference>();
     }
 
+    public Book() {
+
+    }
+
     // Getters and Setters
     public String getTitle() {
         return title;

@@ -56,7 +56,7 @@
                 android:textColor="#FFFFFF"></Button>
 
             <Button
-                android:id="@+id/button_search"
+                android:id="@+id/button_filter"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="45dp"

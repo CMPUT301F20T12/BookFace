@@ -65,7 +65,7 @@ public class RequestList extends ArrayAdapter<DocumentReference> {
         TextView requestBookTitle = finalView.findViewById(R.id.request_book_title);
         TextView requestBookAuthor = finalView.findViewById(R.id.request_book_author);
 
-        // Sets the text view fields in the Request list activity
+        // Sets the text view fields in the Request list activityn
         requestRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
