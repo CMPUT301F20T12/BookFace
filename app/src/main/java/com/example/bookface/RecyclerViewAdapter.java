@@ -46,7 +46,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     /**
-     * This does ....
+     * This is a system method that creates a View holder
      * @param parent
      * @param viewType
      * @return
@@ -60,7 +60,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     /**
-     * This does .....
+     * For each book reference, the book data is set accordingly to the fields
      * @param holder
      * @param position
      */
@@ -79,11 +79,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-//                    System.out.println("GETTING BOOK DATA");
-                    System.out.println(document);
                     if (document.exists()) {
                         Map bookData = document.getData();
-//                        System.out.println("BOOK DATA ----> "+bookData);
                         if(bookData != null){
                             String title = bookData.get("title").toString();
                             String author = bookData.get("author").toString();
@@ -126,7 +123,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     /**
-     * This class does ...
+     * This class is being used above to set the fields
      */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // Variable declarations
@@ -157,6 +154,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
+    /**
+     * Implement the methods from the interface
+     */
     public interface OnBookClickListener{
         void onBookClick(int position);
     }

@@ -42,12 +42,7 @@ public class MyRequestsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_requests);
 
-
-//        requests = new ArrayList<>();
-
         requestListView = findViewById(R.id.requestList);
-//        requestListAdapter = new RequestList(this, requests);
-//        requestListView.setAdapter(requestListAdapter);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         userInstance = mFirebaseAuth.getCurrentUser();
@@ -69,7 +64,6 @@ public class MyRequestsActivity extends AppCompatActivity {
                     if (document.exists()) {
                         // set the books in the recyclerView
                         requests = (ArrayList<DocumentReference>) document.get("sentrequests");
-                        System.out.println("THIS IS REQUEST SENT: "+requests);
                         requestListAdapter = new RequestList(context, requests);
                         requestListView.setAdapter(requestListAdapter);
 
@@ -81,6 +75,7 @@ public class MyRequestsActivity extends AppCompatActivity {
             }
         });
 
+        // sets onItemClickListener and intents according to the status
         requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -103,7 +98,8 @@ public class MyRequestsActivity extends AppCompatActivity {
                                     startActivity(intent);
                                 }
                                 else{
-                                    Intent intent = new Intent(MyRequestsActivity.this, BookExchangeDisplayActivity.class);
+                                    Intent intent = new Intent(MyRequestsActivity.this,
+                                            BookExchangeDisplayActivity.class);
                                     intent.putExtra("REQUEST_ID", reqRef);
                                     startActivity(intent);
                                 }
@@ -135,52 +131,9 @@ public class MyRequestsActivity extends AppCompatActivity {
                     Intent toRequests = new Intent(MyRequestsActivity.this, SearchActivity.class);
                     startActivity(toRequests);
                     break;
-//                case R.id.notification:
-//                    Intent toNotification = new Intent(LoginConfirmationActivity.this, SignupActivity.class);
-//                    startActivity(toNotification);
-//                    break;
             }
             return false;
         }
     };
 
 }
-
-
-
-
-//package com.example.bookface;
-//
-//import androidx.appcompat.app.AppCompatActivity;
-//
-//import android.os.Bundle;
-//import android.widget.ArrayAdapter;
-//import android.widget.ListView;
-//
-//import com.google.firebase.firestore.FirebaseFirestore;
-//
-//import java.util.ArrayList;
-//
-///**
-// * This activity is used to show the requests that the user has sent
-// */
-//public class MyRequestsActivity extends AppCompatActivity {
-//    ListView requestListView;
-//    ArrayAdapter<Request> requestListAdapter;
-//    ArrayList<Request> requests;
-//    FirebaseFirestore db;
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_my_requests);
-//
-//        requestListView = findViewById(R.id.requestList);
-//        requests = new ArrayList<>();
-//
-//        requestListAdapter = new RequestList(this, requests);
-//        requestListView.setAdapter(requestListAdapter);
-//
-//        db = FirebaseFirestore.getInstance();
-//    }
-//}

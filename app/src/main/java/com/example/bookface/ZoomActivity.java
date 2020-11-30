@@ -8,6 +8,9 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+/**
+ * This activity handles the case of showing the enlarged image
+ */
 public class ZoomActivity extends AppCompatActivity {
 
     @Override

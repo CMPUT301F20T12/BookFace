@@ -70,7 +70,6 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
     private String owner, author, borrower, title, status, isbn, imgUrl;
     private String requestId, bookId;
     private String currentUser = null;
-//    private DocumentReference docRefRequest;
     FirebaseFirestore db;
 
     // Initialize the constants
@@ -101,11 +100,8 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
 
             // Retrieve the request passed through the intent
             Bundle b = getIntent().getExtras();
-//            System.out.println(b.get("BOOK_ID"));
             if (b!= null) {
-//                bookId = (String) b.get("BOOK_ID");
                 requestId = (String) b.get("REQUEST_ID");
-                System.out.println("REQ ID: "+ requestId);
             }
             db = FirebaseFirestore.getInstance();
 
@@ -130,7 +126,6 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
                                                 if (task.isSuccessful()) {
                                                     DocumentSnapshot value = task.getResult();
                                                     if (value.exists()) {
-//
                                                         Map bookData = value.getData();
                                                         owner = bookData.get("ownerUsername").toString();
                                                         author = bookData.get("author").toString();
@@ -139,8 +134,6 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
                                                         title = value.get("title").toString();
                                                         imgUrl = value.get("imageUrl").toString();
                                                         bookId = isbn.concat(owner);
-                                                        System.out.println("Owner: "+owner+" ++++++++++++++++");
-                                                        System.out.println("ISBN: "+isbn+" ++++++++++++++++");
 
                                                         if (value.get("borrowerUserName") == null) {
                                                             borrower = "No current borrower";
@@ -279,9 +272,7 @@ public class SetLocationActivity extends AppCompatActivity implements OnMapReady
             String address;
             addresses = geoStartUp.getFromLocation(latLng.latitude, latLng.longitude, 1);
             // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-            System.out.println(addresses);
             if(addresses.size() != 0){
-                System.out.println("Hello address!");
                 address = addresses.get(0).getAddressLine(0);
                 textAddress.setText(address);
             }

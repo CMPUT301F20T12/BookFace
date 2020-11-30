@@ -41,15 +41,11 @@ public class BookList extends ArrayAdapter<Book> implements Filterable {
     }
 
     /**
-     *
+     * Sets up the custom array adapter
      * @param position
-     *
      * @param convertView
-     *
      * @param parent
-     *
      * @return view
-     *
      */
     @NonNull
     @Override
@@ -127,9 +123,7 @@ public class BookList extends ArrayAdapter<Book> implements Filterable {
         /**
          * Override the performFiltering method
          * @param searchTerm
-         *
          * @return filterResults
-         *
          */
         @Override
         protected FilterResults performFiltering(CharSequence searchTerm) {
@@ -153,7 +147,8 @@ public class BookList extends ArrayAdapter<Book> implements Filterable {
                         book.getISBN().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
                         book.getDescription().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
                         book.getOwnerUsername().toLowerCase(Locale.getDefault()).contains(searchTerm) ||
-                        book.getBorrowerUsername().toLowerCase(Locale.getDefault()).contains(searchTerm)) { // search through the fields of a book
+                        book.getBorrowerUsername().toLowerCase(Locale.getDefault()).contains(searchTerm)) {
+                        // search through the fields of a book
                         tempBooks.add(book);
                     }
                 }

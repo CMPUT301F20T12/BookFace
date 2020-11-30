@@ -96,7 +96,7 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
             }
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-
+            // Read from the databse
             docRefRequest = db.collection("requests").document(requestId);
             docRefRequest.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
@@ -117,7 +117,6 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                                                 if (task.isSuccessful()) {
                                                     DocumentSnapshot value = task.getResult();
                                                     if (value.exists()) {
-//
                                                         Map bookData = value.getData();
                                                         owner = bookData.get("ownerUsername").toString();
                                                         author = bookData.get("author").toString();
@@ -125,8 +124,6 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                                                         status = value.get("status").toString();
                                                         title = value.get("title").toString();
                                                         imgUrl = value.get("imageUrl").toString();
-                                                        System.out.println("Owner: " + owner + " ++++++++++++++++");
-                                                        System.out.println("ISBN: " + isbn + " ++++++++++++++++");
 
                                                         if (value.get("borrowerUserName") == null) {
                                                             borrower = "No current borrower";
@@ -221,7 +218,6 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
                     SupportMapFragment supportMapFragment = (SupportMapFragment)
                             getSupportFragmentManager().findFragmentById(R.id.map);
                     supportMapFragment.getMapAsync(BookExchangeDisplayActivity.this::onMapReady);
-                    System.out.println("Task successful");
                 }
                 else {
                     System.out.println("Task unsuccessful");
@@ -351,8 +347,6 @@ public class BookExchangeDisplayActivity extends AppCompatActivity implements On
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        System.out.println("Entered here");
-        System.out.println(chosenLocation.getLatitude()+ "-------" + chosenLocation.getLongitude());
         gMap = googleMap;
         TextView textAddress = (TextView) findViewById(R.id.addressText);
 
