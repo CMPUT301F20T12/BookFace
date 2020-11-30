@@ -41,9 +41,7 @@ public class EditProfileFragment extends DialogFragment {
     /**
      * This method does the input validation for Edit text input in dialog box
      * @param num
-     *
      * @return
-     *
      */
     public boolean validateInput(String num){
             if(num.contains("+")){

@@ -30,17 +30,33 @@ import javax.annotation.Nullable;
 
 import static android.content.ContentValues.TAG;
 
+/**
+ * Displays the username of the requester of the book
+ */
 public class ViewRequestUserList extends ArrayAdapter<DocumentReference>{
 
+    // variable declarations
     private ArrayList<DocumentReference> requestList;
     private Context context;
 
+    /**
+     * This is the contructor
+     * @param context
+     * @param requestList
+     */
     public ViewRequestUserList(Context context, ArrayList<DocumentReference> requestList){
         super(context,0, requestList);
         this.requestList = requestList;
         this.context = context;
     }
 
+    /**
+     * Displays the username of the requester of the book
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -50,20 +66,16 @@ public class ViewRequestUserList extends ArrayAdapter<DocumentReference>{
             view = LayoutInflater.from(context).inflate(R.layout.view_request_user, parent,false);
         }
 
-        System.out.println("PRINTING IN REQUESTER LIST!");
         final DocumentReference requestDocReference = requestList.get(position);
-//        System.out.println("REQ DOC REF: "+requestDocReference);
         View finalView = view;
         requestDocReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot request = task.getResult();
-                    System.out.println("REQ: "+request);
                     if (request.exists()) {
                         TextView requesterView = finalView.findViewById(R.id.requesterName);
                         Map requestData = request.getData();
-                        System.out.println("REQUEST DATA: "+requestData);
                         DocumentReference borrowerRef = (DocumentReference) requestData.get("borrowerid");
 
                         borrowerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -95,15 +107,18 @@ public class ViewRequestUserList extends ArrayAdapter<DocumentReference>{
         return view;
     }
 
+    /**
+     * This returns the number of requests
+     * @return
+     * the number of requests
+     */
     public int getCount() {
-        if(requestList != null){
-//            System.out.println("SIZE OF LIST: "+requestList.size());
+        if(requestList != null) {
             return requestList.size();
         }
-        else{
+        else {
             return 0;
         }
-
     }
 
 }

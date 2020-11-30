@@ -17,9 +17,12 @@ import androidx.fragment.app.DialogFragment;
 
 import org.w3c.dom.Text;
 
+/**
+ * Displays the user profile of the presented username
+ */
 public class UserProfileFragment extends DialogFragment {
 
-        @Nullable
+    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);

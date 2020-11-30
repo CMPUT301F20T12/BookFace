@@ -60,7 +60,7 @@ import java.util.Map;
 /**
  * This class is the activity that is used to Add/Edit Books into the system
  */
-public class AddEditBookActivity extends AppCompatActivity implements View.OnClickListener {
+public class    AddEditBookActivity extends AppCompatActivity implements View.OnClickListener {
 
     // View declarations
     private TextView scan;
@@ -114,7 +114,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
 
         // Check for the passed book
         Bundle b = getIntent().getExtras();
-        
+
         // Setting up the onClickListener for back button
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,12 +146,14 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                 startActivityForResult(i, RESULT_LOAD_IMAGE);
             }
         });
+
+        // Setting up the onClickListener for delete button
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(b != null){
                     String bookId = (String) b.get("Book");
-                    System.out.println(bookId);
+
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
                     String docPath = "books/"+bookId;
 
@@ -194,7 +196,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                         title.setText(value.getString("title"));
                         isbn.setText(value.getString("isbn"));
                         String imgUrl = value.getString("imageUrl");
-                        if(imgUrl!="")
+                        if(!imgUrl.equals(""))
                             Picasso.with(AddEditBookActivity.this).load(imgUrl).into(imageView);
                     }
                 }
@@ -208,6 +210,9 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                 this.writeDB();
             }
 
+            /**
+             * This method is adding a new book to db. It also handles book Edit feature
+             */
             private void writeDB() {
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 if(isbn.getText().toString().length()==0)
@@ -216,7 +221,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                     author.setError("FIELD CANNOT BE EMPTY");
                 else if(title.getText().toString().length()==0)
                     title.setError("FIELD CANNOT BE EMPTY");
-                else{
+                else {
                     localIsbn  =isbn.getText().toString();
                     localAuthors = author.getText().toString();
                     localTitle = title.getText().toString();
@@ -253,7 +258,8 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                             // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                            taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
+                            taskSnapshot.getMetadata().getReference().getDownloadUrl()
+                                    .addOnSuccessListener(new OnSuccessListener<Uri>()
                             {
                                 @Override
                                 public void onSuccess(Uri downloadUrl)
@@ -268,10 +274,11 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                     // Make the instance of the book
                                     book = new Book(localTitle, localAuthors, localIsbn, localDescription,
                                             "Available", localUsername, "Null", localImage);
-                                    System.out.println("BOOK:" + book);
+
                                     db.collection("books")
 //                                            .document(book.getISBN()+localUsername).set(book).addOnSuccessListener(new OnSuccessListener<Void>()
-                                            .document(book.getISBN()+localUsername).set(book).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            .document(book.getISBN()+localUsername).set(book)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             String docPath = "users/".concat(localUsername);
@@ -284,23 +291,28 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                                             DocumentSnapshot document = task.getResult();
                                                             if (document.exists()) {
                                                                 Map userData = document.getData();
-                                                                System.out.println("DOCUMENT EXISTS!");
+
                                                                 if (userData != null) {
 
                                                                     final String TAG = "Completeion Message";
-                                                                    ArrayList<String> myBookList = (ArrayList<String>) document.get("booksOwned");
+                                                                    ArrayList<String> myBookList =
+                                                                            (ArrayList<String>) document.get("booksOwned");
                                                                     myBookList.add(book.getISBN() + localUsername);
-                                                                    System.out.println(myBookList);
 
                                                                     docRef.update("booksOwned", myBookList)
                                                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                                 @Override
                                                                                 public void onSuccess(Void aVoid) {
-                                                                                    Log.d(TAG, "DocumentSnapshot successfully updated!");
-                                                                                    Toast.makeText(AddEditBookActivity.this,
-                                                                                            "Book Added", Toast.LENGTH_SHORT).show();
-                                                                                    Intent toMyBooks = new Intent(
-                                                                                            AddEditBookActivity.this, MyBooks.class);
+                                                                                    Log.d(TAG,
+                                                                                "DocumentSnapshot successfully updated!");
+                                                                                    Toast.makeText(
+                                                                                            AddEditBookActivity.this,
+                                                                                            "Book Added",
+                                                                                            Toast.LENGTH_SHORT).show();
+                                                                                    Intent toMyBooks = new
+                                                                                            Intent(
+                                                                                            AddEditBookActivity.this,
+                                                                                            MyBooks.class);
                                                                                     startActivity(toMyBooks);
                                                                                 }
                                                                             })
@@ -319,7 +331,8 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                                 });
                                             }
                                             else{
-                                                Intent toMyBooks = new Intent(AddEditBookActivity.this, MyBooks.class);
+                                                Intent toMyBooks = new Intent(AddEditBookActivity.this,
+                                                        MyBooks.class);
                                                 startActivity(toMyBooks);
                                             }
                                         }
@@ -340,6 +353,9 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
         });
     }
 
+
+
+
     /**
      * This method is used to handle the onClick to create a scan object of the scan class
      * @param v
@@ -354,11 +370,8 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
     /**
      * This is used to overwrite onActivityResult in order to get the image from the scan, camera and gallery calls
      * @param requestCode
-     * This is
      * @param resultCode
-     * This is
      * @param data
-     * This is
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -422,6 +435,7 @@ public class AddEditBookActivity extends AppCompatActivity implements View.OnCli
                                     } catch (Exception e) {
                                         // TODO
                                         // Handle the exception
+                                        System.out.println("There was an exception raised.");
                                     }
                                 }
                                 if (flag == 1) {

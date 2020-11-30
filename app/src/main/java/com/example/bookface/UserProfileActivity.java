@@ -28,7 +28,7 @@ import static android.content.ContentValues.TAG;
 /**
  * This is the class that is used to handle the user Profile activity
  */
-public class UserProfileActivity extends AppCompatActivity implements EditProfileFragment.OnFragmentInteractionListener{
+public class UserProfileActivity extends AppCompatActivity implements EditProfileFragment.OnFragmentInteractionListener {
 
     // Initialize constants
     private static final String TAG = "LoginMessage" ;
@@ -118,7 +118,7 @@ public class UserProfileActivity extends AppCompatActivity implements EditProfil
     }
 
     /**
-     * This is the method which ....
+     * This is the method which gets the data of the user and puts it into the edit view
      * @param number
      */
     public void onEditProfileConfirmPressed(String number){
@@ -154,7 +154,8 @@ public class UserProfileActivity extends AppCompatActivity implements EditProfil
     /**
      * This is used to implement the bottom navigation bar
      */
-    private  BottomNavigationView.OnNavigationItemSelectedListener navBarMethod = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    private  BottomNavigationView.OnNavigationItemSelectedListener navBarMethod = new
+            BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             switch (menuItem.getItemId()){

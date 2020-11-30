@@ -76,7 +76,6 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
                         if (document.exists()) {
                             // set the books in the recyclerView
                             myBookList = (ArrayList<String>)document.get("booksOwned");
-                            System.out.println(myBookList);
 
                             adapter = new RecyclerViewAdapter(context, myBookList, onBookClickListener);
                             recycleView.setAdapter(adapter);
@@ -101,10 +100,12 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
         });
     }
 
-    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-
+    // On swipe, delete the book
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
         @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
+                              @NonNull RecyclerView.ViewHolder target) {
             return false;
         }
 
@@ -123,15 +124,20 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
                             Map bookData = document.getData();
                             if (bookData != null) {
                                 String status = bookData.get("status").toString();
-                                ArrayList<DocumentReference> requestList = (ArrayList<DocumentReference>) bookData.get("requestlist");
+                                ArrayList<DocumentReference> requestList = (ArrayList<DocumentReference>)
+                                        bookData.get("requestlist");
                                 String owner = bookData.get("ownerUsername").toString();
-                                if(status.toLowerCase().equals("available")  == false){
-                                    Toast.makeText(MyBooks.this, "Delete request denied, retry when book is available!", Toast.LENGTH_SHORT).show();
+                                if(status.toLowerCase().equals("available")  == false) {
+                                    Toast.makeText(MyBooks.this,
+                                            "Delete request denied, retry when book is available!",
+                                            Toast.LENGTH_SHORT).show();
                                 }
-                                else if(requestList.size() != 0){
-                                    Toast.makeText(MyBooks.this, "Delete request denied, retry when no incoming requests on the book!", Toast.LENGTH_SHORT).show();
+                                else if(requestList.size() != 0) {
+                                    Toast.makeText(MyBooks.this,
+                                            "Delete request denied, retry when no incoming requests on the book!",
+                                            Toast.LENGTH_SHORT).show();
                                 }
-                                else{
+                                else {
                                     myBookList.remove(bookId);
                                     docRef.delete();
                                     final DocumentReference docRefUser = db.collection("users").document(owner);
@@ -143,7 +149,8 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
                                                 if (document.exists()) {
                                                     Map userData = document.getData();
                                                     if (userData != null) {
-                                                        ArrayList<DocumentReference> ownedBooks = (ArrayList<DocumentReference>) userData.get("booksOwned");
+                                                        ArrayList<DocumentReference> ownedBooks =
+                                                                (ArrayList<DocumentReference>) userData.get("booksOwned");
                                                         ownedBooks.remove(bookId);
                                                         docRefUser.update("booksOwned", ownedBooks);
                                                     }
@@ -165,7 +172,8 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
     /**
      * This is used to setup the bottom navigation bar
      */
-    private  BottomNavigationView.OnNavigationItemSelectedListener navBarMethod = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    private  BottomNavigationView.OnNavigationItemSelectedListener navBarMethod = new
+            BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             switch (menuItem.getItemId()){
@@ -186,11 +194,13 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
         }
     };
 
+    /**
+     * This is basically the onItemClick listener
+     * @param position
+     */
     @Override
     public void onBookClick(int position) {
-
         String bookId = myBookList.get(position);
-        //Toast.makeText(MyBooks.this, bookISBN, Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(MyBooks.this, BookDescription.class);
         intent.putExtra("BOOK_ID", bookId);
         startActivity(intent);

@@ -76,12 +76,14 @@ public class SignupActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (!task.isSuccessful()) {
-                                Toast.makeText(SignupActivity.this, "SignupActivity failed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignupActivity.this, "SignupActivity failed",
+                                        Toast.LENGTH_SHORT).show();
                             }
                             else {
                                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                                 db.collection("users")
-                                        .document(newUser.getUsername()).set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        .document(newUser.getUsername()).set(newUser).addOnSuccessListener(
+                                                new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 FirebaseUser userInstance = mFirebaseAuth.getInstance().getCurrentUser();
@@ -95,8 +97,8 @@ public class SignupActivity extends AppCompatActivity {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                 if (task.isSuccessful()) {
-                                                                    System.out.println("User Updated!"+userInstance.getDisplayName());
-                                                                    Toast.makeText(SignupActivity.this, "User Created",
+                                                                    Toast.makeText(SignupActivity.this,
+                                                                            "User Created",
                                                                             Toast.LENGTH_SHORT).show();
                                                                     startActivity(new Intent(SignupActivity.this,
                                                                             MainActivity.class));

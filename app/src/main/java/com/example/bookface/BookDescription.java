@@ -61,7 +61,6 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_book_description);
         setContentView(R.layout.activity_bookdescription_updated);
 
         // Retrieve the objects passed into the intent object
@@ -76,7 +75,6 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
         TextView textTitle = (TextView) findViewById(R.id.titleText);
         TextView textIsbn = (TextView) findViewById(R.id.isbnText);
         TextView textStatus = (TextView) findViewById(R.id.statusText);
-//        TextView textDescHeading = (TextView) findViewById(R.id.descriptionHeadingText);
         TextView textDescription = (TextView) findViewById(R.id.bookDescriptionText);
         TextView textBorrower = (TextView) findViewById(R.id.borrowerNameText);
         TextView textOwner = (TextView) findViewById(R.id.ownerNameText);
@@ -87,7 +85,6 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
 
             // Get the value passed while intenting
             Bundle b = getIntent().getExtras();
-            System.out.println(b.get("BOOK_ID"));
             if (b!= null) {
                 bookId = (String) b.get("BOOK_ID");
                 if(bookId == null){
@@ -95,7 +92,7 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
                     btnBottom.setVisibility(View.INVISIBLE);
                 }
             }
-            System.out.println("BOOKS ID: "+bookId);
+
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
             // Firebase document listener
@@ -142,8 +139,6 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
                         public void onClick(View view) {
                             // Call MyBooks Activity
 
-//                                String ownerName = textOwner.getText().toString();
-
                             String docPath = "users/"+owner;
                             DocumentReference docRef = db.document(docPath);
                             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -185,8 +180,6 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
                             public void onClick(View view) {
                                 // Call MyBooks Activity
 
-//                                String ownerName = textOwner.getText().toString();
-
                                 String docPath = "users/"+borrower;
                                 DocumentReference docRef = db.document(docPath);
                                 docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -207,7 +200,8 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
 
                                                     UserProfileFragment userProfileFragment = new UserProfileFragment();
                                                     userProfileFragment.setArguments(bundle);
-                                                    userProfileFragment.show(getSupportFragmentManager(),"userProfileFragment");
+                                                    userProfileFragment.show(getSupportFragmentManager(),
+                                                            "userProfileFragment");
                                                 }
                                             }
                                             else {
@@ -232,7 +226,6 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
                                 public void onClick(View view) {
                                     Intent intent = new Intent(BookDescription.this, ViewRequestActivity.class);
                                     intent.putExtra("BOOK_ID",isbn.concat(owner));
-                                    System.out.println("ISBN  "+isbn);
                                     startActivity(intent);
                                 }
                             });
@@ -249,22 +242,24 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
                                 public void onClick(View view) {
                                     final DocumentReference docRef = db.collection("books").document(bookId);
                                     docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                                           @Override
-                                                                           public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                                               if (task.isSuccessful()) {
-                                                                                   DocumentSnapshot document = task.getResult();
-                                                                                   if (document.exists()) {
-                                                                                       Map bookData = document.getData();
-                                                                                       if (bookData != null) {
-                                                                                           ArrayList<DocumentReference> requestList = (ArrayList<DocumentReference>) bookData.get("requestlist");
-                                                                                           Intent intent = new Intent(BookDescription.this, BookExchangeDisplayActivity.class);
-                                                                                           intent.putExtra("REQUEST_ID", requestList.get(0).getId());
-                                                                                           startActivity(intent);
-                                                                                       }
-                                                                                   }
-                                                                               }
-                                                                           }
-                                                                       });
+                                       @Override
+                                       public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                           if (task.isSuccessful()) {
+                                               DocumentSnapshot document = task.getResult();
+                                               if (document.exists()) {
+                                                   Map bookData = document.getData();
+                                                   if (bookData != null) {
+                                                       ArrayList<DocumentReference> requestList =
+                                                               (ArrayList<DocumentReference>) bookData.get("requestlist");
+                                                       Intent intent = new Intent(BookDescription.this,
+                                                               BookExchangeDisplayActivity.class);
+                                                       intent.putExtra("REQUEST_ID", requestList.get(0).getId());
+                                                       startActivity(intent);
+                                                   }
+                                               }
+                                           }
+                                       }
+                                   });
                                 }
                             });
                         }
@@ -272,7 +267,8 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
                             @Override
                             public void onClick(View view) {
                                 // Call Add/Edit Book activity
-                                Intent toAddEditBooks = new Intent(BookDescription.this, AddEditBookActivity.class);
+                                Intent toAddEditBooks = new Intent(BookDescription.this,
+                                        AddEditBookActivity.class);
                                 toAddEditBooks.putExtra("Book", bookId);
                                 startActivity(toAddEditBooks);
                             }
@@ -285,14 +281,8 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
                                 finish();
                             }
                         });
-
-//                        btnBottom.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View view) {
-//                                // Call the functionality to collect the book
-//                            }
-//                        });
                     }
+
                     // If the owner is not the current user, set the fields differently
                     else {
                         btnTop.setText("Search");
@@ -325,17 +315,9 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
         }
     }
 
-    /**
-     * This method is used to open a dialog box in order to send request
-     */
-    public void openDialog() {
-        SendRequestDialog sendRequestDialog = new SendRequestDialog();
-        sendRequestDialog.show(getSupportFragmentManager(), "Send Request");
-    }
-
     @Override
     public void onSendRequestConfirm() {
-                                Intent toMyRequests = new Intent(BookDescription.this, MyRequestsActivity.class);
-                                startActivity(toMyRequests);
+        Intent toMyRequests = new Intent(BookDescription.this, MyRequestsActivity.class);
+        startActivity(toMyRequests);
     }
 }

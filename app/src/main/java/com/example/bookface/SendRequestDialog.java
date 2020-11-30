@@ -25,6 +25,9 @@ import java.util.Map;
 
 import static android.content.ContentValues.TAG;
 
+/**
+ * Handles the accept/decline of the request
+ */
 public class SendRequestDialog extends AppCompatDialogFragment {
 
     FirebaseAuth mFirebaseAuth;
@@ -52,6 +55,11 @@ public class SendRequestDialog extends AppCompatDialogFragment {
         }
     }
 
+    /**
+     * This creates the dialog box to send the request
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -81,8 +89,6 @@ public class SendRequestDialog extends AppCompatDialogFragment {
                         request.put("exchangeowner", 0);
                         request.put("exchangeborrower", 0);
 
-                        System.out.println("REQ OBJ: "+request);
-
                         db.collection("requests").document(requestid)
                                 .set(request)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -102,22 +108,24 @@ public class SendRequestDialog extends AppCompatDialogFragment {
                         DocumentReference requestRef = db.collection("requests").document(requestid);
 
                         // add request docref to sentrequests for the borrower
-                        borrowerRef.update("sentrequests", FieldValue.arrayUnion(requestRef)).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                reqBookRef.update("requestlist", FieldValue.arrayUnion(requestRef)).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        listener.onSendRequestConfirm();
-                                    }
-                                })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w(TAG, "Error updating document", e);
-                                            }
-                                        });
-                            }
+                        borrowerRef.update("sentrequests", FieldValue.arrayUnion(requestRef))
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    reqBookRef.update("requestlist", FieldValue.arrayUnion(requestRef))
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            listener.onSendRequestConfirm();
+                                        }
+                                    })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w(TAG, "Error updating document", e);
+                                                }
+                                            });
+                                }
                         })
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -125,15 +133,6 @@ public class SendRequestDialog extends AppCompatDialogFragment {
                                         Log.w(TAG, "Error updating document", e);
                                     }
                                 });
-
-
-
-//                        // add request docref to requestlist for the book
-//                        reqBookRef.update("requestlist", FieldValue.arrayUnion(requestRef));
-//
-//                        // redirect to MyRequests
-//                        Intent toMyRequests = new Intent(SendRequestDialog.this.getActivity(), MyRequestsActivity.class);
-//                        startActivity(toMyRequests);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -145,33 +144,3 @@ public class SendRequestDialog extends AppCompatDialogFragment {
         return builder.create();
     }
 }
-
-//package com.example.bookface;
-//
-//import android.app.AlertDialog;
-//import android.app.Dialog;
-//import android.content.DialogInterface;
-//import android.os.Bundle;
-//import androidx.appcompat.app.AppCompatDialogFragment;
-//
-//public class SendRequestDialog extends AppCompatDialogFragment {
-//
-//    @Override
-//    public Dialog onCreateDialog(Bundle savedInstanceState) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//        builder.setTitle("Send Request?")
-//                .setMessage("This will send a book request. The owner will be notified if your request is accepted")
-//                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        // Send Request
-//                    }
-//                })
-//                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        // User cancelled the dialog
-//                    }
-//                });
-//
-//        return builder.create();
-//    }
-//}

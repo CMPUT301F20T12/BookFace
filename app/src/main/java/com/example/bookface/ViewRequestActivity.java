@@ -20,13 +20,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * Displays the list of requests on a book
+ */
 public class ViewRequestActivity extends AppCompatActivity implements RequestAcceptDeclineFragment.OnFragmentInteractionListener {
 
     ListView requestListView;
     ArrayAdapter<DocumentReference> requestListAdapter;
     ArrayList<DocumentReference> requestDocReferences;
 
-//    ArrayList<Request> requestDataList;
     String bookId;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -40,10 +42,9 @@ public class ViewRequestActivity extends AppCompatActivity implements RequestAcc
         requestListView = findViewById(R.id.requestList);
         bookId = this.getIntent().getStringExtra("BOOK_ID");
 
-        System.out.println("ISBN IN VIEW_ACTIVITY  "+ bookId);
-
         DocumentReference docRef = db.collection("books").document(bookId);
-        System.out.println("DOC REF "+docRef);
+
+        // Extracts a list of requests on a book and sets adapter
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             private static final String TAG = "ViewRequestActivity_MSG";
 
@@ -51,18 +52,14 @@ public class ViewRequestActivity extends AppCompatActivity implements RequestAcc
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    System.out.println("DOCUMENT "+document);
                     if (document.exists()) {
                         requestDocReferences = (ArrayList<DocumentReference>) document.get("requestlist");
-                        System.out.println("REQ DOC REF IN VIEW "+requestDocReferences);
                         if(requestDocReferences!=null){
 
                             requestListView = findViewById(R.id.requestList);
 
                             requestListAdapter = new ViewRequestUserList(ViewRequestActivity.this, requestDocReferences);
-                            System.out.println("DOC REFERENCES "+requestDocReferences);
                             requestListView.setAdapter(requestListAdapter);
-
 
                             requestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
@@ -76,8 +73,8 @@ public class ViewRequestActivity extends AppCompatActivity implements RequestAcc
                                                 if (document.exists()) {
 
                                                     Map requestData = document.getData();
-                                                    DocumentReference requesterRef = (DocumentReference) requestData.get("borrowerid");
-                                                    System.out.println(requesterRef);
+                                                    DocumentReference requesterRef = (DocumentReference)
+                                                            requestData.get("borrowerid");
                                                     requesterRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -85,18 +82,19 @@ public class ViewRequestActivity extends AppCompatActivity implements RequestAcc
                                                                 DocumentSnapshot requester = task.getResult();
                                                                 if (requester.exists()) {
                                                                     Map requesterData = requester.getData();
-                                                                    String requesterName = requesterData.get("username").toString();
-                                                                    String requesterEmail = requesterData.get("email").toString();
-                                                                    String requesterContact = requesterData.get("contactNo").toString();
-//
+                                                                    String requesterName =
+                                                                            requesterData.get("username").toString();
+                                                                    String requesterEmail =
+                                                                            requesterData.get("email").toString();
+                                                                    String requesterContact =
+                                                                            requesterData.get("contactNo").toString();
+
                                                                     Bundle bundle = new Bundle();
                                                                     bundle.putInt("POSITION",position);
                                                                     bundle.putString("BOOK_ID",bookId);
                                                                     bundle.putString("REQ_NAME", requesterName);
                                                                     bundle.putString("REQ_EMAIL", requesterEmail);
                                                                     bundle.putString("REQ_CONTACT", requesterContact);
-//
-                                                                    System.out.println(bundle);
 
                                                                     RequestAcceptDeclineFragment requestAcceptDeclineFragment = new RequestAcceptDeclineFragment();
                                                                     requestAcceptDeclineFragment.setArguments(bundle);
@@ -136,7 +134,11 @@ public class ViewRequestActivity extends AppCompatActivity implements RequestAcc
         });
     }
 
-    public void onDeclineConfirm(DocumentReference reqRef){
+    /**
+     * Implements the interface to refresh view Requests activity
+     * @param reqRef
+     */
+    public void onDeclineConfirm(DocumentReference reqRef) {
         requestDocReferences.remove(reqRef);
         requestListAdapter.notifyDataSetChanged();
         finish();
