@@ -10,10 +10,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,6 +26,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * This class displays the list of the books owned by the user
@@ -37,6 +41,7 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
 
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private BottomNavigationView navBar;
 
@@ -47,7 +52,10 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         userInstance = mFirebaseAuth.getCurrentUser();
+        recycleView = findViewById(R.id.recycle_view);
         myBookList = new ArrayList<>();
+
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recycleView);
 
         Context context = this;
         RecyclerViewAdapter.OnBookClickListener onBookClickListener = this;
@@ -70,8 +78,6 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
                             myBookList = (ArrayList<String>)document.get("booksOwned");
                             System.out.println(myBookList);
 
-
-                            recycleView = findViewById(R.id.recycle_view);
                             adapter = new RecyclerViewAdapter(context, myBookList, onBookClickListener);
                             recycleView.setAdapter(adapter);
                             recycleView.setLayoutManager(new LinearLayoutManager(context));
@@ -94,6 +100,67 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
             }
         });
     }
+
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int index = viewHolder.getAdapterPosition();
+            String bookId = myBookList.get(index);
+
+            final DocumentReference docRef = db.collection("books").document(bookId);
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Map bookData = document.getData();
+                            if (bookData != null) {
+                                String status = bookData.get("status").toString();
+                                ArrayList<DocumentReference> requestList = (ArrayList<DocumentReference>) bookData.get("requestlist");
+                                String owner = bookData.get("ownerUsername").toString();
+                                if(status.toLowerCase().equals("available")  == false){
+                                    Toast.makeText(MyBooks.this, "Delete request denied, retry when book is available!", Toast.LENGTH_SHORT).show();
+                                }
+                                else if(requestList.size() != 0){
+                                    Toast.makeText(MyBooks.this, "Delete request denied, retry when no incoming requests on the book!", Toast.LENGTH_SHORT).show();
+                                }
+                                else{
+                                    myBookList.remove(bookId);
+                                    docRef.delete();
+                                    final DocumentReference docRefUser = db.collection("users").document(owner);
+                                    docRefUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                if (document.exists()) {
+                                                    Map userData = document.getData();
+                                                    if (userData != null) {
+                                                        ArrayList<DocumentReference> ownedBooks = (ArrayList<DocumentReference>) userData.get("booksOwned");
+                                                        ownedBooks.remove(bookId);
+                                                        docRefUser.update("booksOwned", ownedBooks);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                }
+
+            });
+        }
+    };
 
     /**
      * This is used to setup the bottom navigation bar
