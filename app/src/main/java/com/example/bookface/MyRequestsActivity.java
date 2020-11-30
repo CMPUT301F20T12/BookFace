@@ -86,9 +86,31 @@ public class MyRequestsActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 
                 String reqRef = requests.get(position).getId();
-                Intent intent = new Intent(MyRequestsActivity.this, BookExchangeDisplayActivity.class);
-                intent.putExtra("REQUEST_ID", reqRef);
-                startActivity(intent);
+                String docPathReq = "requests/"+reqRef;
+                DocumentReference docRefReq = db.document(docPathReq);
+                docRefReq.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                // set the books in the recyclerView
+                                String status = document.get("requeststatus").toString();
+                                DocumentReference bookid = (DocumentReference) document.get("bookid");
+                                if(status.toLowerCase().equals("pending")){
+                                    Intent intent = new Intent(MyRequestsActivity.this, BookDescription.class);
+                                    intent.putExtra("MyRequestActivity", bookid.getId());
+                                    startActivity(intent);
+                                }
+                                else{
+                                    Intent intent = new Intent(MyRequestsActivity.this, BookExchangeDisplayActivity.class);
+                                    intent.putExtra("REQUEST_ID", reqRef);
+                                    startActivity(intent);
+                                }
+                            }
+                        }
+                    }
+                });
             }
         });
     }

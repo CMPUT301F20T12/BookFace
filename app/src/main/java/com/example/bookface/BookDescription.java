@@ -90,6 +90,10 @@ public class BookDescription extends AppCompatActivity implements SendRequestDia
             System.out.println(b.get("BOOK_ID"));
             if (b!= null) {
                 bookId = (String) b.get("BOOK_ID");
+                if(bookId == null){
+                    bookId = (String) b.get("MyRequestActivity");
+                    btnBottom.setVisibility(View.INVISIBLE);
+                }
             }
             System.out.println("BOOKS ID: "+bookId);
             FirebaseFirestore db = FirebaseFirestore.getInstance();
