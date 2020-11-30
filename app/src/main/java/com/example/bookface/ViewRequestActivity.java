@@ -134,11 +134,11 @@ public class ViewRequestActivity extends AppCompatActivity implements RequestAcc
                 }
             }
         });
-
     }
 
     public void onDeclineConfirm(DocumentReference reqRef){
         requestDocReferences.remove(reqRef);
         requestListAdapter.notifyDataSetChanged();
+        finish();
     }
 }
