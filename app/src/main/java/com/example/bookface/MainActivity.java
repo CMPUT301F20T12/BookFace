@@ -8,6 +8,7 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +21,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * This is the main activity that is run
@@ -109,6 +111,25 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(MainActivity.this, "Login Unsuccessful", Toast.LENGTH_SHORT).show();
                             }
                             else{
+                                FirebaseMessaging.getInstance().getToken()
+                                        .addOnCompleteListener(new OnCompleteListener<String>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<String> task) {
+                                                if (!task.isSuccessful()) {
+                                                    Log.w("Token refresh", "Fetching FCM registration token failed", task.getException());
+                                                    return;
+                                                }
+
+                                                // Get new FCM registration token
+                                                String token = task.getResult();
+
+                                                // Log and toast
+//                                                String msg = getString(R.string.msg_token_fmt, token);
+//                                                Log.d(TAG, msg);
+                                                Toast.makeText(MainActivity.this, "Refresh worked", Toast.LENGTH_SHORT).show();
+                                                Log.d("Token worked", token);
+                                            }
+                                        });
                                 // Go to User Profile
                                 Intent i = new Intent(MainActivity.this, UserProfileActivity.class);
                                 startActivity(i);

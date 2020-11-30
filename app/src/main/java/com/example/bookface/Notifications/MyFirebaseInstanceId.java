@@ -17,21 +17,23 @@ import java.util.Map;
 
 public class MyFirebaseInstanceId extends FirebaseMessagingService {
 
+
+
     @Override
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        System.out.print(firebaseUser.toString());
-
         String refreshToken = FirebaseInstanceId.getInstance().getToken();
-
+        Log.d("myFirebaseId", "Token is: " + refreshToken);
         if (firebaseUser != null){
             updateToken(refreshToken);
         }
 
     }
+
+
 
     private void updateToken(String refreshToken){
         Log.d("tokenchecker", "Token getting updated");
