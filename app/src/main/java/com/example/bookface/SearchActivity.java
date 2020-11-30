@@ -121,8 +121,10 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                             String borrowerUsername = (String) doc.getData().get("borrowerUsername");
                             String imageUrl = (String) doc.getData().get("imageUrl");
                             // add from FireStore
-                            bookDataList.add(new Book(title, author, ISBN, description,
-                                status, ownerUsername, borrowerUsername, imageUrl));
+                            if(status.toLowerCase().equals("available")){
+                                bookDataList.add(new Book(title, author, ISBN, description,
+                                        status, ownerUsername, borrowerUsername, imageUrl));
+                            }
                         }
                         bookListAdapter.notifyDataSetChanged();
                     } 
