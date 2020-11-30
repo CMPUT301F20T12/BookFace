@@ -65,7 +65,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 Intent intent = new Intent(SearchActivity.this, BookDescription.class);
-                Book book = bookDataList.get(position);
+                Book book = bookListAdapter.getItem(position);
                 String bookId = book.getISBN()+book.getOwnerUsername();
                 System.out.println("On click book id --> "+bookId);
                 intent.putExtra("BOOK_ID", bookId);
