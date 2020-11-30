@@ -47,7 +47,7 @@ public class FilterBooksDialog extends AppCompatDialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof SendRequestDialog.OnFragmentInteractionListener){
+        if (context instanceof FilterBooksDialog.OnFragmentInteractionListener){
             listener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
