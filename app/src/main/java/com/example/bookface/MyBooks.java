@@ -40,7 +40,6 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
     // Variable declarations
     RecyclerView recycleView;
     ArrayList<String> myBookList;
-    ArrayList<String> filteredBookList;
     ArrayList<String> originalBooks;
     RecyclerViewAdapter adapter;
     Button addBookButton;
@@ -49,6 +48,8 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
     FirebaseAuth mFirebaseAuth;
     FirebaseUser userInstance;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    Context context;
+    RecyclerViewAdapter.OnBookClickListener onBookClickListener;
 
     private BottomNavigationView navBar;
 
@@ -64,8 +65,8 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
 
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recycleView);
 
-        Context context = this;
-        RecyclerViewAdapter.OnBookClickListener onBookClickListener = this;
+        context = this;
+        onBookClickListener = this;
         if (userInstance != null){
             String userName = userInstance.getDisplayName();
 
@@ -231,7 +232,7 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence status) {
-                FilterResults filterResults = new FilterResults();
+                final FilterResults filterResults = new FilterResults();
 
                 if (originalBooks == null) {
                     originalBooks = new ArrayList<>(myBookList);
@@ -253,38 +254,35 @@ public class MyBooks extends AppCompatActivity implements RecyclerViewAdapter.On
                                     if(documentSnapshot !=null){
                                         Book book = documentSnapshot.toObject(Book.class);
 
-                                        if (status == "Available" && book.getStatus() == "Available") {
+                                        if (status.equals("Available") && book.getStatus().equals("Available")) {
                                             filteredList.add(bookId);
                                         } else if (status == "Accepted" && book.getStatus() == "Accepted") {
                                             filteredList.add(bookId);
                                         } else if (status == "Borrowed" && book.getStatus() == "Borrowed") {
                                             filteredList.add(bookId);
                                         }
-                                        filteredBookList = filteredList;
+                                        //filteredBookList = filteredList;
+
                                     }
-                                    adapter.notifyDataSetChanged();
                                 }
                             }
                         });
 
                     }
-
+                    filterResults.values = filteredList;
+                    filterResults.count = filteredList.size();
                 }
 
-                filterResults.values = filteredBookList;
                 return filterResults;
             }
-//
-//            @Override
-//            protected FilterResults performFiltering(CharSequence constraint) {
-//                return null;
-//            }
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                filteredBookList = (ArrayList<String>) filterResults.values;
+                ArrayList<String> filteredBookList = (ArrayList<String>) filterResults.values;
                 myBookList = filteredBookList;
 
+                adapter = new RecyclerViewAdapter(context, myBookList, onBookClickListener);
+                recycleView.setAdapter(adapter);
                 // refresh the list with filtered data
                 adapter.notifyDataSetChanged();
             }
