@@ -90,26 +90,3 @@
         app:menu="@menu/navbar"/>
 
 </RelativeLayout>
-
-
-    <!--    <LinearLayout-->
-    <!--        android:id="@+id/linearLayout3"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="50dp"-->
-    <!--        android:layout_alignParentTop="true"-->
-    <!--        android:layout_alignParentBottom="true"-->
-    <!--        android:layout_marginTop="276dp"-->
-    <!--        android:layout_marginBottom="405dp">-->
-
-    <!--        <TextView-->
-    <!--            android:id="@+id/my_books_text"-->
-    <!--            android:layout_width="6dp"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_gravity="center"-->
-    <!--            android:layout_weight="1"-->
-    <!--            android:text="This is test for My Books"-->
-    <!--            android:textAlignment="center"-->
-    <!--            app:layout_constraintHorizontal_bias="0.851"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintTop_toTopOf="parent" />-->
-    <!--    </LinearLayout>-->
